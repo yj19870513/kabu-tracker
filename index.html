@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本株 高配当トラッカー</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root { --bg:#0f1117; --card:#1a1d2e; --line:#2a2f45; --text:#e2e6f0; --muted:#8b93ab;
+    --red:#ff5a6e; --orange:#ffa94d; --blue:#4dabf7; --green:#51cf66; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,"Hiragino Kaku Gothic ProN",sans-serif; font-size:14px; line-height:1.6; padding:16px; }
+  .wrap { max-width:1200px; margin:0 auto; }
+  h1 { font-size:20px; margin-bottom:4px; }
+  .updated { color:var(--muted); font-size:12px; margin-bottom:12px; }
+  /* 統計バー */
+  .stats { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 16px; }
+  .stat b { font-size:18px; display:block; }
+  .stat span { font-size:11.5px; color:var(--muted); }
+  /* 市場環境 */
+  .market { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 16px; margin-bottom:12px; display:flex; gap:24px; flex-wrap:wrap; align-items:center; }
+  .market .lbl { font-size:11.5px; color:var(--muted); }
+  .market b { font-size:17px; }
+  .market input { width:70px; background:#12141f; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:4px 8px; font-size:14px; }
+  .c-green{color:var(--green);} .c-orange{color:var(--orange);} .c-red{color:var(--red);} .c-blue{color:var(--blue);}
+  /* フィルター */
+  .tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+  .tab { background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:16px; padding:5px 14px; cursor:pointer; font-size:13px; }
+  .tab.on { background:#2b3152; color:#fff; border-color:#4a5482; }
+  .ctrl { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+  .ctrl select, .ctrl input { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:13px; }
+  .fcount { color:var(--muted); font-size:12.5px; margin-bottom:10px; }
+  /* カード */
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; cursor:pointer; position:relative; }
+  .card:hover { border-color:#4a5482; }
+  .card.b-red { border:2px solid var(--red); }
+  .card.b-orange { border:2px solid var(--orange); }
+  .card.b-blue { border:2px solid var(--blue); }
+  .card .code { color:var(--muted); font-size:12px; }
+  .card .name { font-size:15.5px; font-weight:700; margin-bottom:4px; }
+  .card .price { font-size:19px; font-weight:700; }
+  .card .chg { font-size:12.5px; margin-left:6px; }
+  .card .yield { font-size:15px; margin-top:2px; }
+  .card .sub { color:var(--muted); font-size:11.5px; margin-top:4px; }
+  .badges { position:absolute; top:10px; right:12px; display:flex; gap:4px; }
+  .badge { font-size:10px; border-radius:4px; padding:1px 6px; background:#2b3152; }
+  .scorebar { height:5px; background:#12141f; border-radius:3px; margin-top:8px; overflow:hidden; }
+  .scorebar i { display:block; height:100%; background:linear-gradient(90deg,#4dabf7,#51cf66); }
+  /* 保有中テーブル */
+  table.hold { width:100%; border-collapse:collapse; background:var(--card); border-radius:10px; overflow:hidden; margin-bottom:12px; }
+  table.hold th, table.hold td { border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; font-size:13.5px; }
+  table.hold th { color:var(--muted); font-size:12px; }
+  table.hold input { width:110px; background:#12141f; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:4px 8px; }
+  .secbar { display:flex; height:26px; border-radius:8px; overflow:hidden; margin:8px 0 20px; }
+  .secbar div { display:flex; align-items:center; justify-content:center; font-size:10.5px; white-space:nowrap; overflow:hidden; }
+  /* モーダル */
+  .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:50; overflow-y:auto; padding:24px 12px; }
+  .modal { max-width:640px; margin:0 auto; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+  .modal h2 { font-size:18px; }
+  .modal h3 { font-size:14px; margin:16px 0 6px; color:#aab3d0; }
+  .modal .close { float:right; cursor:pointer; font-size:20px; color:var(--muted); }
+  .tagbtns { display:flex; gap:8px; margin:10px 0; }
+  .tagbtn { border:1px solid var(--line); background:#12141f; color:var(--muted); border-radius:8px; padding:5px 12px; cursor:pointer; font-size:13px; }
+  .tagbtn.on { background:#2b5137; color:#c3f7cf; border-color:#3f7a52; }
+  .kv { display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; font-size:13.5px; }
+  .kv div span { color:var(--muted); font-size:11.5px; display:block; }
+  .posbar { position:relative; height:10px; background:linear-gradient(90deg,#4dabf7,#51cf66,#ff5a6e); border-radius:5px; margin:6px 0 2px; }
+  .posbar i { position:absolute; top:-4px; width:4px; height:18px; background:#fff; border-radius:2px; }
+  .poslbl { display:flex; justify-content:space-between; color:var(--muted); font-size:11px; }
+  .modal input, .modal textarea { background:#12141f; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:5px 8px; font-size:13px; width:100%; }
+  .mform { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .btn { background:#2b3152; border:1px solid #4a5482; color:#fff; border-radius:8px; padding:7px 16px; cursor:pointer; font-size:13.5px; margin-top:10px; }
+  .buyjudge { border-radius:8px; padding:8px 12px; margin-top:6px; font-size:13px; background:#12141f; }
+  a { color:var(--blue); }
+  canvas#radar { max-width:300px; margin:0 auto; display:block; }
+  .err { color:var(--red); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📈 日本株 高配当トラッカー</h1>
+  <div class="updated" id="updated">読み込み中…</div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="market">
+    <div><div class="lbl">VIX（恐怖指数）</div><b id="vix">-</b> <span class="lbl" id="vixNote"></span></div>
+    <div><div class="lbl">騰落レシオ（手動入力）</div><input id="tdr" type="number" step="0.1" placeholder="例:105"> <b id="tdrView"></b></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="ctrl">
+    <select id="sort">
+      <option value="yield">利回り順</option>
+      <option value="score">財務スコア順</option>
+      <option value="code">コード順</option>
+      <option value="price">株価順</option>
+    </select>
+    <select id="secSel"><option value="">全セクター</option></select>
+    <select id="scoreSel">
+      <option value="0">スコア指定なし</option>
+      <option value="4">スコア4以上</option>
+      <option value="6">スコア6以上</option>
+      <option value="8">スコア8</option>
+    </select>
+    <input id="q" type="search" placeholder="銘柄名・コード検索">
+  </div>
+  <div class="fcount" id="fcount"></div>
+
+  <div id="holdArea"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+"use strict";
+let DATA = null, CHART = null, TAB = "all";
+const $ = id => document.getElementById(id);
+const LS = {
+  get:(k,d=null)=>{ const v=localStorage.getItem(k); return v===null?d:v; },
+  set:(k,v)=>localStorage.setItem(k,v),
+  del:k=>localStorage.removeItem(k)
+};
+const fmt = (v,n=2)=> (v===null||v===undefined||isNaN(v)) ? "-" : Number(v).toLocaleString("ja-JP",{maximumFractionDigits:n});
+const yen = v => v===null||v===undefined ? "-" : "¥"+fmt(v,0);
+
+/* ---------- データ整形 ---------- */
+function manual(code){ try{ return JSON.parse(LS.get("manual_"+code,"{}")); }catch(e){ return {}; } }
+function eff(s){ return Object.assign({}, s, manual(s.code)); }
+function yieldOf(s){
+  const e = eff(s);
+  const y = e.yield_pct;
+  if (y===null||y===undefined) return null;
+  if (y>=20) return "anomaly"; // 利回り20%以上はデータ異常
+  return y;
+}
+function currentYear(){ return DATA && DATA.updated ? DATA.updated.slice(0,4) : String(new Date().getFullYear()); }
+function divTrend(s){
+  const by = eff(s).div_by_year || {};
+  const cy = currentYear();
+  const years = Object.keys(by).filter(y=>y<cy).sort().slice(-3); // 進行中の年は除外
+  if (years.length<2) return false;
+  for(let i=1;i<years.length;i++){ if(by[years[i]] < by[years[i-1]]) return false; }
+  return by[years[years.length-1]]>0;
+}
+function qualityScore(s){
+  const e = eff(s); let sc=0;
+  if (divTrend(s)) sc+=2;                                    // 増配トレンド
+  if (e.payout!==null && e.payout>=20 && e.payout<=60) sc+=2; // 配当性向20〜60%
+  if (e.roe!==null && e.roe>=8) sc+=2;                        // ROE8%以上
+  if (e.op_cf!==null && e.op_cf>0) sc+=2;                     // 営業CFプラス
+  return sc;
+}
+function top30Score(s){
+  const y = yieldOf(s);
+  if (y==="anomaly"||y===null) return null; // 異常値はランク対象外
+  const e = eff(s);
+  let sc = Math.min(y/5*40, 40);            // 利回り点 最大40
+  sc += qualityScore(s)/8*35;               // 財務点 最大35
+  const pbr = e.pbr;
+  sc += pbr===null?0 : pbr<0.5?15 : pbr<0.8?12 : pbr<1.0?9 : pbr<1.5?5 : 0;
+  const per = e.per;
+  sc += per===null?0 : per<10?10 : per<15?7 : per<20?4 : 0;
+  return Math.round(sc*10)/10;
+}
+function pos52(s){
+  const e = eff(s);
+  if (!e.price||!e.high52||!e.low52||e.high52<=e.low52) return null;
+  return (e.price-e.low52)/(e.high52-e.low52)*100;
+}
+function tagOf(code){
+  if (LS.get("holding_"+code)) return "holding";
+  if (LS.get("watch_"+code)) return "watch";
+  if (LS.get("candidate_"+code)) return "candidate";
+  return null;
+}
+
+/* ---------- フィルター＆描画 ---------- */
+const TABS = [["all","全銘柄"],["y4","4%以上"],["y37","3.7%以上"],["holding","保有中"],["watch","ウォッチ"],["candidate","候補"],["top30","トップ30"],["error","エラー"]];
+function filtered(){
+  let list = DATA.stocks.slice();
+  const sec=$("secSel").value, smin=+$("scoreSel").value, q=$("q").value.trim().toLowerCase();
+  if (TAB==="error") list = list.filter(s=>s.error || yieldOf(s)==="anomaly");
+  else {
+    list = list.filter(s=>!s.error);
+    if (TAB==="y4") list = list.filter(s=>{const y=yieldOf(s); return y!=="anomaly"&&y>=4;});
+    if (TAB==="y37") list = list.filter(s=>{const y=yieldOf(s); return y!=="anomaly"&&y>=3.7;});
+    if (["holding","watch","candidate"].includes(TAB)) list = list.filter(s=>LS.get(TAB+"_"+s.code));
+    if (TAB==="top30") list = list.filter(s=>top30Score(s)!==null).sort((a,b)=>top30Score(b)-top30Score(a)).slice(0,30);
+  }
+  if (sec) list = list.filter(s=>eff(s).sector===sec);
+  if (smin) list = list.filter(s=>qualityScore(s)>=smin);
+  if (q) list = list.filter(s=>(s.name||"").toLowerCase().includes(q)||s.code.includes(q));
+  const key=$("sort").value;
+  if (TAB!=="top30") list.sort((a,b)=>{
+    const ya=yieldOf(a), yb=yieldOf(b);
+    if (key==="yield") return (yb==="anomaly"?-1:yb??-1)-(ya==="anomaly"?-1:ya??-1);
+    if (key==="score") return qualityScore(b)-qualityScore(a);
+    if (key==="price") return (eff(b).price??0)-(eff(a).price??0);
+    return a.code.localeCompare(b.code);
+  });
+  return list;
+}
+function borderClass(s){
+  const y=yieldOf(s);
+  if (y!=="anomaly"&&y!==null){
+    if (y>=4) return "b-red";
+    if (y>=3.7) return "b-orange";
+  }
+  const p=pos52(s);
+  if (p!==null&&p<=33) return "b-blue";
+  return "";
+}
+function render(){
+  const list = filtered();
+  // 統計バー（全銘柄・異常/エラー除外で集計）
+  const ok = DATA.stocks.filter(s=>!s.error).map(s=>({s,y:yieldOf(s)})).filter(o=>o.y!=="anomaly"&&o.y!==null);
+  const c4=ok.filter(o=>o.y>=4).length, c37=ok.filter(o=>o.y>=3.7).length;
+  const avg=ok.length?ok.reduce((a,o)=>a+o.y,0)/ok.length:0;
+  $("stats").innerHTML =
+    `<div class="stat"><b class="c-red">${c4}</b><span>4%以上</span></div>`+
+    `<div class="stat"><b class="c-orange">${c37}</b><span>3.7%以上</span></div>`+
+    `<div class="stat"><b>${fmt(avg)}%</b><span>平均利回り</span></div>`+
+    `<div class="stat"><b>${DATA.stocks.length}</b><span>銘柄数</span></div>`;
+  // フィルター後の件数・平均
+  const fok = list.map(s=>yieldOf(s)).filter(y=>y!=="anomaly"&&y!==null);
+  const favg = fok.length?fok.reduce((a,b)=>a+b,0)/fok.length:0;
+  $("fcount").textContent = `表示 ${list.length}件 ／ 平均利回り ${fmt(favg)}%`;
+  // 保有中タブの特別表示
+  $("holdArea").innerHTML = TAB==="holding" ? holdTable(list) : "";
+  // カード
+  $("grid").innerHTML = list.map(card).join("") || `<div style="color:var(--muted)">該当なし</div>`;
+}
+function card(s){
+  const e=eff(s), y=yieldOf(s), sc=qualityScore(s), t=tagOf(s.code);
+  const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `利回り <b>${fmt(y)}%</b>`;
+  const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">${chg>=0?"+":""}${fmt(chg)}%</span>`;
+  const tagB = t?`<span class="badge">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
+  const t30 = top30Score(s);
+  return `<div class="card ${borderClass(s)}" onclick="openModal('${s.code}')">
+    <div class="badges">${tagB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
+    <div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
+    <span class="price">${yen(e.price)}</span>${chgHtml}
+    <div class="yield">${ydisp}</div>
+    <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円｜スコア ${sc}/8</div>
+    <div class="scorebar"><i style="width:${sc/8*100}%"></i></div>
+  </div>`;
+}
+/* ---------- 保有中テーブル ---------- */
+function holdTable(list){
+  if (!list.length) return `<div style="color:var(--muted);margin-bottom:12px">「保有中」タグの銘柄がありません（カードを開いてタグを設定）</div>`;
+  let total=0;
+  const rows = list.map(s=>{
+    const inv=+LS.get("invest_"+s.code,0)||0; total+=inv; return {s,inv};
+  });
+  const trs = rows.map(({s,inv})=>{
+    const pct = total>0? inv/total*100 : 100/rows.length;
+    return `<tr><td><a href="#" onclick="openModal('${s.code}');return false" style="color:var(--text)">${s.name}</a><br><span style="color:var(--muted);font-size:11px">${s.code}</span></td>
+      <td>${eff(s).sector||"-"}</td>
+      <td><input type="number" value="${inv||""}" placeholder="円" onchange="LS.set('invest_${s.code}',this.value);render()"></td>
+      <td>${fmt(pct,1)}%</td></tr>`;
+  }).join("");
+  // セクター割合（金額ベース、未入力時は件数ベース）
+  const useAmt = total>0;
+  const bySec={};
+  rows.forEach(({s,inv})=>{ const k=eff(s).sector||"その他"; bySec[k]=(bySec[k]||0)+(useAmt?inv:1); });
+  const secTotal=Object.values(bySec).reduce((a,b)=>a+b,0)||1;
+  const colors=["#4dabf7","#51cf66","#ffa94d","#ff5a6e","#b197fc","#66d9e8","#ffd43b"];
+  const bar = Object.entries(bySec).map(([k,v],i)=>
+    `<div style="width:${v/secTotal*100}%;background:${colors[i%colors.length]}" title="${k}">${k} ${fmt(v/secTotal*100,0)}%</div>`).join("");
+  return `<table class="hold"><tr><th>銘柄</th><th>セクター</th><th>投資額</th><th>割合</th></tr>${trs}
+    <tr><td colspan="2"><b>投資合計</b></td><td colspan="2"><b>${yen(total)}</b></td></tr></table>
+    <div class="lbl" style="color:var(--muted);font-size:12px">セクター割合（${useAmt?"金額ベース":"件数ベース"}）</div>
+    <div class="secbar">${bar}</div>`;
+}
+/* ---------- モーダル ---------- */
+function openModal(code){
+  const s = DATA.stocks.find(x=>x.code===code); if(!s) return;
+  const e = eff(s), y=yieldOf(s), sc=qualityScore(s), p=pos52(s);
+  const perC = e.per===null?"":e.per<10?"c-green":e.per<20?"":"c-red";
+  const pbrC = e.pbr===null?"":e.pbr<0.8?"c-green":e.pbr<1.5?"":"c-red";
+  const dev = ma => (e.price&&ma)? (e.price/ma-1)*100 : null;
+  const d25=dev(e.ma25), d75=dev(e.ma75);
+  const devC = d => d===null?"":d>5?"c-red":d<-5?"c-green":"";
+  const buyY = LS.get("buy_yield_"+code,"");
+  const m = manual(code);
+  $("modal").innerHTML = `
+    <span class="close" onclick="closeModal()">✕</span>
+    <h2>${s.name} <span style="color:var(--muted);font-size:13px">${code}｜${e.sector||"-"}</span></h2>
+    <div style="margin-top:4px"><span class="price" style="font-size:22px">${yen(e.price)}</span>
+      <span style="margin-left:10px">利回り <b>${y==="anomaly"?"-（異常値）":fmt(y)+"%"}</b>｜年間配当 ${e.dividend??"-"}円</span></div>
+    <div class="tagbtns">
+      ${["holding|保有中","watch|ウォッチ","candidate|候補"].map(x=>{const[k,l]=x.split("|");
+        return `<button class="tagbtn ${LS.get(k+"_"+code)?"on":""}" onclick="toggleTag('${code}','${k}',this)">${l}</button>`;}).join("")}
+    </div>
+    <h3>財務スコア ${sc}/8点</h3>
+    <canvas id="radar"></canvas>
+    <h3>52週ポジション（安値 ${yen(e.low52)} 〜 高値 ${yen(e.high52)}）</h3>
+    <div class="posbar"><i style="left:${p===null?0:Math.min(Math.max(p,0),100)}%"></i></div>
+    <div class="poslbl"><span>安値圏</span><span>${p===null?"-":fmt(p,0)+"%"}</span><span>高値圏</span></div>
+    <h3>割安指標・テクニカル</h3>
+    <div class="kv">
+      <div><span>PER</span><b class="${perC}">${fmt(e.per)}</b></div>
+      <div><span>PBR</span><b class="${pbrC}">${fmt(e.pbr)}</b></div>
+      <div><span>25日MA乖離</span><b class="${devC(d25)}">${d25===null?"-":(d25>=0?"+":"")+fmt(d25)+"%"}</b></div>
+      <div><span>75日MA乖離</span><b class="${devC(d75)}">${d75===null?"-":(d75>=0?"+":"")+fmt(d75)+"%"}</b></div>
+      <div><span>営業利益率</span><b>${fmt(e.op_margin)}%</b></div>
+      <div><span>配当性向</span><b>${fmt(e.payout)}%</b></div>
+      <div><span>ROE</span><b>${fmt(e.roe)}%</b></div>
+      <div><span>自己資本比率</span><b>${fmt(e.equity_ratio)}%</b></div>
+      <div><span>時価総額</span><b>${e.market_cap?fmt(e.market_cap/1e8,0)+"億円":"-"}</b></div>
+      <div><span>営業CF</span><b>${e.op_cf?fmt(e.op_cf/1e8,0)+"億円":"-"}</b></div>
+    </div>
+    <h3>買い増し判断</h3>
+    <div style="display:flex;gap:8px;align-items:center">購入時利回り
+      <input id="buyY" type="number" step="0.01" value="${buyY}" style="width:90px" onchange="LS.set('buy_yield_${code}',this.value);openModal('${code}')">%
+    </div>
+    <div class="buyjudge">${buyJudge(buyY,y)}</div>
+    <h3>手動入力（財務データ上書き）</h3>
+    <div class="mform">
+      <label>配当性向% <input id="m_payout" type="number" step="0.1" value="${m.payout??""}"></label>
+      <label>ROE% <input id="m_roe" type="number" step="0.1" value="${m.roe??""}"></label>
+      <label>自己資本比率% <input id="m_equity_ratio" type="number" step="0.1" value="${m.equity_ratio??""}"></label>
+      <label>年間配当(円) <input id="m_dividend" type="number" step="0.1" value="${m.dividend??""}"></label>
+    </div>
+    <label style="display:block;margin-top:8px">メモ<textarea id="memoBox" rows="3">${LS.get("memo_"+code,"")}</textarea></label>
+    <button class="btn" onclick="saveManual('${code}')">保存</button>
+    <button class="btn" style="background:#12141f" onclick="clearManual('${code}')">上書きをリセット</button>
+    <h3><a href="https://finance.yahoo.co.jp/quote/${code}.T" target="_blank" rel="noopener">Yahoo!ファイナンスで見る →</a></h3>`;
+  $("overlay").style.display = "block";
+  drawRadar(s);
+}
+function buyJudge(buyY,y){
+  if (!buyY) return "購入時の利回りを入力すると、現在との比較を表示します";
+  if (y==="anomaly"||y===null) return "現在の利回りが取得できていません";
+  const b=+buyY;
+  if (y>=b) return `<span class="c-green">現在 ${fmt(y)}% ≧ 購入時 ${fmt(b)}%：購入時より利回りが高く、買い増し検討圏です</span>`;
+  return `<span class="c-orange">現在 ${fmt(y)}% ＜ 購入時 ${fmt(b)}%：購入時より株価が上昇（利回り低下）しています</span>`;
+}
+function drawRadar(s){
+  const e=eff(s);
+  const vals=[divTrend(s)?2:0,
+    (e.payout!==null&&e.payout>=20&&e.payout<=60)?2:0,
+    (e.roe!==null&&e.roe>=8)?2:0,
+    (e.op_cf!==null&&e.op_cf>0)?2:0];
+  if (CHART) CHART.destroy();
+  if (typeof Chart==="undefined") return;
+  CHART = new Chart($("radar"),{type:"radar",
+    data:{labels:["増配トレンド","配当性向20-60%","ROE8%以上","営業CF+"],
+      datasets:[{data:vals,backgroundColor:"rgba(77,171,247,.25)",borderColor:"#4dabf7",pointBackgroundColor:"#4dabf7"}]},
+    options:{scales:{r:{min:0,max:2,ticks:{stepSize:1,display:false},grid:{color:"#2a2f45"},angleLines:{color:"#2a2f45"},pointLabels:{color:"#aab3d0",font:{size:11}}}},plugins:{legend:{display:false}}}});
+}
+function toggleTag(code,key,btn){
+  const k=key+"_"+code;
+  if (LS.get(k)) { LS.del(k); btn.classList.remove("on"); }
+  else { LS.set(k,"1"); btn.classList.add("on"); }
+  render();
+}
+function saveManual(code){
+  const m={};
+  [["m_payout","payout"],["m_roe","roe"],["m_equity_ratio","equity_ratio"],["m_dividend","dividend"]].forEach(([id,k])=>{
+    const v=$(id).value; if(v!=="") m[k]=+v;
+  });
+  if (m.dividend!==undefined){ // 配当を上書きしたら利回りも再計算
+    const s=DATA.stocks.find(x=>x.code===code);
+    if (s&&s.price) m.yield_pct=Math.round(m.dividend/s.price*100*100)/100;
+  }
+  LS.set("manual_"+code,JSON.stringify(m));
+  LS.set("memo_"+code,$("memoBox").value);
+  closeModal(); render();
+}
+function clearManual(code){ LS.del("manual_"+code); closeModal(); render(); }
+function closeModal(){ $("overlay").style.display="none"; if(CHART){CHART.destroy();CHART=null;} }
+
+/* ---------- 市場環境 ---------- */
+function vixColor(v){ return v<20?"c-green":v<=30?"c-orange":"c-red"; }
+function showVix(v,note){ $("vix").textContent=fmt(v); $("vix").className=vixColor(v); $("vixNote").textContent=note||""; }
+async function liveVix(){
+  try{
+    const ctl=new AbortController(); const to=setTimeout(()=>ctl.abort(),6000); // 6秒タイムアウト
+    const url="https://corsproxy.io/?url="+encodeURIComponent("https://query1.finance.yahoo.com/v8/finance/chart/^VIX");
+    const r=await fetch(url,{signal:ctl.signal}); clearTimeout(to);
+    const j=await r.json();
+    const v=j.chart.result[0].meta.regularMarketPrice;
+    if (v) showVix(v,"（ライブ）");
+  }catch(e){ /* フォールバック: JSON値のまま */ }
+}
+function tdrView(){
+  const v=+LS.get("tdr_value",0);
+  $("tdr").value = v||"";
+  const el=$("tdrView");
+  if(!v){ el.textContent=""; return; }
+  el.textContent=v;
+  el.className = v>120?"c-red" : v>=70?"c-green" : "c-blue";
+}
+
+/* ---------- 初期化 ---------- */
+async function init(){
+  try{
+    const r = await fetch("data/stocks.json?t="+Date.now());
+    DATA = await r.json();
+  }catch(e){
+    $("updated").innerHTML='<span class="err">data/stocks.json を読み込めませんでした。Webサーバー経由（GitHub Pages等）で開いてください。</span>';
+    return;
+  }
+  $("updated").textContent = "データ更新: "+DATA.updated;
+  if (DATA.vix!==null) showVix(DATA.vix,"（"+(DATA.vix_updated||"")+" 時点）");
+  liveVix();
+  tdrView();
+  $("tdr").addEventListener("change",e=>{ LS.set("tdr_value",e.target.value); tdrView(); });
+  $("tabs").innerHTML = TABS.map(([k,l])=>`<div class="tab ${k===TAB?"on":""}" data-k="${k}">${l}</div>`).join("");
+  $("tabs").addEventListener("click",e=>{
+    const k=e.target.dataset.k; if(!k) return;
+    TAB=k;
+    document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.k===k));
+    render();
+  });
+  const secs=[...new Set(DATA.stocks.map(s=>s.sector).filter(Boolean))];
+  $("secSel").innerHTML += secs.map(s=>`<option>${s}</option>`).join("");
+  ["sort","secSel","scoreSel"].forEach(id=>$(id).addEventListener("change",render));
+  $("q").addEventListener("input",render);
+  render();
+}
+init();
+</script>
+</body>
+</html>
