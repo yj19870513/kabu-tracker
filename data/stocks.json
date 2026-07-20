@@ -1,7 +1,7 @@
 {
- "updated": "2026-07-17 21:49",
- "vix": 18.45,
- "vix_updated": "2026-07-17 21:49",
+ "updated": "2026-07-20 21:02",
+ "vix": 17.86,
+ "vix_updated": "2026-07-20 21:02",
  "stocks": [
   {
    "code": "9986",
@@ -14,7 +14,7 @@
    "name_en": "ZAOH CO LTD",
    "sector": "資本財",
    "market_cap": 13567989760.0,
-   "per": 18.86,
+   "per": 18.87,
    "pbr": 1.21,
    "op_margin": 12.17,
    "payout": 75.62,
@@ -162,7 +162,7 @@
    "name_en": "AI HOLDINGS CORPORATION",
    "sector": "資本財",
    "market_cap": 143038496768.0,
-   "per": 10.85,
+   "per": 10.86,
    "pbr": 1.25,
    "op_margin": 17.01,
    "payout": 40.43,
@@ -311,7 +311,7 @@
    "name_en": "SANGETSU CORPORATION",
    "sector": "一般消費財",
    "market_cap": 176669065216.0,
-   "per": 12.07,
+   "per": 12.06,
    "pbr": 1.45,
    "op_margin": 10.71,
    "payout": 62.23,
