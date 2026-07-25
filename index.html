@@ -148,13 +148,47 @@ function divTrend(s){
   for(let i=1;i<years.length;i++){ if(by[years[i]] < by[years[i-1]]) return false; }
   return by[years[years.length-1]]>0;
 }
-function qualityScore(s){
-  const e = eff(s); let sc=0;
-  if (divTrend(s)) sc+=2;                                    // 増配トレンド
-  if (e.payout!==null && e.payout>=20 && e.payout<=60) sc+=2; // 配当性向20〜60%
-  if (e.roe!==null && e.roe>=8) sc+=2;                        // ROE8%以上
-  if (e.op_cf!==null && e.op_cf>0) sc+=2;                     // 営業CFプラス
-  return sc;
+/* IR BANK 8項目チェックリスト（学長マガジン準拠）：各1点で合計8点満点 */
+function histTrendUp(hist){
+  // 直近値が最初の値を上回り、かつ下落年が1回以下なら「右肩上がり」とみなす
+  if (!hist || hist.length<2) return false;
+  let downs=0;
+  for(let i=1;i<hist.length;i++){ if(hist[i].value < hist[i-1].value) downs++; }
+  return hist[hist.length-1].value > hist[0].value && downs<=1;
+}
+function scoreItems(s){
+  const e = eff(s);
+  return [
+    ["売上高トレンド", histTrendUp(e.revenue_hist)],
+    ["EPSトレンド", histTrendUp(e.eps_hist)],
+    ["営業利益率10%以上", e.op_margin!==null && e.op_margin>=10],
+    ["自己資本比率40%以上", e.equity_ratio!==null && e.equity_ratio>=40],
+    ["営業CF黒字・増加", e.op_cf_hist && e.op_cf_hist.every(x=>x.value>0) && histTrendUp(e.op_cf_hist)],
+    ["配当安定・増配", divTrend(s)],
+    ["配当性向30〜50%", e.payout!==null && e.payout>=30 && e.payout<=50],
+    ["現金増加トレンド", histTrendUp(e.cash_hist)],
+  ];
+}
+function qualityScore(s){ return scoreItems(s).filter(x=>x[1]).length; }
+
+/* 罠銘柄診断：利益・配当の変動性（変動係数）が高いのに利回りだけ高い銘柄を検知 */
+function coefVar(hist){
+  const vals = (hist||[]).map(x=>x.value).filter(v=>v!==null && v!==undefined);
+  if (vals.length<3) return null;
+  const mean = vals.reduce((a,b)=>a+b,0)/vals.length;
+  if (!mean) return null;
+  const variance = vals.reduce((a,b)=>a+(b-mean)*(b-mean),0)/vals.length;
+  return Math.sqrt(variance)/Math.abs(mean);
+}
+function trapWarning(s){
+  const e = eff(s), y = yieldOf(s);
+  if (y==="anomaly"||y===null||y<4) return null; // 4%未満は対象外
+  const cvEps = coefVar(e.eps_hist);
+  const divVals = Object.values(e.div_by_year||{});
+  const cvDiv = divVals.length>=3 ? coefVar(divVals.map(v=>({value:v}))) : null;
+  const unstable = (cvEps!==null && cvEps>0.5) || (cvDiv!==null && cvDiv>0.4);
+  if (!unstable) return null;
+  return `利回り${fmt(y)}%と高めですが、利益・配当の年ごとの振れ幅が大きく、学長マガジンでいう「罠銘柄」の可能性があります。業績の安定性を必ず確認してください。`;
 }
 function top30Score(s){
   const y = yieldOf(s);
@@ -251,6 +285,13 @@ function card(s){
     <div class="scorebar"><i style="width:${sc/8*100}%"></i></div>
   </div>`;
 }
+/* ---------- ディフェンシブ／景気敏感 分類 ----------
+   東証33業種の厳密な区分ではなく、Yahoo Financeの広いセクター区分による近似。
+   ズレを感じる銘柄があれば、この対応表を見直してください。 */
+const SECTOR_DEFENSIVE = {"生活必需品":"defensive","ヘルスケア":"defensive","公益事業":"defensive","通信サービス":"defensive",
+  "資本財":"cyclical","一般消費財":"cyclical","素材":"cyclical","エネルギー":"cyclical","金融":"cyclical"};
+function sectorType(sector){ return SECTOR_DEFENSIVE[sector] || "neutral"; }
+
 /* ---------- 保有中テーブル ---------- */
 function holdTable(list){
   if (!list.length) return `<div style="color:var(--muted);margin-bottom:12px">「保有中」タグの銘柄がありません（カードを開いてタグを設定）</div>`;
@@ -260,22 +301,58 @@ function holdTable(list){
   });
   const trs = rows.map(({s,inv})=>{
     const pct = total>0? inv/total*100 : 100/rows.length;
+    const buyP = +LS.get("buyprice_"+s.code,0)||0;
     return `<tr><td><a href="#" onclick="openModal('${s.code}');return false" style="color:var(--text)">${s.name}</a><br><span style="color:var(--muted);font-size:11px">${s.code}</span></td>
       <td>${eff(s).sector||"-"}</td>
       <td><input type="number" value="${inv||""}" placeholder="円" onchange="LS.set('invest_${s.code}',this.value);render()"></td>
-      <td>${fmt(pct,1)}%</td></tr>`;
+      <td>${fmt(pct,1)}%</td>
+      <td><input type="number" value="${buyP||""}" placeholder="購入単価" onchange="LS.set('buyprice_${s.code}',this.value);render()"></td></tr>`;
   }).join("");
-  // セクター割合（金額ベース、未入力時は件数ベース）
   const useAmt = total>0;
+
+  // ① セクター20%上限チェック
   const bySec={};
   rows.forEach(({s,inv})=>{ const k=eff(s).sector||"その他"; bySec[k]=(bySec[k]||0)+(useAmt?inv:1); });
   const secTotal=Object.values(bySec).reduce((a,b)=>a+b,0)||1;
   const colors=["#4dabf7","#51cf66","#ffa94d","#ff5a6e","#b197fc","#66d9e8","#ffd43b"];
+  const secOver = Object.entries(bySec).filter(([k,v])=>v/secTotal*100>20).map(([k,v])=>`${k}(${fmt(v/secTotal*100,0)}%)`);
   const bar = Object.entries(bySec).map(([k,v],i)=>
     `<div style="width:${v/secTotal*100}%;background:${colors[i%colors.length]}" title="${k}">${k} ${fmt(v/secTotal*100,0)}%</div>`).join("");
-  return `<table class="hold"><tr><th>銘柄</th><th>セクター</th><th>投資額</th><th>割合</th></tr>${trs}
-    <tr><td colspan="2"><b>投資合計</b></td><td colspan="2"><b>${yen(total)}</b></td></tr></table>
-    <div class="lbl" style="color:var(--muted);font-size:12px">セクター割合（${useAmt?"金額ベース":"件数ベース"}）</div>
+
+  // ② 配当集中3%上限チェック（投資額×利回りで配当額を概算）
+  const divRows = rows.map(({s,inv})=>{ const y=yieldOf(s); return {s, div: (useAmt&&y!=="anomaly"&&y!==null)? inv*y/100 : 0}; });
+  const totalDiv = divRows.reduce((a,r)=>a+r.div,0);
+  const divOver = totalDiv>0 ? divRows.filter(r=>r.div/totalDiv*100>3).map(r=>`${r.s.name}(${fmt(r.div/totalDiv*100,0)}%)`) : [];
+
+  // ③ ディフェンシブ50%下限チェック
+  let defAmt=0;
+  rows.forEach(({s,inv})=>{ if(sectorType(eff(s).sector)==="defensive") defAmt += useAmt?inv:1; });
+  const defPct = defAmt/secTotal*100;
+
+  // ⑤ ナンピン判定（購入単価から-20%/-40%）
+  const nanpinRows = rows.filter(({s})=>{
+    const bp=+LS.get("buyprice_"+s.code,0); return bp>0;
+  }).map(({s})=>{
+    const bp=+LS.get("buyprice_"+s.code,0), cur=eff(s).price;
+    const chg = cur? (cur/bp-1)*100 : null;
+    let msg=null;
+    if (chg!==null){
+      if (chg<=-40) msg="購入時から-40%超：学長ルールの2回目ナンピン検討ライン";
+      else if (chg<=-20) msg="購入時から-20%超：学長ルールの1回目ナンピン検討ライン";
+    }
+    return msg? `${s.name}：${fmt(chg,1)}%（${msg}）` : null;
+  }).filter(Boolean);
+
+  let warnings = "";
+  if (secOver.length) warnings += `<div class="box warn"><b class="ttl">⚠️ セクター20%超</b>${secOver.join("、")}。学長ルールでは追加購入は避ける水準です。</div>`;
+  if (divOver.length) warnings += `<div class="box warn"><b class="ttl">⚠️ 配当集中3%超</b>${divOver.join("、")}。この銘柄が減配すると家計への影響が大きくなります。</div>`;
+  if (useAmt && defPct<50) warnings += `<div class="box warn"><b class="ttl">⚠️ ディフェンシブ比率${fmt(defPct,0)}%（50%未満）</b>不景気時の配当安定性を高めるため、生活必需品・ヘルスケア・公益事業・通信の銘柄を増やすことを検討してください。</div>`;
+  if (nanpinRows.length) warnings += `<div class="box info"><b class="ttl">📉 ナンピン検討ライン到達</b>${nanpinRows.join("<br>")}</div>`;
+
+  return `<table class="hold"><tr><th>銘柄</th><th>セクター</th><th>投資額</th><th>割合</th><th>購入単価</th></tr>${trs}
+    <tr><td colspan="2"><b>投資合計</b></td><td colspan="3"><b>${yen(total)}</b></td></tr></table>
+    ${warnings}
+    <div class="lbl" style="color:var(--muted);font-size:12px">セクター割合（${useAmt?"金額ベース":"件数ベース"}）／ ディフェンシブ比率 ${useAmt?fmt(defPct,0)+"%":"-"}（学長ルール：50%以上目安）</div>
     <div class="secbar">${bar}</div>`;
 }
 /* ---------- モーダル ---------- */
@@ -298,8 +375,11 @@ function openModal(code){
       ${["holding|保有中","watch|ウォッチ","candidate|候補"].map(x=>{const[k,l]=x.split("|");
         return `<button class="tagbtn ${LS.get(k+"_"+code)?"on":""}" onclick="toggleTag('${code}','${k}',this)">${l}</button>`;}).join("")}
     </div>
-    <h3>財務スコア ${sc}/8点</h3>
+    ${trapWarning(s)? `<div class="box danger"><b class="ttl">🚨 罠銘柄チェック</b>${trapWarning(s)}</div>` : ""}
+    <h3>財務スコア ${sc}/8点（IR BANK 8項目）</h3>
     <canvas id="radar"></canvas>
+    <h3>買い時判定：過去10年平均との比較</h3>
+    ${timingPanel(s)}
     <h3>52週ポジション（安値 ${yen(e.low52)} 〜 高値 ${yen(e.high52)}）</h3>
     <div class="posbar"><i style="left:${p===null?0:Math.min(Math.max(p,0),100)}%"></i></div>
     <div class="poslbl"><span>安値圏</span><span>${p===null?"-":fmt(p,0)+"%"}</span><span>高値圏</span></div>
@@ -309,8 +389,8 @@ function openModal(code){
       <div><span>PBR</span><b class="${pbrC}">${fmt(e.pbr)}</b></div>
       <div><span>25日MA乖離</span><b class="${devC(d25)}">${d25===null?"-":(d25>=0?"+":"")+fmt(d25)+"%"}</b></div>
       <div><span>75日MA乖離</span><b class="${devC(d75)}">${d75===null?"-":(d75>=0?"+":"")+fmt(d75)+"%"}</b></div>
-      <div><span>営業利益率</span><b>${fmt(e.op_margin)}%</b></div>
-      <div><span>配当性向</span><b>${fmt(e.payout)}%</b></div>
+      <div><span>営業利益率</span><b class="${e.op_margin>=10?'c-green':''}">${fmt(e.op_margin)}%</b></div>
+      <div><span>配当性向</span><b class="${e.payout!==null&&e.payout>=30&&e.payout<=50?'c-green':e.payout!==null&&e.payout>70?'c-red':''}">${fmt(e.payout)}%</b></div>
       <div><span>ROE</span><b>${fmt(e.roe)}%</b></div>
       <div><span>自己資本比率</span><b>${fmt(e.equity_ratio)}%</b></div>
       <div><span>時価総額</span><b>${e.market_cap?fmt(e.market_cap/1e8,0)+"億円":"-"}</b></div>
@@ -335,6 +415,24 @@ function openModal(code){
   $("overlay").style.display = "block";
   drawRadar(s);
 }
+function timingRow(label, cur, avg, lowerIsCheap){
+  if (cur===null||cur===undefined||avg===null||avg===undefined) return `<div><span>${label}</span><b>-</b></div>`;
+  // 利回りは高い方が割安、PER/PBRは低い方が割安（lowerIsCheap=trueで判定反転）
+  const cheap = lowerIsCheap ? cur < avg : cur > avg;
+  const cls = cheap ? "c-green" : "c-red";
+  const word = cheap ? "割安" : "割高";
+  return `<div><span>${label}（現在 / 10年平均）</span><b class="${cls}">${fmt(cur)} / ${fmt(avg)}（${word}）</b></div>`;
+}
+function timingPanel(s){
+  const e = eff(s);
+  if (!e.hist_years_used) return `<p class="kome">過去データが不足しており、判定できません。</p>`;
+  return `<div class="kv">
+    ${timingRow("配当利回り%", yieldOf(s)==="anomaly"?null:yieldOf(s), e.avg_yield_10y, false)}
+    ${timingRow("PER", e.per, e.avg_per_10y, true)}
+    ${timingRow("PBR", e.pbr, e.avg_pbr_10y, true)}
+  </div>
+  <p class="kome">絶対水準ではなく、この銘柄自身の過去${e.hist_years_used}年平均との比較です（学長マガジンより）。株価は年平均で近似、PBRは発行済株式数が過去も一定と仮定した概算値です。</p>`;
+}
 function buyJudge(buyY,y){
   if (!buyY) return "購入時の利回りを入力すると、現在との比較を表示します";
   if (y==="anomaly"||y===null) return "現在の利回りが取得できていません";
@@ -343,17 +441,15 @@ function buyJudge(buyY,y){
   return `<span class="c-orange">現在 ${fmt(y)}% ＜ 購入時 ${fmt(b)}%：購入時より株価が上昇（利回り低下）しています</span>`;
 }
 function drawRadar(s){
-  const e=eff(s);
-  const vals=[divTrend(s)?2:0,
-    (e.payout!==null&&e.payout>=20&&e.payout<=60)?2:0,
-    (e.roe!==null&&e.roe>=8)?2:0,
-    (e.op_cf!==null&&e.op_cf>0)?2:0];
+  const items = scoreItems(s);
+  const labels = items.map(x=>x[0]);
+  const vals = items.map(x=>x[1]?1:0);
   if (CHART) CHART.destroy();
   if (typeof Chart==="undefined") return;
   CHART = new Chart($("radar"),{type:"radar",
-    data:{labels:["増配トレンド","配当性向20-60%","ROE8%以上","営業CF+"],
+    data:{labels,
       datasets:[{data:vals,backgroundColor:"rgba(77,171,247,.25)",borderColor:"#4dabf7",pointBackgroundColor:"#4dabf7"}]},
-    options:{scales:{r:{min:0,max:2,ticks:{stepSize:1,display:false},grid:{color:"#2a2f45"},angleLines:{color:"#2a2f45"},pointLabels:{color:"#aab3d0",font:{size:11}}}},plugins:{legend:{display:false}}}});
+    options:{scales:{r:{min:0,max:1,ticks:{stepSize:1,display:false},grid:{color:"#2a2f45"},angleLines:{color:"#2a2f45"},pointLabels:{color:"#aab3d0",font:{size:10}}}},plugins:{legend:{display:false}}}});
 }
 function toggleTag(code,key,btn){
   const k=key+"_"+code;

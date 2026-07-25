@@ -65,6 +65,50 @@ def series_by_year(df, row_label):
     return out
 
 
+def compute_historical_averages(ticker, div_by_year, eps_hist, equity_hist, shares_outstanding):
+    """過去10年の年平均株価から、年ごとの利回り・PER・PBRを逆算し平均する。
+    学長マガジンの「買い時判定＝絶対水準ではなく自分自身の過去平均との比較」に対応するため。
+    株価は暦年平均で近似（正確な決算期とはズレる）。shares_outstandingは現在値で過去も一定と仮定する近似。"""
+    out = {"avg_yield": None, "avg_per": None, "avg_pbr": None, "years_used": 0}
+    try:
+        h = ticker.history(period="10y")["Close"].dropna()
+        if h.empty:
+            return out
+        by_year_price = {}
+        for idx, val in h.items():
+            y = str(idx.year)
+            by_year_price.setdefault(y, []).append(float(val))
+        avg_price = {y: sum(v) / len(v) for y, v in by_year_price.items()}
+
+        eps_by_year = {e["year"]: e["value"] for e in eps_hist}
+        equity_by_year = {e["year"]: e["value"] for e in equity_hist}
+
+        this_year = str(datetime.now(JST).year)
+        years = sorted([y for y in avg_price if y != this_year])[-10:]  # 進行中の年は除外、直近10年
+
+        yields, pers, pbrs = [], [], []
+        for y in years:
+            p = avg_price.get(y)
+            if not p:
+                continue
+            if y in div_by_year and div_by_year[y] > 0:
+                yields.append(div_by_year[y] / p * 100)
+            if y in eps_by_year and eps_by_year[y] > 0:
+                pers.append(p / eps_by_year[y])
+            if y in equity_by_year and shares_outstanding:
+                bps = equity_by_year[y] / shares_outstanding
+                if bps > 0:
+                    pbrs.append(p / bps)
+
+        out["avg_yield"] = rnd(sum(yields) / len(yields)) if yields else None
+        out["avg_per"] = rnd(sum(pers) / len(pers)) if pers else None
+        out["avg_pbr"] = rnd(sum(pbrs) / len(pbrs)) if pbrs else None
+        out["years_used"] = len(years)
+    except Exception:
+        pass
+    return out
+
+
 def fetch_one(code):
     d = {"code": code, "error": False}
     try:
@@ -90,6 +134,21 @@ def fetch_one(code):
         d["price"] = rnd(price)
         d["prev_close"] = rnd(prev)
         d["change_pct"] = rnd((price / prev - 1) * 100) if price and prev else None
+
+        # --- 配当履歴（過去平均計算にも使うため先に取得） ---
+        div_hist = []
+        div_by_year = {}
+        try:
+            divs = t.dividends
+            for k, v in divs.items():
+                y = str(k.year)
+                div_by_year[y] = round(div_by_year.get(y, 0) + float(v), 2)
+            for k, v in list(divs.items())[-12:]:
+                div_hist.append({"date": str(k.date()), "amount": round(float(v), 2)})
+        except Exception:
+            pass
+        d["div_hist"] = div_hist
+        d["div_by_year"] = div_by_year
 
         # --- 配当 ---
         div_rate = num(info.get("dividendRate")) or num(info.get("trailingAnnualDividendRate"))
@@ -124,12 +183,13 @@ def fetch_one(code):
             bs = t.balance_sheet
         except Exception:
             bs = None
-        equity = series_by_year(bs, "Stockholders Equity")
+        equity_hist = series_by_year(bs, "Stockholders Equity")
         assets = series_by_year(bs, "Total Assets")
-        if equity and assets and num(assets[-1]["value"]):
-            d["equity_ratio"] = rnd(equity[-1]["value"] / assets[-1]["value"] * 100)
+        if equity_hist and assets and num(assets[-1]["value"]):
+            d["equity_ratio"] = rnd(equity_hist[-1]["value"] / assets[-1]["value"] * 100)
         else:
             d["equity_ratio"] = None
+        d["equity_hist"] = equity_hist
         d["cash_hist"] = series_by_year(bs, "Cash And Cash Equivalents")
 
         try:
@@ -143,29 +203,24 @@ def fetch_one(code):
             cf = t.cashflow
         except Exception:
             cf = None
-        ocf = series_by_year(cf, "Operating Cash Flow")
-        d["op_cf"] = ocf[-1]["value"] if ocf else None
+        ocf_hist = series_by_year(cf, "Operating Cash Flow")
+        d["op_cf"] = ocf_hist[-1]["value"] if ocf_hist else None
+        d["op_cf_hist"] = ocf_hist
 
-        # --- 配当履歴 ---
-        div_hist = []
-        div_by_year = {}
-        try:
-            divs = t.dividends
-            for k, v in divs.items():
-                y = str(k.year)
-                div_by_year[y] = round(div_by_year.get(y, 0) + float(v), 2)
-            for k, v in list(divs.items())[-12:]:
-                div_hist.append({"date": str(k.date()), "amount": round(float(v), 2)})
-        except Exception:
-            pass
-        d["div_hist"] = div_hist
-        d["div_by_year"] = div_by_year
+        d["shares_outstanding"] = num(info.get("sharesOutstanding"))
 
         # --- テクニカル ---
         d["high52"] = rnd(info.get("fiftyTwoWeekHigh"))
         d["low52"] = rnd(info.get("fiftyTwoWeekLow"))
         d["ma25"] = rnd(sum(closes[-25:]) / 25) if len(closes) >= 25 else None
         d["ma75"] = rnd(sum(closes[-75:]) / 75) if len(closes) >= 75 else None
+
+        # --- 過去10年平均（買い時判定用：現在値との比較に使う） ---
+        avg = compute_historical_averages(t, div_by_year, d["eps_hist"], equity_hist, d["shares_outstanding"])
+        d["avg_yield_10y"] = avg["avg_yield"]
+        d["avg_per_10y"] = avg["avg_per"]
+        d["avg_pbr_10y"] = avg["avg_pbr"]
+        d["hist_years_used"] = avg["years_used"]
 
         if d["price"] is None:
             d["error"] = True
