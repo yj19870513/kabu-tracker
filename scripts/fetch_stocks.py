@@ -149,6 +149,9 @@ def fetch_one(code):
             pass
         d["div_hist"] = div_hist
         d["div_by_year"] = div_by_year
+        # 進行中の年を除いた「確定済み」配当履歴（トレンド判定・変動計算はこちらを使う）
+        this_year = str(datetime.now(JST).year)
+        d["div_confirmed"] = {y: v for y, v in div_by_year.items() if y != this_year}
 
         # --- 配当 ---
         div_rate = num(info.get("dividendRate")) or num(info.get("trailingAnnualDividendRate"))
@@ -214,6 +217,21 @@ def fetch_one(code):
         d["low52"] = rnd(info.get("fiftyTwoWeekLow"))
         d["ma25"] = rnd(sum(closes[-25:]) / 25) if len(closes) >= 25 else None
         d["ma75"] = rnd(sum(closes[-75:]) / 75) if len(closes) >= 75 else None
+
+        # --- 配当データの整合性チェック ---
+        # yfinanceのdividendRateが直近1回分だけを拾うなど、直近の年間実績と大きく食い違う場合に警告する
+        d["div_warning"] = None
+        conf = d.get("div_confirmed") or {}
+        if conf and d.get("dividend"):
+            latest_year = max(conf)
+            latest_annual = conf[latest_year]
+            if latest_annual > 0:
+                ratio = d["dividend"] / latest_annual
+                if ratio < 0.5 or ratio > 2.0:
+                    d["div_warning"] = (
+                        f"年間配当{d['dividend']}円は{latest_year}年の実績{latest_annual}円と大きく異なります。"
+                        "株式分割やデータ不備の可能性があるため、証券会社の情報で必ず確認してください。"
+                    )
 
         # --- 過去10年平均（買い時判定用：現在値との比較に使う） ---
         avg = compute_historical_averages(t, div_by_year, d["eps_hist"], equity_hist, d["shares_outstanding"])

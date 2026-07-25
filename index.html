@@ -140,13 +140,29 @@ function yieldOf(s){
   return y;
 }
 function currentYear(){ return DATA && DATA.updated ? DATA.updated.slice(0,4) : String(new Date().getFullYear()); }
+function divConfirmed(s){
+  // 進行中の年を除いた確定配当。旧データにdiv_confirmedが無い場合はdiv_by_yearから作る
+  const e = eff(s);
+  if (e.div_confirmed) return e.div_confirmed;
+  const by = e.div_by_year || {}, cy = currentYear();
+  const out={}; Object.keys(by).forEach(y=>{ if(y<cy) out[y]=by[y]; });
+  return out;
+}
 function divTrend(s){
-  const by = eff(s).div_by_year || {};
-  const cy = currentYear();
-  const years = Object.keys(by).filter(y=>y<cy).sort().slice(-3); // 進行中の年は除外
+  const by = divConfirmed(s);
+  const years = Object.keys(by).sort().slice(-3);
   if (years.length<2) return false;
   for(let i=1;i<years.length;i++){ if(by[years[i]] < by[years[i-1]]) return false; }
   return by[years[years.length-1]]>0;
+}
+function isGrowingDividend(s){
+  // 過去10年で概ね増配基調か（成長企業は過去平均が低いので「割安」に見えてしまうため区別する）
+  const by = divConfirmed(s);
+  const years = Object.keys(by).sort().slice(-10);
+  if (years.length<5) return false;
+  let downs=0;
+  for(let i=1;i<years.length;i++){ if(by[years[i]] < by[years[i-1]]) downs++; }
+  return by[years[years.length-1]] > by[years[0]]*1.5 && downs<=2;
 }
 /* IR BANK 8項目チェックリスト（学長マガジン準拠）：各1点で合計8点満点 */
 function histTrendUp(hist){
@@ -183,12 +199,27 @@ function coefVar(hist){
 function trapWarning(s){
   const e = eff(s), y = yieldOf(s);
   if (y==="anomaly"||y===null||y<4) return null; // 4%未満は対象外
+  const reasons = [];
+
+  // ① EPS赤字の年がある（最優先の危険信号）
+  const eps = (e.eps_hist||[]).map(x=>x.value);
+  if (eps.some(v=>v<0)) reasons.push("過去にEPS赤字の年があります");
+
+  // ② EPSの振れ幅が大きい（景気敏感株の典型）
   const cvEps = coefVar(e.eps_hist);
-  const divVals = Object.values(e.div_by_year||{});
-  const cvDiv = divVals.length>=3 ? coefVar(divVals.map(v=>({value:v}))) : null;
-  const unstable = (cvEps!==null && cvEps>0.5) || (cvDiv!==null && cvDiv>0.4);
-  if (!unstable) return null;
-  return `利回り${fmt(y)}%と高めですが、利益・配当の年ごとの振れ幅が大きく、学長マガジンでいう「罠銘柄」の可能性があります。業績の安定性を必ず確認してください。`;
+  if (cvEps!==null && cvEps>0.5) reasons.push("利益の年ごとの振れ幅が大きいです");
+
+  // ③ 減配の履歴がある（増配基調の企業は対象外にする）
+  if (!isGrowingDividend(s)){
+    const by = divConfirmed(s);
+    const years = Object.keys(by).sort().slice(-6);
+    let downs=0;
+    for(let i=1;i<years.length;i++){ if(by[years[i]] < by[years[i-1]]*0.9) downs++; } // 1割超の減配のみカウント
+    if (downs>=2) reasons.push("過去に複数回の減配があります");
+  }
+
+  if (!reasons.length) return null;
+  return `利回り${fmt(y)}%と高めですが、${reasons.join("／")}。学長マガジンでいう「罠銘柄」の可能性があるため、業績の安定性を必ず確認してください。`;
 }
 function top30Score(s){
   const y = yieldOf(s);
@@ -293,8 +324,21 @@ const SECTOR_DEFENSIVE = {"生活必需品":"defensive","ヘルスケア":"defen
 function sectorType(sector){ return SECTOR_DEFENSIVE[sector] || "neutral"; }
 
 /* ---------- 保有中テーブル ---------- */
+function bulkHold(){
+  if (!confirm("表示中の全銘柄を「保有中」にします。よろしいですか？")) return;
+  DATA.stocks.forEach(s=>{ if(!s.error) LS.set("holding_"+s.code,"1"); });
+  render();
+}
+function bulkClearHold(){
+  if (!confirm("すべての「保有中」タグを外します。投資額・購入単価は残ります。よろしいですか？")) return;
+  DATA.stocks.forEach(s=>LS.del("holding_"+s.code));
+  render();
+}
 function holdTable(list){
-  if (!list.length) return `<div style="color:var(--muted);margin-bottom:12px">「保有中」タグの銘柄がありません（カードを開いてタグを設定）</div>`;
+  const bulkBtns = `<div style="margin-bottom:10px">
+    <button class="btn" onclick="bulkHold()">全銘柄を「保有中」にする</button>
+    <button class="btn" style="background:#12141f" onclick="bulkClearHold()">保有タグを全解除</button></div>`;
+  if (!list.length) return bulkBtns+`<div style="color:var(--muted);margin-bottom:12px">「保有中」タグの銘柄がありません。上のボタンで一括設定できます。</div>`;
   let total=0;
   const rows = list.map(s=>{
     const inv=+LS.get("invest_"+s.code,0)||0; total+=inv; return {s,inv};
@@ -349,7 +393,7 @@ function holdTable(list){
   if (useAmt && defPct<50) warnings += `<div class="box warn"><b class="ttl">⚠️ ディフェンシブ比率${fmt(defPct,0)}%（50%未満）</b>不景気時の配当安定性を高めるため、生活必需品・ヘルスケア・公益事業・通信の銘柄を増やすことを検討してください。</div>`;
   if (nanpinRows.length) warnings += `<div class="box info"><b class="ttl">📉 ナンピン検討ライン到達</b>${nanpinRows.join("<br>")}</div>`;
 
-  return `<table class="hold"><tr><th>銘柄</th><th>セクター</th><th>投資額</th><th>割合</th><th>購入単価</th></tr>${trs}
+  return bulkBtns+`<table class="hold"><tr><th>銘柄</th><th>セクター</th><th>投資額</th><th>割合</th><th>購入単価</th></tr>${trs}
     <tr><td colspan="2"><b>投資合計</b></td><td colspan="3"><b>${yen(total)}</b></td></tr></table>
     ${warnings}
     <div class="lbl" style="color:var(--muted);font-size:12px">セクター割合（${useAmt?"金額ベース":"件数ベース"}）／ ディフェンシブ比率 ${useAmt?fmt(defPct,0)+"%":"-"}（学長ルール：50%以上目安）</div>
@@ -426,12 +470,17 @@ function timingRow(label, cur, avg, lowerIsCheap){
 function timingPanel(s){
   const e = eff(s);
   if (!e.hist_years_used) return `<p class="kome">過去データが不足しており、判定できません。</p>`;
+  const growNote = isGrowingDividend(s)
+    ? `<div class="box warn" style="margin-top:8px"><b class="ttl">📈 増配が続いている銘柄です</b>過去10年で配当を大きく伸ばしているため、過去平均との比較では実態以上に「割安」に見えます。株価が下がったのではなく配当が育った結果なので、PERやPBRもあわせて判断してください。</div>` : "";
+  const dataWarn = e.div_warning
+    ? `<div class="box danger" style="margin-top:8px"><b class="ttl">⚠️ 配当データ要確認</b>${e.div_warning}</div>` : "";
   return `<div class="kv">
     ${timingRow("配当利回り%", yieldOf(s)==="anomaly"?null:yieldOf(s), e.avg_yield_10y, false)}
     ${timingRow("PER", e.per, e.avg_per_10y, true)}
     ${timingRow("PBR", e.pbr, e.avg_pbr_10y, true)}
   </div>
-  <p class="kome">絶対水準ではなく、この銘柄自身の過去${e.hist_years_used}年平均との比較です（学長マガジンより）。株価は年平均で近似、PBRは発行済株式数が過去も一定と仮定した概算値です。</p>`;
+  ${dataWarn}${growNote}
+  <p class="kome">絶対水準ではなく、この銘柄自身の過去${e.hist_years_used}年平均との比較です（学長マガジンより）。株価は年平均で近似、PBRは発行済株式数が過去も一定と仮定した概算値です。株式分割があった銘柄では過去の数値がずれる場合があります。</p>`;
 }
 function buyJudge(buyY,y){
   if (!buyY) return "購入時の利回りを入力すると、現在との比較を表示します";
