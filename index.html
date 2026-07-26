@@ -4,37 +4,47 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>日本株 高配当トラッカー</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="高配当トラッカー">
+<meta name="theme-color" content="#0a2254">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-  :root { --bg:#0f1117; --card:#1a1d2e; --line:#2a2f45; --text:#e2e6f0; --muted:#8b93ab;
-    --red:#ff5a6e; --orange:#ffa94d; --blue:#4dabf7; --green:#51cf66; }
+  :root { --bg:#f5f7fa; --card:#ffffff; --line:#e2e6ee; --text:#1f2430; --muted:#6b7383;
+    --field:#fbfcfe; --shadow:0 1px 2px rgba(20,30,60,.05), 0 1px 8px rgba(20,30,60,.04);
+    --red:#d92d43; --orange:#c07208; --blue:#1d6fd6; --green:#0f8a4d; }
   * { box-sizing:border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--text); font-family:-apple-system,"Hiragino Kaku Gothic ProN",sans-serif; font-size:14px; line-height:1.6; padding:16px; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,"Hiragino Kaku Gothic ProN",sans-serif; font-size:14px; line-height:1.6; padding:16px; -webkit-font-smoothing:antialiased; }
   .wrap { max-width:1200px; margin:0 auto; }
   h1 { font-size:20px; margin-bottom:4px; }
+  .head { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .guidelink { font-size:13px; text-decoration:none; border:1px solid var(--line); background:var(--card); border-radius:16px; padding:3px 12px; box-shadow:var(--shadow); }
+  .guidelink:hover { border-color:var(--blue); }
   .updated { color:var(--muted); font-size:12px; margin-bottom:12px; }
   /* 統計バー */
   .stats { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
-  .stat { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 16px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 16px; box-shadow:var(--shadow); }
   .stat b { font-size:18px; display:block; }
   .stat span { font-size:11.5px; color:var(--muted); }
   /* 市場環境 */
-  .market { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 16px; margin-bottom:12px; display:flex; gap:24px; flex-wrap:wrap; align-items:center; }
+  .market { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 16px; margin-bottom:12px; display:flex; gap:24px; flex-wrap:wrap; align-items:center; box-shadow:var(--shadow); }
   .market .lbl { font-size:11.5px; color:var(--muted); }
   .market b { font-size:17px; }
-  .market input { width:70px; background:#12141f; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:4px 8px; font-size:14px; }
+  .market input { width:70px; background:var(--field); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:4px 8px; font-size:14px; }
   .c-green{color:var(--green);} .c-orange{color:var(--orange);} .c-red{color:var(--red);} .c-blue{color:var(--blue);}
   /* フィルター */
   .tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
-  .tab { background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:16px; padding:5px 14px; cursor:pointer; font-size:13px; }
-  .tab.on { background:#2b3152; color:#fff; border-color:#4a5482; }
+  .tab { background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:16px; padding:5px 14px; cursor:pointer; font-size:13px; box-shadow:var(--shadow); }
+  .tab:hover { border-color:#b9c6da; color:var(--text); }
+  .tab.on { background:var(--blue); color:#fff; border-color:var(--blue); }
   .ctrl { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
-  .ctrl select, .ctrl input { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:13px; }
+  .ctrl select, .ctrl input { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:13px; box-shadow:var(--shadow); }
   .fcount { color:var(--muted); font-size:12.5px; margin-bottom:10px; }
   /* カード */
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; cursor:pointer; position:relative; }
-  .card:hover { border-color:#4a5482; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; cursor:pointer; position:relative; box-shadow:var(--shadow); transition:box-shadow .15s, transform .15s; }
+  .card:hover { box-shadow:0 2px 4px rgba(20,30,60,.08), 0 8px 20px rgba(20,30,60,.07); transform:translateY(-1px); }
   .card.b-red { border:2px solid var(--red); }
   .card.b-orange { border:2px solid var(--orange); }
   .card.b-blue { border:2px solid var(--blue); }
@@ -45,34 +55,45 @@
   .card .yield { font-size:15px; margin-top:2px; }
   .card .sub { color:var(--muted); font-size:11.5px; margin-top:4px; }
   .badges { position:absolute; top:10px; right:12px; display:flex; gap:4px; }
-  .badge { font-size:10px; border-radius:4px; padding:1px 6px; background:#2b3152; }
-  .scorebar { height:5px; background:#12141f; border-radius:3px; margin-top:8px; overflow:hidden; }
-  .scorebar i { display:block; height:100%; background:linear-gradient(90deg,#4dabf7,#51cf66); }
+  .badge { font-size:10px; border-radius:4px; padding:1px 6px; background:#eef3fb; color:#3a5680; border:1px solid #dde6f5; }
+  .scorebar { height:5px; background:#eceff5; border-radius:3px; margin-top:8px; overflow:hidden; }
+  .scorebar i { display:block; height:100%; background:linear-gradient(90deg,#4d9ce8,#2fae6d); }
   /* 保有中テーブル */
-  table.hold { width:100%; border-collapse:collapse; background:var(--card); border-radius:10px; overflow:hidden; margin-bottom:12px; }
+  table.hold { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:12px; box-shadow:var(--shadow); }
   table.hold th, table.hold td { border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; font-size:13.5px; }
-  table.hold th { color:var(--muted); font-size:12px; }
-  table.hold input { width:110px; background:#12141f; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:4px 8px; }
-  .secbar { display:flex; height:26px; border-radius:8px; overflow:hidden; margin:8px 0 20px; }
-  .secbar div { display:flex; align-items:center; justify-content:center; font-size:10.5px; white-space:nowrap; overflow:hidden; }
+  table.hold tr:last-child td { border-bottom:none; }
+  table.hold th { color:var(--muted); font-size:12px; background:#f8fafc; }
+  table.hold input { width:110px; background:var(--field); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:4px 8px; }
+  .secbar { display:flex; height:26px; border-radius:8px; overflow:hidden; margin:8px 0 20px; border:1px solid var(--line); }
+  .secbar div { display:flex; align-items:center; justify-content:center; font-size:10.5px; white-space:nowrap; overflow:hidden; color:#fff; font-weight:600; }
+  /* 注意ボックス */
+  .box { border-radius:10px; padding:10px 12px; margin-top:8px; font-size:13px; border:1px solid; }
+  .box .ttl { display:block; margin-bottom:2px; }
+  .box.warn { background:#fff8ea; border-color:#f2dfb4; color:#8a5b06; }
+  .box.danger { background:#fdf0f2; border-color:#f4ccd4; color:#a3122b; }
+  .box.info { background:#eef4fd; border-color:#cfdff7; color:#1a5399; }
+  .kome { color:var(--muted); font-size:11.5px; margin-top:6px; }
   /* モーダル */
-  .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:50; overflow-y:auto; padding:24px 12px; }
-  .modal { max-width:640px; margin:0 auto; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; }
+  .overlay { display:none; position:fixed; inset:0; background:rgba(25,32,48,.42); z-index:50; overflow-y:auto; padding:24px 12px; }
+  .modal { max-width:640px; margin:0 auto; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:0 12px 40px rgba(20,30,60,.18); }
   .modal h2 { font-size:18px; }
-  .modal h3 { font-size:14px; margin:16px 0 6px; color:#aab3d0; }
+  .modal h3 { font-size:14px; margin:16px 0 6px; color:#42506b; border-bottom:1px solid var(--line); padding-bottom:4px; }
   .modal .close { float:right; cursor:pointer; font-size:20px; color:var(--muted); }
   .tagbtns { display:flex; gap:8px; margin:10px 0; }
-  .tagbtn { border:1px solid var(--line); background:#12141f; color:var(--muted); border-radius:8px; padding:5px 12px; cursor:pointer; font-size:13px; }
-  .tagbtn.on { background:#2b5137; color:#c3f7cf; border-color:#3f7a52; }
+  .tagbtn { border:1px solid var(--line); background:var(--field); color:var(--muted); border-radius:8px; padding:5px 12px; cursor:pointer; font-size:13px; }
+  .tagbtn.on { background:#e7f6ed; color:#0f7a45; border-color:#a7ddbe; font-weight:600; }
   .kv { display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; font-size:13.5px; }
   .kv div span { color:var(--muted); font-size:11.5px; display:block; }
-  .posbar { position:relative; height:10px; background:linear-gradient(90deg,#4dabf7,#51cf66,#ff5a6e); border-radius:5px; margin:6px 0 2px; }
-  .posbar i { position:absolute; top:-4px; width:4px; height:18px; background:#fff; border-radius:2px; }
+  .posbar { position:relative; height:10px; background:linear-gradient(90deg,#4d9ce8,#2fae6d,#e2566c); border-radius:5px; margin:6px 0 2px; }
+  .posbar i { position:absolute; top:-4px; width:4px; height:18px; background:#1f2430; border-radius:2px; box-shadow:0 0 0 1px #fff; }
   .poslbl { display:flex; justify-content:space-between; color:var(--muted); font-size:11px; }
-  .modal input, .modal textarea { background:#12141f; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:5px 8px; font-size:13px; width:100%; }
+  .modal input, .modal textarea { background:var(--field); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:5px 8px; font-size:13px; width:100%; }
   .mform { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-  .btn { background:#2b3152; border:1px solid #4a5482; color:#fff; border-radius:8px; padding:7px 16px; cursor:pointer; font-size:13.5px; margin-top:10px; }
-  .buyjudge { border-radius:8px; padding:8px 12px; margin-top:6px; font-size:13px; background:#12141f; }
+  .btn { background:var(--blue); border:1px solid var(--blue); color:#fff; border-radius:8px; padding:7px 16px; cursor:pointer; font-size:13.5px; margin-top:10px; }
+  .btn:hover { background:#1a62bd; }
+  .btn.sub { background:var(--card); border-color:var(--line); color:var(--text); }
+  .btn.sub:hover { background:#f1f4f9; }
+  .buyjudge { border-radius:8px; padding:8px 12px; margin-top:6px; font-size:13px; background:#f6f8fb; border:1px solid var(--line); }
   a { color:var(--blue); }
   canvas#radar { max-width:300px; margin:0 auto; display:block; }
   .err { color:var(--red); }
@@ -80,7 +101,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>📈 日本株 高配当トラッカー</h1>
+  <div class="head"><h1>📈 日本株 高配当トラッカー</h1><a class="guidelink" href="guide.html">📖 使い方・見方ガイド</a></div>
   <div class="updated" id="updated">読み込み中…</div>
 
   <div class="stats" id="stats"></div>
@@ -337,7 +358,7 @@ function bulkClearHold(){
 function holdTable(list){
   const bulkBtns = `<div style="margin-bottom:10px">
     <button class="btn" onclick="bulkHold()">全銘柄を「保有中」にする</button>
-    <button class="btn" style="background:#12141f" onclick="bulkClearHold()">保有タグを全解除</button></div>`;
+    <button class="btn sub" onclick="bulkClearHold()">保有タグを全解除</button></div>`;
   if (!list.length) return bulkBtns+`<div style="color:var(--muted);margin-bottom:12px">「保有中」タグの銘柄がありません。上のボタンで一括設定できます。</div>`;
   let total=0;
   const rows = list.map(s=>{
@@ -358,7 +379,7 @@ function holdTable(list){
   const bySec={};
   rows.forEach(({s,inv})=>{ const k=eff(s).sector||"その他"; bySec[k]=(bySec[k]||0)+(useAmt?inv:1); });
   const secTotal=Object.values(bySec).reduce((a,b)=>a+b,0)||1;
-  const colors=["#4dabf7","#51cf66","#ffa94d","#ff5a6e","#b197fc","#66d9e8","#ffd43b"];
+  const colors=["#2f7ed8","#1f9a63","#d1810f","#d24358","#7b62cc","#1f97ad","#a8891a"];
   const secOver = Object.entries(bySec).filter(([k,v])=>v/secTotal*100>20).map(([k,v])=>`${k}(${fmt(v/secTotal*100,0)}%)`);
   const bar = Object.entries(bySec).map(([k,v],i)=>
     `<div style="width:${v/secTotal*100}%;background:${colors[i%colors.length]}" title="${k}">${k} ${fmt(v/secTotal*100,0)}%</div>`).join("");
@@ -454,7 +475,7 @@ function openModal(code){
     </div>
     <label style="display:block;margin-top:8px">メモ<textarea id="memoBox" rows="3">${LS.get("memo_"+code,"")}</textarea></label>
     <button class="btn" onclick="saveManual('${code}')">保存</button>
-    <button class="btn" style="background:#12141f" onclick="clearManual('${code}')">上書きをリセット</button>
+    <button class="btn sub" onclick="clearManual('${code}')">上書きをリセット</button>
     <h3><a href="https://finance.yahoo.co.jp/quote/${code}.T" target="_blank" rel="noopener">Yahoo!ファイナンスで見る →</a></h3>`;
   $("overlay").style.display = "block";
   drawRadar(s);
@@ -497,8 +518,8 @@ function drawRadar(s){
   if (typeof Chart==="undefined") return;
   CHART = new Chart($("radar"),{type:"radar",
     data:{labels,
-      datasets:[{data:vals,backgroundColor:"rgba(77,171,247,.25)",borderColor:"#4dabf7",pointBackgroundColor:"#4dabf7"}]},
-    options:{scales:{r:{min:0,max:1,ticks:{stepSize:1,display:false},grid:{color:"#2a2f45"},angleLines:{color:"#2a2f45"},pointLabels:{color:"#aab3d0",font:{size:10}}}},plugins:{legend:{display:false}}}});
+      datasets:[{data:vals,backgroundColor:"rgba(29,111,214,.18)",borderColor:"#1d6fd6",pointBackgroundColor:"#1d6fd6"}]},
+    options:{scales:{r:{min:0,max:1,ticks:{stepSize:1,display:false},grid:{color:"#e2e6ee"},angleLines:{color:"#e2e6ee"},pointLabels:{color:"#42506b",font:{size:10}}}},plugins:{legend:{display:false}}}});
 }
 function toggleTag(code,key,btn){
   const k=key+"_"+code;
