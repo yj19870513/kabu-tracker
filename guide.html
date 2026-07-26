@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>使い方・見方ガイド｜日本株 高配当トラッカー</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon.png">
+<style>
+  :root { --bg:#f5f7fa; --card:#ffffff; --line:#e2e6ee; --text:#1f2430; --muted:#6b7383;
+    --shadow:0 1px 2px rgba(20,30,60,.05), 0 1px 8px rgba(20,30,60,.04);
+    --red:#d92d43; --orange:#c07208; --blue:#1d6fd6; --green:#0f8a4d; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,"Hiragino Kaku Gothic ProN",sans-serif; font-size:14.5px; line-height:1.75; padding:16px; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:820px; margin:0 auto; }
+  .head { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:4px; }
+  h1 { font-size:21px; }
+  .backlink { font-size:13px; text-decoration:none; border:1px solid var(--line); background:var(--card); border-radius:16px; padding:3px 12px; box-shadow:var(--shadow); }
+  .backlink:hover { border-color:var(--blue); }
+  .lead { color:var(--muted); font-size:13px; margin-bottom:16px; }
+  /* 目次 */
+  .toc { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px; box-shadow:var(--shadow); margin-bottom:20px; }
+  .toc b { font-size:13px; color:var(--muted); display:block; margin-bottom:4px; }
+  .toc ol { margin-left:18px; }
+  .toc a { color:var(--blue); text-decoration:none; }
+  .toc a:hover { text-decoration:underline; }
+  /* セクション */
+  section { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; box-shadow:var(--shadow); margin-bottom:16px; }
+  h2 { font-size:17px; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid #eef1f6; }
+  h3 { font-size:14.5px; margin:16px 0 6px; color:#42506b; }
+  p { margin-bottom:8px; }
+  ul, ol { margin:4px 0 8px 22px; }
+  li { margin-bottom:4px; }
+  a { color:var(--blue); }
+  code { background:#f1f4f9; border:1px solid var(--line); border-radius:4px; padding:1px 5px; font-size:12.5px; }
+  /* 表 */
+  table { width:100%; border-collapse:collapse; margin:8px 0 12px; font-size:13.5px; }
+  th, td { border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top; }
+  th { background:#f8fafc; color:var(--muted); font-size:12.5px; white-space:nowrap; }
+  .tblwrap { overflow-x:auto; }
+  /* 部品サンプル */
+  .swatch { display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:-2px; margin-right:5px; }
+  .demo-card { display:inline-block; background:var(--card); border-radius:10px; padding:8px 12px; font-size:12.5px; margin:4px 6px 4px 0; }
+  .b-red { border:2px solid var(--red); } .b-orange { border:2px solid var(--orange); }
+  .b-blue { border:2px solid var(--blue); } .b-none { border:1px solid var(--line); }
+  /* 注意ボックス */
+  .box { border-radius:10px; padding:10px 14px; margin:10px 0; font-size:13.5px; border:1px solid; }
+  .box > b:first-child { display:block; margin-bottom:2px; }
+  .box.warn { background:#fff8ea; border-color:#f2dfb4; color:#8a5b06; }
+  .box.danger { background:#fdf0f2; border-color:#f4ccd4; color:#a3122b; }
+  .box.info { background:#eef4fd; border-color:#cfdff7; color:#1a5399; }
+  .steps { counter-reset:step; list-style:none; margin-left:0; }
+  .steps li { position:relative; padding-left:34px; margin-bottom:10px; }
+  .steps li::before { counter-increment:step; content:counter(step); position:absolute; left:0; top:3px;
+    width:24px; height:24px; border-radius:50%; background:var(--blue); color:#fff; font-size:13px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; }
+  footer { color:var(--muted); font-size:12px; text-align:center; padding:12px 0 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <h1>📖 使い方・見方ガイド</h1>
+    <a class="backlink" href="index.html">← トラッカーに戻る</a>
+  </div>
+  <p class="lead">日本株 高配当トラッカーの操作方法と、画面に出てくる数字の読み方をまとめたページです。</p>
+
+  <div class="toc">
+    <b>もくじ</b>
+    <ol>
+      <li><a href="#what">このアプリは何をするもの？</a></li>
+      <li><a href="#start">最初にやること（3ステップ）</a></li>
+      <li><a href="#top">トップ画面の見方</a></li>
+      <li><a href="#card">銘柄カードの見方（枠の色・スコアバー）</a></li>
+      <li><a href="#detail">銘柄をタップしたときの詳細画面</a></li>
+      <li><a href="#holding">「保有中」タブとポートフォリオ管理5ルール</a></li>
+      <li><a href="#data">データの更新・銘柄の追加</a></li>
+      <li><a href="#caution">数字を読むときの注意（重要）</a></li>
+      <li><a href="#faq">よくある質問</a></li>
+    </ol>
+  </div>
+
+  <section id="what">
+    <h2>1. このアプリは何をするもの？</h2>
+    <p>登録した日本株の <b>株価・配当利回り・財務の健全性・買い時かどうか</b> を、1画面で確認するためのツールです。</p>
+    <ul>
+      <li>株価と配当のデータは<b>自動で更新</b>されます（平日 11:35 / 15:35 / 18:00 ごろ）</li>
+      <li>「保有中」「ウォッチ」「候補」のタグを自分で付けて分類できます</li>
+      <li>投資額を入れると、<b>セクターの偏りや配当の集中</b>を自動でチェックして警告します</li>
+    </ul>
+    <div class="box info">
+      <b>💡 タグ・投資額・メモの保存場所</b>
+      入力した内容は<b>お使いの端末のブラウザ内だけ</b>に保存されます（インターネット上には送信されません）。そのため、iPhoneで入れた内容はパソコンには反映されません。端末を変える・ブラウザのデータを消すと入力内容も消える点にご注意ください。
+    </div>
+  </section>
+
+  <section id="start">
+    <h2>2. 最初にやること（3ステップ）</h2>
+    <ol class="steps">
+      <li><b>持っている銘柄に「保有中」タグを付ける</b><br>
+        銘柄カードをタップ → 上部の「保有中」ボタンを押すだけです。全部まとめて付けたいときは、上の「保有中」タブを開いて「全銘柄を『保有中』にする」ボタンを使います。</li>
+      <li><b>投資額と購入単価を入力する</b><br>
+        「保有中」タブの表に、銘柄ごとの投資額（円）と購入単価を入力します。これを入れると、セクターの偏りチェックや値下がりアラートが働きます。</li>
+      <li><b>タブとフィルターで絞って眺める</b><br>
+        「4%以上」「トップ30」などのタブで、条件に合う銘柄だけを表示できます。</li>
+    </ol>
+  </section>
+
+  <section id="top">
+    <h2>3. トップ画面の見方</h2>
+
+    <h3>いちばん上の数字（統計バー）</h3>
+    <p>登録している全銘柄の集計です。「4%以上」は利回り4%以上の銘柄が何本あるか、「平均利回り」は全銘柄の平均です。</p>
+
+    <h3>市場環境（VIX・騰落レシオ）</h3>
+    <p>個別の銘柄ではなく、<b>市場全体が今どういう雰囲気か</b>を見るための2つの指標です。相場全体が不安なときほど、安く買えるチャンスが増える、という考え方に使います。</p>
+    <div class="tblwrap">
+    <table>
+      <tr><th>指標</th><th>目安</th><th>意味</th></tr>
+      <tr><td>VIX（恐怖指数）</td><td><span style="color:var(--green)">20未満＝平常</span> / <span style="color:var(--orange)">20〜30＝警戒</span> / <span style="color:var(--red)">30超＝パニック</span></td><td>米国市場の不安の大きさ。自動取得されます。高いほど市場は総悲観で、優良株が安く買える局面になりやすいです。</td></tr>
+      <tr><td>騰落レシオ</td><td><span style="color:var(--blue)">70未満＝売られすぎ</span> / <span style="color:var(--red)">120超＝買われすぎ</span></td><td>日本市場の過熱感。<b>自動取得できないので手入力</b>です。「騰落レシオ」で検索して出た数字を入れてください（入れなくても他の機能は使えます）。</td></tr>
+    </table>
+    </div>
+
+    <h3>タブ（絞り込み）</h3>
+    <div class="tblwrap">
+    <table>
+      <tr><th>タブ</th><th>表示される銘柄</th></tr>
+      <tr><td>全銘柄</td><td>登録している全部</td></tr>
+      <tr><td>4%以上 / 3.7%以上</td><td>配当利回りがその水準以上の銘柄</td></tr>
+      <tr><td>保有中 / ウォッチ / 候補</td><td>自分でタグを付けた銘柄（保有中タブだけ専用の管理表が出ます）</td></tr>
+      <tr><td>トップ30</td><td>利回り・財務スコア・PBR・PERを合計した独自の点数で上位30銘柄</td></tr>
+      <tr><td>エラー</td><td>データがうまく取れなかった銘柄。数字がおかしいときはここを確認します</td></tr>
+    </table>
+    </div>
+    <p>その下の並べ替え（利回り順・スコア順など）、セクター、スコア、検索欄は、タブと組み合わせて使えます。</p>
+  </section>
+
+  <section id="card">
+    <h2>4. 銘柄カードの見方</h2>
+
+    <h3>枠の色</h3>
+    <p>ひと目で「注目すべき銘柄」がわかるように、枠の色が変わります。</p>
+    <div>
+      <span class="demo-card b-red">赤枠＝利回り4%以上</span>
+      <span class="demo-card b-orange">オレンジ枠＝利回り3.7%以上</span>
+      <span class="demo-card b-blue">青枠＝52週の安値圏（下から33%以内）</span>
+      <span class="demo-card b-none">枠なし＝該当なし</span>
+    </div>
+    <div class="box warn">
+      <b>⚠️ 利回りが高い＝良い銘柄、ではありません</b>
+      株価が下がると利回りは自動的に上がります。「業績が悪化して株価が下がった結果、見かけの利回りが高くなっている」ケースがあるため、赤枠の銘柄ほど中身の確認が必要です（詳細画面の「罠銘柄チェック」を参照）。
+    </div>
+
+    <h3>下の細いバー（財務スコア）</h3>
+    <p>後述の8項目チェックで何点取れたかを表しています。バーが長いほど財務が良好です（8点満点）。</p>
+
+    <h3>右上のバッジ</h3>
+    <p>「保有」「👀（ウォッチ）」「候補」は自分で付けたタグです。トップ30タブでは点数も表示されます。</p>
+  </section>
+
+  <section id="detail">
+    <h2>5. 銘柄をタップしたときの詳細画面</h2>
+
+    <h3>🚨 罠銘柄チェック</h3>
+    <p>利回り4%以上の銘柄のうち、<b>利益や配当がグラグラしている銘柄</b>に赤い警告が出ます。「高配当だと思って買ったら翌年に減配された」という失敗を避けるための機能です。次のいずれかに当てはまると表示されます。</p>
+    <ul>
+      <li>過去にEPS（1株利益）が赤字の年がある</li>
+      <li>利益の年ごとの振れ幅が大きい（景気敏感株の典型）</li>
+      <li>過去に複数回、1割を超える減配をしている</li>
+    </ul>
+
+    <h3>財務スコア（8項目・レーダーチャート）</h3>
+    <p>企業の健康診断です。各項目1点で、合計8点満点。項目は次のとおりです。</p>
+    <div class="tblwrap">
+    <table>
+      <tr><th>項目</th><th>合格ライン</th><th>なぜ見るのか</th></tr>
+      <tr><td>売上高トレンド</td><td>右肩上がり</td><td>商売そのものが伸びているか</td></tr>
+      <tr><td>EPSトレンド</td><td>右肩上がり</td><td>1株あたりの利益が増えているか</td></tr>
+      <tr><td>営業利益率</td><td>10%以上</td><td>本業でしっかり儲かっているか</td></tr>
+      <tr><td>自己資本比率</td><td>40%以上</td><td>借金に頼りすぎていないか（潰れにくさ）</td></tr>
+      <tr><td>営業CF</td><td>黒字かつ増加</td><td>帳簿上でなく、実際に現金が入ってきているか</td></tr>
+      <tr><td>配当の安定・増配</td><td>直近3年が減配なし</td><td>配当を出し続けられているか</td></tr>
+      <tr><td>配当性向</td><td>30〜50%</td><td>無理して配当を出していないか（高すぎ＝将来の減配リスク）</td></tr>
+      <tr><td>現金トレンド</td><td>増加傾向</td><td>手元資金に余裕があるか</td></tr>
+    </table>
+    </div>
+
+    <h3>買い時判定（過去10年平均との比較）</h3>
+    <p>ここが<b>このアプリの肝</b>です。「利回り4%だから割安」といった絶対的な基準ではなく、<b>その銘柄自身の過去10年の平均</b>と今を比べます。</p>
+    <ul>
+      <li><b>配当利回り</b>：過去平均<b>より高い</b>と割安（緑）</li>
+      <li><b>PER・PBR</b>：過去平均<b>より低い</b>と割安（緑）</li>
+    </ul>
+    <div class="box warn">
+      <b>📈 「増配が続いている銘柄です」と出たとき</b>
+      配当をぐんぐん増やしてきた企業は、過去平均が低いため、株価が下がっていなくても見かけ上「割安」と出ます。株価が安くなったのではなく配当が育った結果なので、PERやPBRもあわせて判断してください。
+    </div>
+
+    <h3>52週ポジション</h3>
+    <p>直近1年の安値〜高値のどのあたりに今の株価があるかを、バーの位置で示します。左（安値圏）にあるほど、1年のなかでは安い水準ということです。</p>
+
+    <h3>割安指標・テクニカル</h3>
+    <div class="tblwrap">
+    <table>
+      <tr><th>指標</th><th>読み方</th></tr>
+      <tr><td>PER</td><td>利益の何年分の株価か。低いほど割安（緑＝10未満、赤＝20以上）</td></tr>
+      <tr><td>PBR</td><td>資産に対する株価の倍率。1倍未満は資産面から見て割安の目安</td></tr>
+      <tr><td>25日・75日MA乖離</td><td>直近25日／75日の平均株価からどれだけ離れているか。マイナス（緑）なら短期的に売られている状態</td></tr>
+      <tr><td>配当性向</td><td>利益のうち配当に回している割合。30〜50%が緑、70%超は赤（無理をしている可能性）</td></tr>
+      <tr><td>ROE</td><td>自己資本をどれだけ効率よく利益に変えているか。8%以上が目安</td></tr>
+    </table>
+    </div>
+
+    <h3>買い増し判断・手動入力・メモ</h3>
+    <ul>
+      <li><b>購入時利回り</b>を入れると、今の利回りと比べて「買い増し検討圏か」を表示します（今の利回りが購入時より高い＝当時より安く買える状態）。</li>
+      <li><b>手動入力</b>は、自動取得の数字が実態と違うときに自分で上書きするための欄です。上書きした値は青字の計算にそのまま使われます。「上書きをリセット」で元に戻せます。</li>
+      <li><b>メモ</b>には、買った理由や気づいたことを残せます。</li>
+    </ul>
+  </section>
+
+  <section id="holding">
+    <h2>6. 「保有中」タブとポートフォリオ管理5ルール</h2>
+    <p>「保有中」タブでは、持っている銘柄の一覧表と、偏りを防ぐためのチェックが表示されます。投資額を入れるほど精度が上がります。</p>
+    <div class="tblwrap">
+    <table>
+      <tr><th>ルール</th><th>基準</th><th>意味</th></tr>
+      <tr><td>セクター上限</td><td>1業種 20%まで</td><td>同じ業種に偏ると、その業界の不況で資産全体が沈みます</td></tr>
+      <tr><td>配当集中</td><td>1銘柄 3%まで</td><td>1社の減配で受け取る配当が大きく減るのを防ぎます</td></tr>
+      <tr><td>ディフェンシブ比率</td><td>50%以上</td><td>生活必需品・ヘルスケア・公益・通信など、不景気に強い業種を半分以上に</td></tr>
+      <tr><td>ナンピン1回目</td><td>購入単価から -20%</td><td>買い増しを検討するライン（購入単価の入力が必要）</td></tr>
+      <tr><td>ナンピン2回目</td><td>購入単価から -40%</td><td>2回目の買い増し検討ライン</td></tr>
+    </table>
+    </div>
+    <p>下の横棒グラフは、セクターごとの構成比です。投資額を入れていない場合は「銘柄の件数ベース」で計算されます。</p>
+  </section>
+
+  <section id="data">
+    <h2>7. データの更新・銘柄の追加</h2>
+    <h3>更新のタイミング</h3>
+    <p>平日の <b>11:35 / 15:35 / 18:00 ごろ（日本時間）</b>に自動更新されます。画面上部の「データ更新: ○○」がその時刻です。株価はリアルタイムではなく、この時点のものです（VIXのみ、開くたびに最新を取りにいきます）。</p>
+    <h3>銘柄を追加したいとき</h3>
+    <p>GitHubの <code>data/stocks_list.csv</code> に「証券コード,日本語名」を1行足すだけです。例：<code>8058,三菱商事</code>。次の自動更新から新しい銘柄が表示されます。</p>
+  </section>
+
+  <section id="caution">
+    <h2>8. 数字を読むときの注意（重要）</h2>
+    <div class="box danger">
+      <b>⚠️ このアプリは「投資判断の補助」であって、答えではありません</b>
+      表示される数字は自動取得したデータをもとにした概算で、誤りが含まれる可能性があります。実際に売買する前には、必ず証券会社やYahoo!ファイナンス、企業のIR資料で数字を確認してください（各銘柄の詳細画面の一番下にYahoo!ファイナンスへのリンクがあります）。
+    </div>
+    <ul>
+      <li><b>財務データは実質4年分</b>です（配当の履歴のみ10年以上）。「10年平均」と表示していても、利回り以外は取得できた年数での平均です。</li>
+      <li><b>PBRの過去平均は概算</b>です。発行済株式数が過去も同じだったと仮定して計算しているため、増資や自社株買いをした企業ではズレます。</li>
+      <li><b>株式分割をした銘柄</b>では、過去の数値がずれて表示される場合があります。</li>
+      <li><b>ディフェンシブの判定は近似</b>です。東証33業種ではなく、海外の広いセクター区分をもとにしているため、感覚と違う分類になることがあります。</li>
+      <li><b>利回り20%以上は「異常値」</b>として自動的に集計から除外しています（特別配当やデータ誤りの可能性が高いため）。「エラー」タブで確認できます。</li>
+    </ul>
+  </section>
+
+  <section id="faq">
+    <h2>9. よくある質問</h2>
+    <h3>iPhoneでも使えますか？</h3>
+    <p>使えます。Safariで開いて「ホーム画面に追加」しておくと、アプリのように起動できます。ただしタグや投資額は端末ごとの保存なので、パソコンとは共有されません。</p>
+
+    <h3>入力した投資額やメモは他の人に見られませんか？</h3>
+    <p>見られません。入力内容はご自身の端末のブラウザ内にだけ保存され、サーバーにも公開ページにも一切送信されていません。</p>
+
+    <h3>数字がおかしい／「取得エラー」と出る</h3>
+    <p>データの取得元（Yahoo Finance）側で一時的に値が取れないことがあります。まず「エラー」タブで対象銘柄を確認し、次の自動更新を待ってください。それでも直らない場合は、詳細画面の「手動入力」で正しい数字を入れて上書きできます。</p>
+
+    <h3>タグや投資額を消してしまいました。戻せますか？</h3>
+    <p>残念ながら復元できません。銘柄数が増えてきたら、大事な入力内容は別途スプレッドシートにも控えておくことをおすすめします。</p>
+  </section>
+
+  <footer>日本株 高配当トラッカー ／ <a href="index.html">トラッカーに戻る</a></footer>
+</div>
+</body>
+</html>
