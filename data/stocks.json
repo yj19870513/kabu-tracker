@@ -1,7 +1,7 @@
 {
- "updated": "2026-08-07 18:47",
- "vix": 15.28,
- "vix_updated": "2026-08-07 18:47",
+ "updated": "2026-08-07 20:36",
+ "vix": 15.22,
+ "vix_updated": "2026-08-07 20:36",
  "stocks": [
   {
    "code": "1343",
@@ -4347,9 +4347,9 @@
    "market_cap": 46748684288.0,
    "per": 12.47,
    "pbr": 1.03,
-   "op_margin": 9.17,
+   "op_margin": 12.03,
    "payout": 50.54,
-   "roe": 8.45,
+   "roe": 8.55,
    "equity_ratio": 85.15,
    "equity_hist": [
     {
@@ -6728,7 +6728,7 @@
    "market_cap": 52021506048.0,
    "per": 15.86,
    "pbr": 0.92,
-   "op_margin": 9.14,
+   "op_margin": 9.13,
    "payout": 61.28,
    "roe": 5.87,
    "equity_ratio": 83.2,
