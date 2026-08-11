@@ -1,7 +1,7 @@
 {
- "updated": "2026-08-10 20:39",
+ "updated": "2026-08-11 14:45",
  "vix": 15.46,
- "vix_updated": "2026-08-10 20:39",
+ "vix_updated": "2026-08-11 14:45",
  "stocks": [
   {
    "code": "1343",
@@ -10,10 +10,6 @@
    "prev_close": 1937.5,
    "change_pct": 0.0,
    "div_hist": [
-    {
-     "date": "2023-08-10",
-     "amount": 18.3
-    },
     {
      "date": "2023-11-10",
      "amount": 19.2
@@ -57,6 +53,10 @@
     {
      "date": "2026-05-10",
      "amount": 23.7
+    },
+    {
+     "date": "2026-08-10",
+     "amount": 20.6
     }
    ],
    "div_by_year": {
@@ -73,7 +73,7 @@
     "2023": 75.0,
     "2024": 82.9,
     "2025": 87.6,
-    "2026": 49.2
+    "2026": 69.8
    },
    "div_confirmed": {
     "2013": 49.7,
@@ -110,10 +110,10 @@
    "shares_outstanding": null,
    "high52": 2249.5,
    "low52": 1880.0,
-   "ma25": 1993.98,
-   "ma75": 1966.67,
+   "ma25": 1973.6,
+   "ma75": 1946.04,
    "div_warning": null,
-   "avg_yield_10y": 4.46,
+   "avg_yield_10y": 4.51,
    "avg_per_10y": null,
    "avg_pbr_10y": null,
    "hist_years_used": 10,
@@ -172,7 +172,7 @@
     },
     {
      "date": "2026-06-29",
-     "amount": 25.0
+     "amount": 25.25
     }
    ],
    "div_by_year": {
@@ -194,7 +194,7 @@
     "2023": 32.5,
     "2024": 37.0,
     "2025": 48.38,
-    "2026": 25.0
+    "2026": 25.25
    },
    "div_confirmed": {
     "2008": 0.94,
@@ -216,12 +216,12 @@
     "2024": 37.0,
     "2025": 48.38
    },
-   "dividend": 45.5,
-   "yield_pct": 3.47,
+   "dividend": 50.5,
+   "yield_pct": 3.85,
    "name_en": "SHO-BOND HOLDINGS CO LTD",
    "sector": "資本財",
    "market_cap": 263561183232.0,
-   "per": 18.19,
+   "per": 18.18,
    "pbr": 2.54,
    "op_margin": 27.23,
    "payout": 67.12,
@@ -322,10 +322,10 @@
    "high52": 1537.0,
    "low52": 1195.25,
    "ma25": 1289.26,
-   "ma75": 1268.2,
+   "ma75": 1268.05,
    "div_warning": null,
    "avg_yield_10y": 2.59,
-   "avg_per_10y": 19.72,
+   "avg_per_10y": 19.71,
    "avg_pbr_10y": 2.55,
    "hist_years_used": 10,
    "name": "ショーボンドホールディングス"
@@ -448,7 +448,7 @@
    "name_en": "SEKISUI HOUSE",
    "sector": "一般消費財",
    "market_cap": 2220215762944.0,
-   "per": 8.63,
+   "per": 8.64,
    "pbr": 1.03,
    "op_margin": 8.37,
    "payout": 36.3,
@@ -667,7 +667,7 @@
    "name_en": "NITTO FUJI FLOUR MILLING CO",
    "sector": "生活必需品",
    "market_cap": 64643989504.0,
-   "per": 19.48,
+   "per": 19.45,
    "pbr": 1.31,
    "op_margin": 5.4,
    "payout": 76.8,
@@ -874,8 +874,8 @@
    "name_en": "CDS CO LTD",
    "sector": "情報技術",
    "market_cap": 11695680512.0,
-   "per": 25.66,
-   "pbr": 1.33,
+   "per": 25.64,
+   "pbr": 1.32,
    "op_margin": 3.33,
    "payout": 110.58,
    "roe": 3.42,
@@ -1527,7 +1527,7 @@
    "name_en": "AI HOLDINGS CORPORATION",
    "sector": "資本財",
    "market_cap": 158114807808.0,
-   "per": 12.0,
+   "per": 12.01,
    "pbr": 1.39,
    "op_margin": 17.01,
    "payout": 40.43,
@@ -1953,7 +1953,7 @@
    "name_en": "ASAHI CO LTD",
    "sector": "一般消費財",
    "market_cap": 34818048000.0,
-   "per": 15.35,
+   "per": 15.34,
    "pbr": 0.84,
    "op_margin": 11.07,
    "payout": 57.39,
@@ -2585,7 +2585,7 @@
    "name_en": "SUMITOMO SEIKA CHEMICALS CO",
    "sector": "素材",
    "market_cap": 100162093056.0,
-   "per": 13.23,
+   "per": 13.25,
    "pbr": 0.97,
    "op_margin": 8.55,
    "payout": 37.45,
@@ -2656,7 +2656,7 @@
     },
     {
      "year": "2025",
-     "value": 29.356
+     "value": 90.12
     },
     {
      "year": "2026",
@@ -2689,7 +2689,7 @@
    "ma75": 1277.95,
    "div_warning": null,
    "avg_yield_10y": 3.8,
-   "avg_per_10y": 15.86,
+   "avg_per_10y": 8.86,
    "avg_pbr_10y": 0.62,
    "hist_years_used": 10,
    "name": "住友精化"
@@ -2812,7 +2812,7 @@
    "name_en": "TOSOH CORP",
    "sector": "素材",
    "market_cap": 843774099456.0,
-   "per": 20.72,
+   "per": 20.7,
    "pbr": 1.01,
    "op_margin": 11.37,
    "payout": 75.54,
@@ -3260,7 +3260,7 @@
    "name_en": "AICA KOGYO CO",
    "sector": "資本財",
    "market_cap": 266137419776.0,
-   "per": 15.25,
+   "per": 15.24,
    "pbr": 1.37,
    "op_margin": 12.84,
    "payout": 50.03,
@@ -4789,7 +4789,7 @@
    "name_en": "BRIDGESTONE CORP",
    "sector": "一般消費財",
    "market_cap": 5353859186688.0,
-   "per": 21.89,
+   "per": 21.88,
    "pbr": 1.48,
    "op_margin": 12.79,
    "payout": 59.55,
@@ -5428,7 +5428,7 @@
    "name_en": "ASANTE INCORPORATED",
    "sector": "一般消費財",
    "market_cap": 14463927296.0,
-   "per": 59.15,
+   "per": 59.18,
    "pbr": 1.51,
    "op_margin": 5.55,
    "payout": 247.8,
@@ -6066,8 +6066,8 @@
     "2024": 86.0,
     "2025": 90.0
    },
-   "dividend": 120.0,
-   "yield_pct": 3.74,
+   "dividend": 112.0,
+   "yield_pct": 3.49,
    "name_en": "SUZUKI CO LTD",
    "sector": "情報技術",
    "market_cap": 46021500928.0,
@@ -6358,10 +6358,6 @@
    ],
    "eps_hist": [
     {
-     "year": "2022",
-     "value": 181.24
-    },
-    {
      "year": "2023",
      "value": 225.24
     },
@@ -6372,6 +6368,10 @@
     {
      "year": "2025",
      "value": 229.8
+    },
+    {
+     "year": "2026",
+     "value": 312.16
     }
    ],
    "op_cf": 2819000000.0,
@@ -6400,7 +6400,7 @@
    "ma75": 2943.51,
    "div_warning": null,
    "avg_yield_10y": 3.74,
-   "avg_per_10y": 8.37,
+   "avg_per_10y": 8.77,
    "avg_pbr_10y": 0.68,
    "hist_years_used": 10,
    "name": "愛知時計電機"
@@ -6950,7 +6950,7 @@
    "yield_pct": 4.57,
    "name_en": "OKAMURA CORP",
    "sector": "資本財",
-   "market_cap": 217749192704.0,
+   "market_cap": 217747849216.0,
    "per": 9.71,
    "pbr": 1.07,
    "op_margin": 4.64,
@@ -7048,7 +7048,7 @@
      "value": 27218000000.0
     }
    ],
-   "shares_outstanding": 94673559.0,
+   "shares_outstanding": 94672975.0,
    "high52": 2761.0,
    "low52": 2148.0,
    "ma25": 2297.16,
@@ -7175,7 +7175,7 @@
    "yield_pct": 4.98,
    "name_en": "SANGETSU CORPORATION",
    "sector": "一般消費財",
-   "market_cap": 182842195968.0,
+   "market_cap": 182841524224.0,
    "per": 12.48,
    "pbr": 1.5,
    "op_margin": 9.83,
@@ -7247,7 +7247,7 @@
     },
     {
      "year": "2025",
-     "value": 213.86
+     "value": 213.57
     },
     {
      "year": "2026",
@@ -7273,14 +7273,14 @@
      "value": 14320000000.0
     }
    ],
-   "shares_outstanding": 58791702.0,
+   "shares_outstanding": 58791486.0,
    "high52": 3370.0,
    "low52": 2818.0,
    "ma25": 3044.0,
    "ma75": 2970.01,
    "div_warning": null,
    "avg_yield_10y": 4.71,
-   "avg_per_10y": 11.33,
+   "avg_per_10y": 11.34,
    "avg_pbr_10y": 1.46,
    "hist_years_used": 10,
    "name": "サンゲツ"
@@ -7623,7 +7623,7 @@
    "sector": "金融",
    "market_cap": 168365522944.0,
    "per": 9.9,
-   "pbr": 0.57,
+   "pbr": 0.56,
    "op_margin": 12.25,
    "payout": 52.67,
    "roe": 4.9,
@@ -7846,11 +7846,11 @@
    "yield_pct": 3.75,
    "name_en": "MITSUBISHI HC CAPITAL INC",
    "sector": "金融",
-   "market_cap": 1988751654912.0,
-   "per": 12.28,
+   "market_cap": 1985812496384.0,
+   "per": 14.6,
    "pbr": 0.99,
    "op_margin": 8.74,
-   "payout": 40.79,
+   "payout": 48.45,
    "roe": 7.2,
    "equity_ratio": 15.21,
    "equity_hist": [
@@ -7944,7 +7944,7 @@
      "value": -367537000000.0
     }
    ],
-   "shares_outstanding": 1435921854.0,
+   "shares_outstanding": 1433799716.0,
    "high52": 1541.5,
    "low52": 1169.0,
    "ma25": 1422.3,
@@ -8057,7 +8057,7 @@
    "yield_pct": 2.9,
    "name_en": "MS&AD INS GP HLDGS",
    "sector": "金融",
-   "market_cap": 6959891218432.0,
+   "market_cap": 6923958091776.0,
    "per": 14.08,
    "pbr": 1.09,
    "op_margin": -16.15,
@@ -8155,7 +8155,7 @@
      "value": 762608000000.0
     }
    ],
-   "shares_outstanding": 1441269682.0,
+   "shares_outstanding": 1433828614.0,
    "high52": 5073.0,
    "low52": 3108.0,
    "ma25": 4731.28,
@@ -8922,10 +8922,10 @@
    "name_en": "FUNAI SOKEN HOLDINGS INCORPORAT",
    "sector": "資本財",
    "market_cap": 105040814080.0,
-   "per": 16.13,
-   "pbr": 4.03,
+   "per": 12.92,
+   "pbr": 3.77,
    "op_margin": 29.68,
-   "payout": 60.91,
+   "payout": 52.24,
    "roe": 31.05,
    "equity_ratio": 74.71,
    "equity_hist": [
@@ -9139,7 +9139,7 @@
    "name_en": "GAKKYUSHA CO LTD",
    "sector": "生活必需品",
    "market_cap": 29431076864.0,
-   "per": 15.93,
+   "per": 15.92,
    "pbr": 3.6,
    "op_margin": 16.01,
    "payout": 60.56,
@@ -9348,7 +9348,7 @@
    "name_en": "ZAOH CO LTD",
    "sector": "資本財",
    "market_cap": 13584304128.0,
-   "per": 18.91,
+   "per": 18.9,
    "pbr": 1.21,
    "op_margin": 12.17,
    "payout": 75.62,
