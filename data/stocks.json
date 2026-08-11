@@ -1,7 +1,7 @@
 {
- "updated": "2026-08-11 16:50",
- "vix": 15.4,
- "vix_updated": "2026-08-11 16:50",
+ "updated": "2026-08-11 18:58",
+ "vix": 15.51,
+ "vix_updated": "2026-08-11 18:58",
  "stocks": [
   {
    "code": "1343",
@@ -216,15 +216,15 @@
     "2024": 37.0,
     "2025": 48.38
    },
-   "dividend": 50.5,
-   "yield_pct": 3.85,
+   "dividend": 46.5,
+   "yield_pct": 3.55,
    "name_en": "SHO-BOND HOLDINGS CO LTD",
    "sector": "資本財",
    "market_cap": 263561183232.0,
    "per": 18.18,
    "pbr": 2.54,
    "op_margin": 27.23,
-   "payout": 67.12,
+   "payout": 60.13,
    "roe": 14.64,
    "equity_ratio": 81.38,
    "equity_hist": [
@@ -6073,9 +6073,9 @@
    "market_cap": 46021500928.0,
    "per": 14.62,
    "pbr": 1.47,
-   "op_margin": 15.33,
+   "op_margin": 10.3,
    "payout": 41.04,
-   "roe": 14.16,
+   "roe": 13.93,
    "equity_ratio": 67.69,
    "equity_hist": [
     {
