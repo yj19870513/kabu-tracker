@@ -456,11 +456,13 @@ function openModal(code){
       <div><span>75日MA乖離</span><b class="${devC(d75)}">${d75===null?"-":(d75>=0?"+":"")+fmt(d75)+"%"}</b></div>
       <div><span>営業利益率</span><b class="${e.op_margin>=10?'c-green':''}">${fmt(e.op_margin)}%</b></div>
       <div><span>配当性向</span><b class="${e.payout!==null&&e.payout>=30&&e.payout<=50?'c-green':e.payout!==null&&e.payout>70?'c-red':''}">${fmt(e.payout)}%</b></div>
-      <div><span>ROE</span><b>${fmt(e.roe)}%</b></div>
-      <div><span>自己資本比率</span><b>${fmt(e.equity_ratio)}%</b></div>
+<div><span>ROE</span><b class="${e.roe!==null&&e.roe>=8?'c-green':''}">${fmt(e.roe)}%</b></div>
+<div><span>自己資本比率</span><b class="${e.equity_ratio!==null&&e.equity_ratio>=60?'c-green':e.equity_ratio!==null&&e.equity_ratio<40?'c-red':''}">${fmt(e.equity_ratio)}%</b></div>
+<div><span>配当余力（年）</span><b class="${e.div_capacity_years!==null&&e.div_capacity_years>=3?'c-green':e.div_capacity_years!==null&&e.div_capacity_years<0?'c-red':''}">${e.div_capacity_years===null?"-":fmt(e.div_capacity_years,1)+"年"}</b></div>
       <div><span>時価総額</span><b>${e.market_cap?fmt(e.market_cap/1e8,0)+"億円":"-"}</b></div>
       <div><span>営業CF</span><b>${e.op_cf?fmt(e.op_cf/1e8,0)+"億円":"-"}</b></div>
     </div>
+    <p class="kome" style="margin-top:6px">ROE・配当余力は「確かめたい4つのこと」記事（まつばちさん・2026-08-09）の追加指標。財務スコア8点には含めず参考表示。</p>
     <h3>買い増し判断</h3>
     <div style="display:flex;gap:8px;align-items:center">購入時利回り
       <input id="buyY" type="number" step="0.01" value="${buyY}" style="width:90px" onchange="LS.set('buy_yield_${code}',this.value);openModal('${code}')">%
