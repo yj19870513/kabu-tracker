@@ -30,12 +30,15 @@ def load_list():
 
 
 def num(v):
-    """floatにできない値はNoneに"""
+    """floatにできない値・NaN・無限大はNoneに。
+        Infinityが混ざるとJSONとして不正になり、ブラウザ側で読み込みに失敗するため必ず除外する。"""
     try:
         if v is None:
             return None
         f = float(v)
         if f != f:  # NaN
+            return None
+        if f in (float("inf"), float("-inf")):
             return None
         return f
     except (TypeError, ValueError):
@@ -194,6 +197,9 @@ def fetch_one(code):
             d["equity_ratio"] = None
         d["equity_hist"] = equity_hist
         d["cash_hist"] = series_by_year(bs, "Cash And Cash Equivalents")
+        cash_hist = d["cash_hist"]
+        debt_hist = series_by_year(bs, "Total Debt")
+        d["debt_hist"] = debt_hist
 
         try:
             inc = t.income_stmt
@@ -211,8 +217,16 @@ def fetch_one(code):
         d["op_cf_hist"] = ocf_hist
 
         d["shares_outstanding"] = num(info.get("sharesOutstanding"))
+        # --- 配当余力（ネットキャッシュ÷1株配当＝配当何年分の余力か） ---
+        # ネットキャッシュ＝現金等－有利子負債。「確かめたい4つのこと」記事の指標⑤に対応。
+        d["div_capacity_years"] = None
+        if cash_hist and d.get("shares_outstanding") and d.get("dividend"):
+            latest_cash = cash_hist[-1]["value"]
+            latest_debt = debt_hist[-1]["value"] if debt_hist else 0
+            net_cash_per_share = (latest_cash - latest_debt) / d["shares_outstanding"]
+            if d["dividend"] > 0:
+                d["div_capacity_years"] = rnd(net_cash_per_share / d["dividend"])
 
-        # --- テクニカル ---
         d["high52"] = rnd(info.get("fiftyTwoWeekHigh"))
         d["low52"] = rnd(info.get("fiftyTwoWeekLow"))
         d["ma25"] = rnd(sum(closes[-25:]) / 25) if len(closes) >= 25 else None
