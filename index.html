@@ -41,6 +41,9 @@
   .ctrl { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
   .ctrl select, .ctrl input { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:13px; box-shadow:var(--shadow); }
   .fcount { color:var(--muted); font-size:12.5px; margin-bottom:10px; }
+  .qf { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+  .qf button { background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:16px; padding:5px 14px; cursor:pointer; font-size:13px; box-shadow:var(--shadow); }
+  .qf button.on { background:var(--green); color:#fff; border-color:var(--green); }
   /* カード */
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; cursor:pointer; position:relative; box-shadow:var(--shadow); transition:box-shadow .15s, transform .15s; }
@@ -130,6 +133,11 @@
     </select>
     <input id="q" type="search" placeholder="銘柄名・コード検索">
   </div>
+  <div class="qf" id="qf">
+    <button data-f="hold">保有のみ</button>
+    <button data-f="unhold">未保有のみ</button>
+    <button data-f="low">📉安値圏のみ</button>
+  </div>
   <div class="fcount" id="fcount"></div>
 
   <div id="holdArea"></div>
@@ -142,7 +150,7 @@
 
 <script>
 "use strict";
-let DATA = null, CHART = null, TAB = "all";
+let DATA = null, CHART = null, TAB = "all", FIL_HOLD = null, FIL_LOW = false;
 const $ = id => document.getElementById(id);
 const LS = {
   get:(k,d=null)=>{ const v=localStorage.getItem(k); return v===null?d:v; },
@@ -209,6 +217,14 @@ function scoreItems(s){
   ];
 }
 function qualityScore(s){ return scoreItems(s).filter(x=>x[1]).length; }
+/* スコアバーの色：段階ごとに変わる（グラデーションではなく一目で分かる色分け） */
+function scoreColor(sc){
+  if (sc<=4) return "#3b82f6";  // 青
+  if (sc===5) return "#22c55e"; // 緑
+  if (sc===6) return "#a3e635"; // 黄緑
+  if (sc===7) return "#f5a623"; // オレンジ寄りの黄色
+  return "#e2566c";             // 赤（8点）
+}
 
 /* 罠銘柄診断：利益・配当の変動性（変動係数）が高いのに利回りだけ高い銘柄を検知 */
 function coefVar(hist){
@@ -284,6 +300,9 @@ function filtered(){
   if (sec) list = list.filter(s=>eff(s).sector===sec);
   if (smin) list = list.filter(s=>qualityScore(s)>=smin);
   if (q) list = list.filter(s=>(s.name||"").toLowerCase().includes(q)||s.code.includes(q));
+  if (FIL_HOLD===true) list = list.filter(s=>LS.get("holding_"+s.code));
+  if (FIL_HOLD===false) list = list.filter(s=>!LS.get("holding_"+s.code));
+  if (FIL_LOW) list = list.filter(s=>{ const p=pos52(s); return p!==null&&p<=33; });
   const key=$("sort").value;
   if (TAB!=="top30") list.sort((a,b)=>{
     const ya=yieldOf(a), yb=yieldOf(b);
@@ -335,7 +354,7 @@ function card(s){
     <span class="price">${yen(e.price)}</span>${chgHtml}
     <div class="yield">${ydisp}</div>
     <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円</div>
-    <div class="scorebar"><i style="width:${sc/8*100}%"></i><span>${sc}/8</span></div>
+    <div class="scorebar"><i style="width:${sc/8*100}%;background:${scoreColor(sc)}"></i><span>${sc}/8</span></div>
   </div>`;
 }
 /* ---------- ディフェンシブ／景気敏感 分類 ----------
@@ -639,6 +658,16 @@ async function init(){
   $("secSel").innerHTML += secs.map(s=>`<option>${s}</option>`).join("");
   ["sort","secSel","scoreSel"].forEach(id=>$(id).addEventListener("change",render));
   $("q").addEventListener("input",render);
+  $("qf").addEventListener("click",e=>{
+    const f=e.target.dataset.f; if(!f) return;
+    if (f==="hold") FIL_HOLD = FIL_HOLD===true ? null : true;
+    if (f==="unhold") FIL_HOLD = FIL_HOLD===false ? null : false;
+    if (f==="low") FIL_LOW = !FIL_LOW;
+    document.querySelector('.qf button[data-f="hold"]').classList.toggle("on", FIL_HOLD===true);
+    document.querySelector('.qf button[data-f="unhold"]').classList.toggle("on", FIL_HOLD===false);
+    document.querySelector('.qf button[data-f="low"]').classList.toggle("on", FIL_LOW);
+    render();
+  });
   render();
 }
 init();
