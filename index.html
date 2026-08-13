@@ -671,6 +671,68 @@ async function init(){
   render();
 }
 init();
+
+/* ---------- 追加機能：買い増し発動ライン・配当15年実績（2026-08-14追加） ---------- */
+function triggerInfo(s){
+  const e=eff(s);
+  const bp=+LS.get("buyprice_"+s.code,0)||0;
+  let basis,label;
+  if (bp>0){ basis=bp*0.8; label="取得単価-20%"; }
+  else { basis=e.low52; label="52週安値"; }
+  if (!basis||!e.price) return null;
+  const gap=(e.price/basis-1)*100;
+  return {basis:basis,label:label,gap:gap,triggered:e.price<=basis};
+}
+function divVerified(code){ return (window.DIV_VERIFIED||{})[code]||null; }
+function enhanceCards(){
+  document.querySelectorAll("#grid .card").forEach(function(el){
+    const codeEl=el.querySelector(".code");
+    if (!codeEl) return;
+    const code=codeEl.textContent.trim();
+    const s=DATA.stocks.find(function(x){return x.code===code;});
+    if (!s) return;
+    const ti=triggerInfo(s);
+    if (!ti) return;
+    const cls=ti.triggered?"c-red":(ti.gap<=10?"c-orange":"c-blue");
+    const txt=ti.triggered?"🎯 発動中！":("🎯 "+ti.label+"まで +"+fmt(ti.gap,1)+"%");
+    const div=document.createElement("div");
+    div.className="sub "+cls;
+    div.textContent=txt;
+    el.appendChild(div);
+  });
+}
+function enhanceModal(code){
+  const dv=divVerified(code);
+  const s=DATA.stocks.find(function(x){return x.code===code;});
+  if (!s) return;
+  const ti=triggerInfo(s);
+  let html="";
+  if (ti){
+    html+="<h3>買い増し発動ライン</h3><div class=\"kv\"><div><span>"+ti.label+"</span><b>"+yen(ti.basis)+"</b></div><div><span>現在値との乖離</span><b class=\""+(ti.triggered?"c-red":"")+"\">"+(ti.triggered?"発動中":(ti.gap>=0?"+":"")+fmt(ti.gap,1)+"%")+"</b></div></div>";
+  }
+  if (dv){
+    const cuts=(dv.cuts||[]).map(function(c){
+      return "<li>"+c.year+"年: "+c.from+"→"+c.to+"円"+(c.note?"（"+c.note+"）":"")+"</li>";
+    }).join("");
+    html+="<h3>配当15年実績 <span class=\"badge\">"+dv.tier+"</span></h3>";
+    if (dv.years_confirmed) html+="<p class=\"kome\">確認期間: "+dv.years_confirmed+"</p>";
+    html+= cuts ? ("<ul style=\"margin-left:18px;font-size:12.5px\">"+cuts+"</ul>") : "<p class=\"kome\">実質減配の記録なし</p>";
+    if (dv.notes) html+="<p class=\"kome\">"+dv.notes+"</p>";
+  }
+  if (html) $("modal").insertAdjacentHTML("beforeend", html);
+}
+(function(){
+  const _render0=render, _openModal0=openModal;
+  render=function(){ _render0(); enhanceCards(); };
+  openModal=function(code){ _openModal0(code); enhanceModal(code); };
+})();
+(async function(){
+  try{
+    const r=await fetch("data/dividend_verified.json?t="+Date.now());
+    window.DIV_VERIFIED=await r.json();
+  }catch(e){ window.DIV_VERIFIED={}; }
+  if (DATA) render();
+})();
 </script>
 </body>
 </html>
