@@ -602,7 +602,7 @@ function triggerInfo(s){
   const bp=+LS.get("buyprice_"+s.code,0)||0;
   let basis,label;
   if (bp>0){ basis=bp*0.8; label="取得単価-20%"; }
-  else { basis=e.low52; label="年初来安値"; }
+  else { basis=e.low52; label="52週安値"; }
   if (!basis||!e.price) return null;
   const gap=(e.price/basis-1)*100;
   return {basis:basis,label:label,gap:gap,triggered:e.price<=basis};
