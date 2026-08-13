@@ -101,7 +101,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="head"><h1>📈 日本株 高配当トラッカー</h1><a class="guidelink" href="guide.html">📖 使い方・見方ガイド</a></div>
+  <div class="head"><h1>📈 日本株 高配当トラッカー</h1><a class="guidelink" href="guide.html">📖 使い方・見方ガイド</a><a class="guidelink" href="#" onclick="openBulkPriceModal();return false">💰 取得単価を一括入力</a></div>
   <div class="updated" id="updated">読み込み中…</div>
 
   <div class="stats" id="stats"></div>
@@ -456,9 +456,9 @@ function openModal(code){
       <div><span>75日MA乖離</span><b class="${devC(d75)}">${d75===null?"-":(d75>=0?"+":"")+fmt(d75)+"%"}</b></div>
       <div><span>営業利益率</span><b class="${e.op_margin>=10?'c-green':''}">${fmt(e.op_margin)}%</b></div>
       <div><span>配当性向</span><b class="${e.payout!==null&&e.payout>=30&&e.payout<=50?'c-green':e.payout!==null&&e.payout>70?'c-red':''}">${fmt(e.payout)}%</b></div>
-<div><span>ROE</span><b class="${e.roe!==null&&e.roe>=8?'c-green':''}">${fmt(e.roe)}%</b></div>
-<div><span>自己資本比率</span><b class="${e.equity_ratio!==null&&e.equity_ratio>=60?'c-green':e.equity_ratio!==null&&e.equity_ratio<40?'c-red':''}">${fmt(e.equity_ratio)}%</b></div>
-<div><span>配当余力（年）</span><b class="${e.div_capacity_years!==null&&e.div_capacity_years>=3?'c-green':e.div_capacity_years!==null&&e.div_capacity_years<0?'c-red':''}">${e.div_capacity_years===null?"-":fmt(e.div_capacity_years,1)+"年"}</b></div>
+      <div><span>ROE</span><b class="${e.roe!==null&&e.roe>=8?'c-green':''}">${fmt(e.roe)}%</b></div>
+      <div><span>自己資本比率</span><b class="${e.equity_ratio!==null&&e.equity_ratio>=60?'c-green':e.equity_ratio!==null&&e.equity_ratio<40?'c-red':''}">${fmt(e.equity_ratio)}%</b></div>
+      <div><span>配当余力（年）</span><b class="${e.div_capacity_years!==null&&e.div_capacity_years>=3?'c-green':e.div_capacity_years!==null&&e.div_capacity_years<0?'c-red':''}">${e.div_capacity_years===null?"-":fmt(e.div_capacity_years,1)+"年"}</b></div>
       <div><span>時価総額</span><b>${e.market_cap?fmt(e.market_cap/1e8,0)+"億円":"-"}</b></div>
       <div><span>営業CF</span><b>${e.op_cf?fmt(e.op_cf/1e8,0)+"億円":"-"}</b></div>
     </div>
@@ -545,6 +545,52 @@ function saveManual(code){
 function clearManual(code){ LS.del("manual_"+code); closeModal(); render(); }
 function closeModal(){ $("overlay").style.display="none"; if(CHART){CHART.destroy();CHART=null;} }
 
+/* ---------- 取得単価の一括入力 ---------- */
+// このブラウザのlocalStorageにだけ保存する。コード・リポジトリには一切書き込まない。
+function openBulkPriceModal(){
+  $("modal").innerHTML = `
+    <span class="close" onclick="closeModal()">✕</span>
+    <h2>💰 取得単価の一括入力</h2>
+    <p class="kome" style="margin-top:4px">貼り付けたデータは<b>このブラウザにだけ</b>保存されます（外部送信・保存はされません）。Mac・iPhoneなど端末ごとに貼り付けが必要です。</p>
+    <h3>対応フォーマット</h3>
+    <p class="kome">① <code>{"1343":2032, "1414":1256, ...}</code>（コード：取得単価）<br>
+    ② <code>{"stocks":[{"code":"1343","avg_price":2032}, ...]}</code>（購入価格データの元ファイル形式）</p>
+    <textarea id="bulkPriceText" rows="10" placeholder='{"1343":2032,"1414":1256,...}' style="font-family:monospace;font-size:12px;margin-top:8px"></textarea>
+    <div id="bulkPriceMsg" style="margin-top:8px;font-size:13px"></div>
+    <button class="btn" onclick="applyBulkPrices()">この内容を反映する</button>
+    <button class="btn sub" onclick="closeModal()">キャンセル</button>`;
+  $("overlay").style.display = "block";
+}
+function applyBulkPrices(){
+  const raw = $("bulkPriceText").value.trim();
+  const msgEl = $("bulkPriceMsg");
+  if (!raw){ msgEl.innerHTML = '<span class="err">貼り付け欄が空です</span>'; return; }
+  let obj;
+  try{ obj = JSON.parse(raw); }
+  catch(e){ msgEl.innerHTML = '<span class="err">JSONとして読み取れませんでした。形式を確認してください。</span>'; return; }
+  // 2つの形式をどちらも受け付ける
+  let entries = [];
+  if (Array.isArray(obj.stocks)) {
+    entries = obj.stocks.map(s=>[s.code, s.avg_price]);
+  } else if (typeof obj === "object" && obj !== null) {
+    entries = Object.entries(obj).filter(([k])=>k!=="source"&&k!=="note");
+  }
+  const knownCodes = new Set((DATA?DATA.stocks:[]).map(s=>s.code));
+  let applied = 0, unknown = [];
+  entries.forEach(([code, price])=>{
+    const p = +price;
+    if (!code || !p || isNaN(p)) return;
+    if (!knownCodes.has(String(code))) { unknown.push(code); return; }
+    LS.set("buyprice_"+code, p);
+    applied++;
+  });
+  if (!applied){ msgEl.innerHTML = '<span class="err">反映できる銘柄が見つかりませんでした。</span>'; return; }
+  let msg = `<span class="c-green">✅ ${applied}銘柄の取得単価を反映しました</span>`;
+  if (unknown.length) msg += `<br><span class="c-orange">⚠️ トラッカーに無いコードのため反映されなかった銘柄：${unknown.join("、")}</span>`;
+  msgEl.innerHTML = msg;
+  render();
+}
+
 /* ---------- 市場環境 ---------- */
 function vixColor(v){ return v<20?"c-green":v<=30?"c-orange":"c-red"; }
 function showVix(v,note){ $("vix").textContent=fmt(v); $("vix").className=vixColor(v); $("vixNote").textContent=note||""; }
@@ -595,68 +641,6 @@ async function init(){
   render();
 }
 init();
-
-/* ---------- 追加機能：買い増し発動ライン・配当15年実績（2026-08-14追加） ---------- */
-function triggerInfo(s){
-  const e=eff(s);
-  const bp=+LS.get("buyprice_"+s.code,0)||0;
-  let basis,label;
-  if (bp>0){ basis=bp*0.8; label="取得単価-20%"; }
-  else { basis=e.low52; label="52週安値"; }
-  if (!basis||!e.price) return null;
-  const gap=(e.price/basis-1)*100;
-  return {basis:basis,label:label,gap:gap,triggered:e.price<=basis};
-}
-function divVerified(code){ return (window.DIV_VERIFIED||{})[code]||null; }
-function enhanceCards(){
-  document.querySelectorAll("#grid .card").forEach(function(el){
-    const codeEl=el.querySelector(".code");
-    if (!codeEl) return;
-    const code=codeEl.textContent.trim();
-    const s=DATA.stocks.find(function(x){return x.code===code;});
-    if (!s) return;
-    const ti=triggerInfo(s);
-    if (!ti) return;
-    const cls=ti.triggered?"c-red":(ti.gap<=10?"c-orange":"c-blue");
-    const txt=ti.triggered?"🎯 発動中！":("🎯 "+ti.label+"まで +"+fmt(ti.gap,1)+"%");
-    const div=document.createElement("div");
-    div.className="sub "+cls;
-    div.textContent=txt;
-    el.appendChild(div);
-  });
-}
-function enhanceModal(code){
-  const dv=divVerified(code);
-  const s=DATA.stocks.find(function(x){return x.code===code;});
-  if (!s) return;
-  const ti=triggerInfo(s);
-  let html="";
-  if (ti){
-    html+="<h3>買い増し発動ライン</h3><div class=\"kv\"><div><span>"+ti.label+"</span><b>"+yen(ti.basis)+"</b></div><div><span>現在値との乖離</span><b class=\""+(ti.triggered?"c-red":"")+"\">"+(ti.triggered?"発動中":(ti.gap>=0?"+":"")+fmt(ti.gap,1)+"%")+"</b></div></div>";
-  }
-  if (dv){
-    const cuts=(dv.cuts||[]).map(function(c){
-      return "<li>"+c.year+"年: "+c.from+"→"+c.to+"円"+(c.note?"（"+c.note+"）":"")+"</li>";
-    }).join("");
-    html+="<h3>配当15年実績 <span class=\"badge\">"+dv.tier+"</span></h3>";
-    if (dv.years_confirmed) html+="<p class=\"kome\">確認期間: "+dv.years_confirmed+"</p>";
-    html+= cuts ? ("<ul style=\"margin-left:18px;font-size:12.5px\">"+cuts+"</ul>") : "<p class=\"kome\">実質減配の記録なし</p>";
-    if (dv.notes) html+="<p class=\"kome\">"+dv.notes+"</p>";
-  }
-  if (html) $("modal").insertAdjacentHTML("beforeend", html);
-}
-(function(){
-  const _render0=render, _openModal0=openModal;
-  render=function(){ _render0(); enhanceCards(); };
-  openModal=function(code){ _openModal0(code); enhanceModal(code); };
-})();
-(async function(){
-  try{
-    const r=await fetch("data/dividend_verified.json?t="+Date.now());
-    window.DIV_VERIFIED=await r.json();
-  }catch(e){ window.DIV_VERIFIED={}; }
-  if (DATA) render();
-})();
 </script>
 </body>
 </html>
