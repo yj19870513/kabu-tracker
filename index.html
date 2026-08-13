@@ -56,8 +56,10 @@
   .card .sub { color:var(--muted); font-size:11.5px; margin-top:4px; }
   .badges { position:absolute; top:10px; right:12px; display:flex; gap:4px; }
   .badge { font-size:10px; border-radius:4px; padding:1px 6px; background:#eef3fb; color:#3a5680; border:1px solid #dde6f5; }
-  .scorebar { height:5px; background:#eceff5; border-radius:3px; margin-top:8px; overflow:hidden; }
+  .badge-low { background:#e9f1ff; color:#1d6fd6; border-color:#c8ddfa; }
+  .scorebar { position:relative; height:16px; background:#eceff5; border-radius:8px; margin-top:8px; overflow:hidden; }
   .scorebar i { display:block; height:100%; background:linear-gradient(90deg,#4d9ce8,#2fae6d); }
+  .scorebar span { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#1f2430; text-shadow:0 0 3px #fff,0 0 3px #fff; }
   /* 保有中テーブル */
   table.hold { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:12px; box-shadow:var(--shadow); }
   table.hold th, table.hold td { border-bottom:1px solid var(--line); padding:9px 10px; text-align:left; font-size:13.5px; }
@@ -298,8 +300,6 @@ function borderClass(s){
     if (y>=4) return "b-red";
     if (y>=3.7) return "b-orange";
   }
-  const p=pos52(s);
-  if (p!==null&&p<=33) return "b-blue";
   return "";
 }
 function render(){
@@ -323,18 +323,19 @@ function render(){
   $("grid").innerHTML = list.map(card).join("") || `<div style="color:var(--muted)">該当なし</div>`;
 }
 function card(s){
-  const e=eff(s), y=yieldOf(s), sc=qualityScore(s), t=tagOf(s.code);
+  const e=eff(s), y=yieldOf(s), sc=qualityScore(s), t=tagOf(s.code), p=pos52(s);
   const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `利回り <b>${fmt(y)}%</b>`;
   const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">${chg>=0?"+":""}${fmt(chg)}%</span>`;
   const tagB = t?`<span class="badge">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
+  const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
   const t30 = top30Score(s);
   return `<div class="card ${borderClass(s)}" onclick="openModal('${s.code}')">
-    <div class="badges">${tagB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
+    <div class="badges">${tagB}${lowB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
     <div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <span class="price">${yen(e.price)}</span>${chgHtml}
     <div class="yield">${ydisp}</div>
-    <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円｜スコア ${sc}/8</div>
-    <div class="scorebar"><i style="width:${sc/8*100}%"></i></div>
+    <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円</div>
+    <div class="scorebar"><i style="width:${sc/8*100}%"></i><span>${sc}/8</span></div>
   </div>`;
 }
 /* ---------- ディフェンシブ／景気敏感 分類 ----------
