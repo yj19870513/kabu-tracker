@@ -9,7 +9,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="高配当トラッカー">
 <meta name="theme-color" content="#0a2254">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root { --bg:#f5f7fa; --card:#ffffff; --line:#e2e6ee; --text:#1f2430; --muted:#6b7383;
     --field:#fbfcfe; --shadow:0 1px 2px rgba(20,30,60,.05), 0 1px 8px rgba(20,30,60,.04);
@@ -100,8 +99,24 @@
   .btn.sub:hover { background:#f1f4f9; }
   .buyjudge { border-radius:8px; padding:8px 12px; margin-top:6px; font-size:13px; background:#f6f8fb; border:1px solid var(--line); }
   a { color:var(--blue); }
-  canvas#radar { max-width:300px; margin:0 auto; display:block; }
   .err { color:var(--red); }
+  /* 財務8項目テーブル */
+  .f8note { font-size:11.5px; color:var(--muted); margin:2px 0 8px; }
+  .f8row { border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin-bottom:7px; background:var(--field); }
+  .f8head { display:flex; align-items:center; gap:8px; }
+  .f8head b { font-size:13.5px; flex:1; }
+  .f8j { font-size:15px; font-weight:700; width:24px; text-align:center; border-radius:6px; flex:none; }
+  .j-o { color:#0f8a4d; background:#e7f6ed; }
+  .j-t { color:#c07208; background:#fff4e2; }
+  .j-x { color:#d92d43; background:#fdeef0; }
+  .j-n { color:var(--muted); background:#eef0f4; font-size:11px; }
+  .f8detail { font-size:12.5px; color:#3a4152; margin-top:5px; line-height:1.65; }
+  .f8crit { margin-top:6px; }
+  .f8crit summary { font-size:11.5px; color:var(--blue); cursor:pointer; list-style:none; display:inline-block; }
+  .f8crit summary::-webkit-details-marker { display:none; }
+  .f8crit summary::before { content:"▶ "; font-size:9px; }
+  .f8crit[open] summary::before { content:"▼ "; }
+  .f8crit p { font-size:11.5px; color:var(--muted); margin-top:4px; padding-left:12px; border-left:2px solid var(--line); line-height:1.6; }
 </style>
 </head>
 <body>
@@ -150,7 +165,7 @@
 
 <script>
 "use strict";
-let DATA = null, CHART = null, TAB = "all", FIL_HOLD = null, FIL_LOW = false;
+let DATA = null, TAB = "all", FIL_HOLD = null, FIL_LOW = false;
 const $ = id => document.getElementById(id);
 const LS = {
   get:(k,d=null)=>{ const v=localStorage.getItem(k); return v===null?d:v; },
@@ -216,7 +231,31 @@ function scoreItems(s){
     ["現金増加トレンド", histTrendUp(e.cash_hist)],
   ];
 }
-function qualityScore(s){ return scoreItems(s).filter(x=>x[1]).length; }
+/* ---------- 財務8項目：IR BANK長期調査データ（financial8_verified.json）を正とする ----------
+   項目名と「判定の基準」。基準は両学長の「優良企業を見分ける財務指標8選」に準拠。 */
+const F8_META = {
+  sales:            ["売上高トレンド", "右肩上がりが理想です。商売そのものが伸びているかを見ます。売上が伸びていない会社は、将来の増配も期待しにくくなります。"],
+  eps:              ["EPSトレンド", "右肩上がりが理想です。EPS＝1株あたりの利益で、株価の基準になる最重要指標です。"],
+  operating_margin: ["営業利益率", "10%以上が目安です。上場企業の平均は7〜8%で、10%を超えていると価格競争ではなく付加価値で稼げている可能性が高いと見ます。"],
+  equity_ratio:     ["自己資本比率", "40%以上が目安です。総資産のうち返済の必要がない自分のお金の割合で、高いほど潰れにくい会社といえます。"],
+  operating_cf:     ["営業CF（営業キャッシュフロー）", "黒字かつ増加傾向が理想です。帳簿上の利益ではなく、本業で実際に現金が入ってきているかを見ます。ただし工事・建設など業種によっては赤字の年が出ることもあります。"],
+  dividend:         ["配当（減配なし・増配）", "減配がなく右肩上がりが理想です。不況でも配当を守ってきた会社は、株主を大切にする経営姿勢の表れと見ます。"],
+  payout_ratio:     ["配当性向", "30〜50%が目安です。高すぎる（70%超など）と無理をして配当を出していて将来の減配リスク、低すぎると株主還元が物足りない、と判断します。"],
+  cash:             ["現金等", "増加傾向が理想です。現金が潤沢な会社は、不況や急な出来事が起きても配当を払い続ける体力があります。"],
+};
+function fin8(code){ const F = window.FIN8; return (F && F.stocks) ? F.stocks[code] : null; }
+function fin8Counts(code){
+  const f = fin8(code); if (!f || !f.items) return null;
+  const c = {"○":0,"△":0,"×":0,"不明":0,"対象外":0};
+  Object.keys(f.items).forEach(k=>{ const j=f.items[k].judge; if (c[j]!==undefined) c[j]++; });
+  return c;
+}
+function isExempt(code){ const c = fin8Counts(code); return !!c && c["対象外"] >= 8; }
+function qualityScore(s){
+  const c = fin8Counts(s.code);
+  if (c) return c["対象外"] >= 8 ? 0 : c["○"];   // 調査データがあればそれを正とする（○の数）
+  return scoreItems(s).filter(x=>x[1]).length;   // 調査データが無い銘柄のみ、従来の自動判定にフォールバック
+}
 /* スコアバーの色：段階ごとに変わる（グラデーションではなく一目で分かる色分け） */
 function scoreColor(sc){
   if (sc<=4) return "#3b82f6";  // 青
@@ -354,7 +393,9 @@ function card(s){
     <span class="price">${yen(e.price)}</span>${chgHtml}
     <div class="yield">${ydisp}</div>
     <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円</div>
-    <div class="scorebar"><i style="width:${sc/8*100}%;background:${scoreColor(sc)}"></i><span>${sc}/8</span></div>
+    ${isExempt(s.code)
+      ? `<div class="scorebar"><span>財務評価は対象外</span></div>`
+      : `<div class="scorebar"><i style="width:${sc/8*100}%;background:${scoreColor(sc)}"></i><span>${sc}/8</span></div>`}
   </div>`;
 }
 /* ---------- ディフェンシブ／景気敏感 分類 ----------
@@ -461,8 +502,7 @@ function openModal(code){
         return `<button class="tagbtn ${LS.get(k+"_"+code)?"on":""}" onclick="toggleTag('${code}','${k}',this)">${l}</button>`;}).join("")}
     </div>
     ${trapWarning(s)? `<div class="box danger"><b class="ttl">🚨 罠銘柄チェック</b>${trapWarning(s)}</div>` : ""}
-    <h3>財務スコア ${sc}/8点（IR BANK 8項目）</h3>
-    <canvas id="radar"></canvas>
+    ${fin8Panel(code)}
     <h3>買い時判定：過去10年平均との比較</h3>
     ${timingPanel(s)}
     <h3>52週ポジション（安値 ${yen(e.low52)} 〜 高値 ${yen(e.high52)}）</h3>
@@ -500,7 +540,40 @@ function openModal(code){
     <button class="btn sub" onclick="clearManual('${code}')">上書きをリセット</button>
     <h3><a href="https://finance.yahoo.co.jp/quote/${code}.T" target="_blank" rel="noopener">Yahoo!ファイナンスで見る →</a></h3>`;
   $("overlay").style.display = "block";
-  drawRadar(s);
+}
+/* 財務8項目パネル（判定・根拠・基準をまとめて表示） */
+function fin8Panel(code){
+  const f = fin8(code);
+  if (!f || !f.items){
+    // 調査データが無い銘柄は、従来どおりの自動判定を明示したうえで表示する
+    const s = DATA.stocks.find(x=>x.code===code);
+    const items = s ? scoreItems(s) : [];
+    const rows = items.map(x=>
+      `<div class="f8row"><div class="f8head"><b>${x[0]}</b><span class="f8j ${x[1]?"j-o":"j-x"}">${x[1]?"○":"×"}</span></div></div>`).join("");
+    return `<h3>財務スコア ${s?qualityScore(s):"-"}/8点</h3>
+      <div class="f8note">⚠️ この銘柄はIR BANKでの長期調査データがまだありません。証券データから自動計算した<b>直近4年分</b>の判定を表示しています（根拠の数字は出せません）。</div>${rows}`;
+  }
+  const c = fin8Counts(code);
+  if (c["対象外"] >= 8){
+    return `<h3>財務8項目</h3>
+      <div class="f8note">${f.score || "ETFのため財務8指標による評価はできません"}</div>`;
+  }
+  const order = (window.FIN8 && window.FIN8.order) || Object.keys(f.items);
+  const jcls = j => j==="○" ? "j-o" : j==="△" ? "j-t" : j==="×" ? "j-x" : "j-n";
+  const rows = order.filter(k=>f.items[k]).map(k=>{
+    const it = f.items[k], meta = F8_META[k] || [k, ""];
+    return `<div class="f8row">
+      <div class="f8head"><b>${meta[0]}</b><span class="f8j ${jcls(it.judge)}">${it.judge||"-"}</span></div>
+      <div class="f8detail">${it.detail||"（根拠データなし）"}</div>
+      ${meta[1] ? `<details class="f8crit"><summary>判定の基準を見る</summary><p>${meta[1]}</p></details>` : ""}
+    </div>`;
+  }).join("");
+  const spanNote = f.source === "held"
+    ? `IR BANKの長期データ（${f.years}）にもとづく判定です。`
+    : `⚠️ この銘柄は<b>財務項目が直近5期分</b>の調査にとどまります（${f.years}）。保有銘柄の17〜20年分の判定とは、同じ○×でも重みが異なる点にご注意ください。`;
+  return `<h3>財務8項目　<span style="font-weight:400;font-size:12.5px">${c["○"]}/8（○${c["○"]} △${c["△"]} ×${c["×"]}${c["不明"]?" 不明"+c["不明"]:""}）</span></h3>
+    <div class="f8note">${spanNote}　調査時点：${(window.FIN8&&window.FIN8.generated_at)||"-"}（株価と違い自動更新されません）</div>
+    ${rows}`;
 }
 function timingRow(label, cur, avg, lowerIsCheap){
   if (cur===null||cur===undefined||avg===null||avg===undefined) return `<div><span>${label}</span><b>-</b></div>`;
@@ -532,17 +605,6 @@ function buyJudge(buyY,y){
   if (y>=b) return `<span class="c-green">現在 ${fmt(y)}% ≧ 購入時 ${fmt(b)}%：購入時より利回りが高く、買い増し検討圏です</span>`;
   return `<span class="c-orange">現在 ${fmt(y)}% ＜ 購入時 ${fmt(b)}%：購入時より株価が上昇（利回り低下）しています</span>`;
 }
-function drawRadar(s){
-  const items = scoreItems(s);
-  const labels = items.map(x=>x[0]);
-  const vals = items.map(x=>x[1]?1:0);
-  if (CHART) CHART.destroy();
-  if (typeof Chart==="undefined") return;
-  CHART = new Chart($("radar"),{type:"radar",
-    data:{labels,
-      datasets:[{data:vals,backgroundColor:"rgba(29,111,214,.18)",borderColor:"#1d6fd6",pointBackgroundColor:"#1d6fd6"}]},
-    options:{scales:{r:{min:0,max:1,ticks:{stepSize:1,display:false},grid:{color:"#e2e6ee"},angleLines:{color:"#e2e6ee"},pointLabels:{color:"#42506b",font:{size:10}}}},plugins:{legend:{display:false}}}});
-}
 function toggleTag(code,key,btn){
   const k=key+"_"+code;
   if (LS.get(k)) { LS.del(k); btn.classList.remove("on"); }
@@ -563,7 +625,7 @@ function saveManual(code){
   closeModal(); render();
 }
 function clearManual(code){ LS.del("manual_"+code); closeModal(); render(); }
-function closeModal(){ $("overlay").style.display="none"; if(CHART){CHART.destroy();CHART=null;} }
+function closeModal(){ $("overlay").style.display="none"; }
 
 /* ---------- 取得単価の一括入力 ---------- */
 // このブラウザのlocalStorageにだけ保存する。コード・リポジトリには一切書き込まない。
@@ -791,10 +853,15 @@ function enhanceModal(code){
   openModal=function(code){ _openModal0(code); enhanceModal(code); };
 })();
 (async function(){
+  const t = Date.now();
   try{
-    const r=await fetch("data/dividend_verified.json?t="+Date.now());
+    const r=await fetch("data/dividend_verified.json?t="+t);
     window.DIV_VERIFIED=await r.json();
   }catch(e){ window.DIV_VERIFIED={}; }
+  try{
+    const r2=await fetch("data/financial8_verified.json?t="+t);
+    window.FIN8=await r2.json();
+  }catch(e){ window.FIN8=null; }
   if (DATA) render();
 })();
 </script>
