@@ -568,9 +568,9 @@ function fin8Panel(code){
       ${meta[1] ? `<details class="f8crit"><summary>判定の基準を見る</summary><p>${meta[1]}</p></details>` : ""}
     </div>`;
   }).join("");
-  const spanNote = f.source === "held"
-    ? `IR BANKの長期データ（${f.years}）にもとづく判定です。`
-    : `⚠️ この銘柄は<b>財務項目が直近5期分</b>の調査にとどまります（${f.years}）。保有銘柄の17〜20年分の判定とは、同じ○×でも重みが異なる点にご注意ください。`;
+  const spanNote = (f.span!==null && f.span!==undefined && f.span < 15)
+    ? `⚠️ この銘柄はIR BANKで遡れるデータが<b>${f.span}年分</b>にとどまります（${f.years}）。上場から日が浅いなどの理由で、他の銘柄の15〜20年分の判定とは重みが異なる点にご注意ください。`
+    : `IR BANKの長期データ（${f.years}）にもとづく判定です。`;
   return `<h3>財務8項目　<span style="font-weight:400;font-size:12.5px">${c["○"]}/8（○${c["○"]} △${c["△"]} ×${c["×"]}${c["不明"]?" 不明"+c["不明"]:""}）</span></h3>
     <div class="f8note">${spanNote}　調査時点：${(window.FIN8&&window.FIN8.generated_at)||"-"}（株価と違い自動更新されません）</div>
     ${rows}`;
