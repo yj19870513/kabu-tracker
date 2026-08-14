@@ -1,7 +1,7 @@
 {
- "updated": "2026-08-14 17:02",
- "vix": 14.64,
- "vix_updated": "2026-08-14 17:02",
+ "updated": "2026-08-14 18:59",
+ "vix": 14.57,
+ "vix_updated": "2026-08-14 18:59",
  "stocks": [
   {
    "code": "1343",
@@ -15913,7 +15913,7 @@
    "name_en": "NIPPON CERAMIC CO LTD",
    "sector": "情報技術",
    "market_cap": 77027098624.0,
-   "per": 14.57,
+   "per": 14.55,
    "pbr": 1.69,
    "op_margin": 21.95,
    "payout": 48.45,
