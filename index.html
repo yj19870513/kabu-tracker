@@ -106,7 +106,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="head"><h1>📈 日本株 高配当トラッカー</h1><a class="guidelink" href="guide.html">📖 使い方・見方ガイド</a><a class="guidelink" href="#" onclick="openBulkPriceModal();return false">💰 取得単価を一括入力</a></div>
+  <div class="head"><h1>📈 日本株 高配当トラッカー</h1><a class="guidelink" href="guide.html">📖 使い方・見方ガイド</a><a class="guidelink" href="#" onclick="openBulkPriceModal();return false">💰 取得単価を一括入力</a><a class="guidelink" href="#" onclick="openBackupModal();return false">💾 バックアップ</a></div>
   <div class="updated" id="updated">読み込み中…</div>
 
   <div class="stats" id="stats"></div>
@@ -608,6 +608,70 @@ function applyBulkPrices(){
   let msg = `<span class="c-green">✅ ${applied}銘柄の取得単価を反映しました</span>`;
   if (unknown.length) msg += `<br><span class="c-orange">⚠️ トラッカーに無いコードのため反映されなかった銘柄：${unknown.join("、")}</span>`;
   msgEl.innerHTML = msg;
+  render();
+}
+
+/* ---------- データのバックアップ・復元 ---------- */
+// タグ・投資額・取得単価・メモなど、このアプリが使うlocalStorageキーだけを対象にする
+const BACKUP_PREFIXES = ["holding_","watch_","candidate_","invest_","buyprice_","buy_yield_","manual_","memo_"];
+const BACKUP_EXACT_KEYS = ["tdr_value"];
+function isBackupKey(k){ return BACKUP_PREFIXES.some(p=>k.startsWith(p)) || BACKUP_EXACT_KEYS.includes(k); }
+function collectBackupData(){
+  const data = {};
+  Object.keys(localStorage).forEach(k=>{ if (isBackupKey(k)) data[k] = localStorage.getItem(k); });
+  return data;
+}
+function downloadBackup(){
+  const data = collectBackupData();
+  const json = JSON.stringify({app:"kabu-tracker", exported_at:new Date().toISOString(), data:data});
+  const blob = new Blob([json], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "kabu-tracker-backup_"+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function openBackupModal(){
+  const count = Object.keys(collectBackupData()).length;
+  $("modal").innerHTML = `
+    <span class="close" onclick="closeModal()">✕</span>
+    <h2>💾 データのバックアップ・復元</h2>
+    <p class="kome" style="margin-top:4px">タグ・投資額・取得単価・メモなどは、すべて<b>このブラウザにだけ</b>保存されています。ファイルに書き出しておけば、他の端末（iPhoneなど）へ同じ内容を復元したり、ブラウザのデータが消えたときに復元したりできます（現在 ${count}件のデータあり）。</p>
+    <h3>書き出す</h3>
+    <button class="btn" onclick="downloadBackup()">📥 ファイルとしてダウンロード</button>
+    <p class="kome">ダウンロードしたファイルは、復元したい端末のブラウザでこの画面を開き、下の「ファイルを選択」から読み込んでください。</p>
+    <h3>復元する</h3>
+    <input type="file" id="backupFileInput" accept=".json" onchange="handleBackupFile(event)">
+    <p class="kome" style="margin-top:6px">他の端末からコピー＆ペーストする場合は、ここにJSONを直接貼り付けても構いません。</p>
+    <textarea id="backupImportText" rows="6" placeholder="ここにバックアップJSONを貼り付け" style="font-family:monospace;font-size:12px;margin-top:6px"></textarea>
+    <div id="backupMsg" style="margin-top:8px;font-size:13px"></div>
+    <button class="btn" onclick="applyBackup()">この内容で復元する</button>
+    <button class="btn sub" onclick="closeModal()">閉じる</button>`;
+  $("overlay").style.display = "block";
+}
+function handleBackupFile(ev){
+  const file = ev.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { $("backupImportText").value = e.target.result; };
+  reader.readAsText(file);
+}
+function applyBackup(){
+  const raw = $("backupImportText").value.trim();
+  const msgEl = $("backupMsg");
+  if (!raw){ msgEl.innerHTML = '<span class="err">貼り付け欄が空か、ファイルが読み込めていません</span>'; return; }
+  let obj;
+  try{ obj = JSON.parse(raw); }
+  catch(e){ msgEl.innerHTML = '<span class="err">JSONとして読み取れませんでした。ファイルの中身を確認してください。</span>'; return; }
+  const data = (obj && typeof obj.data === "object") ? obj.data : obj;
+  if (!data || typeof data !== "object"){ msgEl.innerHTML = '<span class="err">データの形式が正しくありません。</span>'; return; }
+  const keys = Object.keys(data).filter(isBackupKey);
+  if (!keys.length){ msgEl.innerHTML = '<span class="err">復元できるデータが見つかりませんでした。</span>'; return; }
+  if (!confirm(`現在このブラウザに保存されているデータ（タグ・投資額・取得単価・メモ等）を、貼り付けた内容（${keys.length}件）で上書きします。よろしいですか？`)) return;
+  keys.forEach(k => LS.set(k, data[k]));
+  msgEl.innerHTML = `<span class="c-green">✅ ${keys.length}件のデータを復元しました</span>`;
   render();
 }
 
