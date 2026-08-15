@@ -48,6 +48,13 @@
   .qf { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
   .qf button { background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:16px; padding:5px 14px; cursor:pointer; font-size:13px; box-shadow:var(--shadow); }
   .qf button.on { background:var(--green); color:#fff; border-color:var(--green); }
+  .border-filter { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+  .border-filter > span { color:var(--muted); font-size:12px; margin-right:2px; }
+  .border-filter button { background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:16px; padding:5px 12px; cursor:pointer; font-size:12.5px; box-shadow:var(--shadow); }
+  .border-filter button.on[data-border="blue"] { color:#fff; background:var(--blue); border-color:var(--blue); }
+  .border-filter button.on[data-border="green"] { color:#fff; background:var(--green); border-color:var(--green); }
+  .border-filter button.on[data-border="red"] { color:#fff; background:var(--red); border-color:var(--red); }
+  .border-filter button.on[data-border="none"] { color:var(--text); background:#e7eaf0; border-color:#aeb6c4; }
   /* カード */
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; cursor:pointer; position:relative; box-shadow:var(--shadow); transition:box-shadow .15s, transform .15s; }
@@ -101,6 +108,7 @@
   /* モーダル */
   .overlay { display:none; position:fixed; inset:0; background:rgba(25,32,48,.42); z-index:50; overflow-y:auto; padding:24px 12px; }
   .modal { max-width:640px; margin:0 auto; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:0 12px 40px rgba(20,30,60,.18); }
+  .modal.sim-modal { max-width:980px; }
   .modal h2 { font-size:18px; }
   .modal h3 { font-size:14px; margin:16px 0 6px; color:#42506b; border-bottom:1px solid var(--line); padding-bottom:4px; }
   .modal .close { float:right; cursor:pointer; font-size:20px; color:var(--muted); }
@@ -124,6 +132,23 @@
   .buyjudge { border-radius:8px; padding:8px 12px; margin-top:6px; font-size:13px; background:#f6f8fb; border:1px solid var(--line); }
   a { color:var(--blue); }
   .err { color:var(--red); }
+  .hold-note { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; background:#eef4fd; border:1px solid #cfdff7; border-radius:10px; padding:10px 12px; margin-bottom:12px; color:#1a5399; }
+  .hold-note .btn { margin-top:0; white-space:nowrap; }
+  .sim-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px; }
+  .sim-panel { border:1px solid var(--line); border-radius:10px; padding:12px; background:var(--field); }
+  .sim-panel h3 { margin-top:0; }
+  .sim-inputs { display:grid; grid-template-columns:minmax(180px,1fr) 150px auto; gap:8px; align-items:end; }
+  .sim-inputs label { color:var(--muted); font-size:11.5px; }
+  .sim-inputs select { width:100%; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:6px 8px; font-size:13px; }
+  .sim-metrics { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:10px; }
+  .sim-metric { border:1px solid var(--line); border-radius:8px; background:var(--card); padding:9px; }
+  .sim-metric span { display:block; color:var(--muted); font-size:11px; }
+  .sim-metric b { font-size:15px; }
+  .sim-table { width:100%; border-collapse:collapse; margin-top:8px; font-size:12.5px; }
+  .sim-table th,.sim-table td { border-bottom:1px solid var(--line); padding:7px 6px; text-align:left; }
+  .sim-table th { color:var(--muted); font-size:11.5px; }
+  .sim-delta.up { color:var(--red); } .sim-delta.down { color:var(--blue); }
+  @media(max-width:700px){ .sim-grid{grid-template-columns:1fr}.sim-inputs{grid-template-columns:1fr 1fr}.sim-inputs .btn{grid-column:1/-1}.sim-metrics{grid-template-columns:1fr} }
   /* 財務8項目テーブル */
   .f8note { font-size:11.5px; color:var(--muted); margin:2px 0 8px; }
   .f8row { border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin-bottom:7px; background:var(--field); }
@@ -145,7 +170,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="head"><h1>📈 日本株 高配当トラッカー</h1><a class="guidelink" href="guide.html">📖 使い方・見方ガイド</a><a class="guidelink" href="#" onclick="openBulkPriceModal();return false">💰 取得単価を一括入力</a><a class="guidelink" href="#" onclick="openBackupModal();return false">💾 バックアップ</a></div>
+  <div class="head"><h1>📈 日本株 高配当トラッカー</h1><a class="guidelink" href="guide.html">📖 使い方・見方ガイド</a><a class="guidelink" href="#" onclick="openSimulator();return false">🧮 購入シミュレーター</a><a class="guidelink" href="#" onclick="openBulkPriceModal();return false">💰 取得単価を一括入力</a><a class="guidelink" href="#" onclick="openBackupModal();return false">💾 バックアップ</a></div>
   <div class="updated" id="updated">読み込み中…</div>
 
   <div class="stats" id="stats"></div>
@@ -178,6 +203,13 @@
     <button data-f="unhold">未保有のみ</button>
     <button data-f="low">📉安値圏のみ</button>
   </div>
+  <div class="border-filter" id="borderFilter">
+    <span>配当安定性</span>
+    <button data-border="blue">青枠・減配なし</button>
+    <button data-border="green">緑枠・減配1回</button>
+    <button data-border="red">赤枠・複数減配</button>
+    <button data-border="none">枠なし・確認不足</button>
+  </div>
   <div class="fcount" id="fcount"></div>
 
   <div id="holdArea"></div>
@@ -191,6 +223,7 @@
 <script>
 "use strict";
 let DATA = null, TAB = "all", FIL_HOLD = null, FIL_LOW = false;
+const FIL_BORDERS = new Set();
 const $ = id => document.getElementById(id);
 const LS = {
   get:(k,d=null)=>{ const v=localStorage.getItem(k); return v===null?d:v; },
@@ -419,6 +452,7 @@ function filtered(){
   if (FIL_HOLD===true) list = list.filter(s=>LS.get("holding_"+s.code));
   if (FIL_HOLD===false) list = list.filter(s=>!LS.get("holding_"+s.code));
   if (FIL_LOW) list = list.filter(s=>{ const p=pos52(s); return p!==null&&p<=33; });
+  if (FIL_BORDERS.size) list = list.filter(s=>FIL_BORDERS.has(dividendStability(s).key));
   const key=$("sort").value;
   if (TAB!=="top30") list.sort((a,b)=>{
     const ya=yieldOf(a), yb=yieldOf(b);
@@ -465,8 +499,8 @@ function render(){
   const fok = list.map(s=>yieldOf(s)).filter(y=>y!=="anomaly"&&y!==null);
   const favg = fok.length?fok.reduce((a,b)=>a+b,0)/fok.length:0;
   $("fcount").textContent = `表示 ${list.length}件 ／ 平均利回り ${fmt(favg)}%`;
-  // 保有中タブの特別表示
-  $("holdArea").innerHTML = TAB==="holding" ? holdTable(list) : "";
+  // 保有状況の正本は管理シート。ここではカード確認と購入前シミュレーションに絞る
+  $("holdArea").innerHTML = TAB==="holding" ? `<div class="hold-note"><span><b>保有管理は管理シートが正本です。</b><br>この画面では保有銘柄のカード確認と、購入前後のバランス試算ができます。</span><button class="btn" onclick="openSimulator()">🧮 購入後を試算する</button></div>` : "";
   // カード
   $("grid").innerHTML = list.map(card).join("") || `<div style="color:var(--muted)">該当なし</div>`;
 }
@@ -717,7 +751,108 @@ function saveManual(code){
   closeModal(); render();
 }
 function clearManual(code){ LS.del("manual_"+code); closeModal(); render(); }
-function closeModal(){ $("overlay").style.display="none"; }
+function closeModal(){ $("overlay").style.display="none"; $("modal").className="modal"; }
+
+/* ---------- 購入シミュレーター ---------- */
+function portfolioRows(){
+  return DATA.stocks.map(s=>{
+    const shares=+LS.get("shares_"+s.code,0)||0, e=eff(s);
+    return {s,shares,value:shares*(e.price||0),dividend:shares*(e.dividend||0)};
+  }).filter(r=>r.shares>0);
+}
+function simBasket(){ try{ const a=JSON.parse(LS.get("sim_basket","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function saveSimBasket(a){ LS.set("sim_basket",JSON.stringify(a)); }
+function portfolioSummary(rows){
+  const value=rows.reduce((n,r)=>n+r.value,0), dividend=rows.reduce((n,r)=>n+r.dividend,0);
+  const defensive=rows.filter(r=>sectorType(eff(r.s).sector)==="defensive").reduce((n,r)=>n+r.value,0);
+  const stable=rows.filter(r=>dividendStability(r.s).key==="blue").reduce((n,r)=>n+r.value,0);
+  return {value,dividend,defensive:value?defensive/value*100:0,stable:value?stable/value*100:0};
+}
+function projectedRows(){
+  const byCode={};
+  portfolioRows().forEach(r=>byCode[r.s.code]=Object.assign({},r));
+  simBasket().forEach(x=>{
+    const s=DATA.stocks.find(v=>v.code===x.code), amount=+x.amount||0; if(!s) return;
+    const e=eff(s), add=e.price?Math.floor(amount/e.price):0;
+    if(!byCode[s.code]) byCode[s.code]={s,shares:0,value:0,dividend:0};
+    byCode[s.code].shares+=add;
+    byCode[s.code].value+=add*(e.price||0);
+    byCode[s.code].dividend+=add*(e.dividend||0);
+  });
+  return Object.values(byCode).filter(r=>r.shares>0);
+}
+function metricHtml(label,before,after,suffix=""){
+  return `<div class="sim-metric"><span>${label}</span><b>${before} → ${after}${suffix}</b></div>`;
+}
+function openSimulator(){
+  $("modal").className="modal sim-modal";
+  const base=portfolioRows(), after=projectedRows(), b=portfolioSummary(base), a=portfolioSummary(after), basket=simBasket();
+  const options=DATA.stocks.filter(s=>!s.error).sort((x,y)=>x.code.localeCompare(y.code)).map(s=>`<option value="${s.code}">${s.code} ${s.name}</option>`).join("");
+  const planRows=basket.map((x,i)=>{
+    const s=DATA.stocks.find(v=>v.code===x.code); if(!s) return "";
+    const e=eff(s), shares=e.price?Math.floor((+x.amount||0)/e.price):0, cost=shares*(e.price||0), div=shares*(e.dividend||0);
+    return `<tr><td>${s.name}<br><span class="kome">${s.code}</span></td><td>${yen(+x.amount||0)}</td><td>${shares}株</td><td>${yen(cost)}</td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
+  }).join("");
+  const sectorBefore={},sectorAfter={};
+  base.forEach(r=>{const k=eff(r.s).sector||"その他";sectorBefore[k]=(sectorBefore[k]||0)+r.value;});
+  after.forEach(r=>{const k=eff(r.s).sector||"その他";sectorAfter[k]=(sectorAfter[k]||0)+r.value;});
+  const sectors=[...new Set([...Object.keys(sectorBefore),...Object.keys(sectorAfter)])].sort((x,y)=>(sectorAfter[y]||0)-(sectorAfter[x]||0));
+  const secRows=sectors.map(k=>{
+    const bp=b.value?(sectorBefore[k]||0)/b.value*100:0, ap=a.value?(sectorAfter[k]||0)/a.value*100:0, d=ap-bp;
+    return `<tr><td>${k}</td><td>${fmt(bp,1)}%</td><td>${fmt(ap,1)}%</td><td class="sim-delta ${d>0.05?'up':d<-.05?'down':''}">${d>=0?'+':''}${fmt(d,1)}pt</td></tr>`;
+  }).join("");
+  const imported=LS.get("portfolio_imported_at","");
+  const concentration=after.filter(r=>a.dividend&&r.dividend/a.dividend*100>3).sort((x,y)=>y.dividend-x.dividend).slice(0,6);
+  const notices=[];
+  if(!base.length) notices.push("管理シートの保有数を取り込むと、現在との比較ができます。");
+  if(concentration.length) notices.push("購入後の配当割合が3%を超える銘柄: "+concentration.map(r=>`${r.s.name} ${fmt(r.dividend/a.dividend*100,1)}%`).join("、"));
+  $("modal").innerHTML=`
+    <span class="close" onclick="closeModal()">✕</span><h2>🧮 購入シミュレーター</h2>
+    <p class="kome">実際の注文は行いません。表示時点の株価・年間配当で、購入後の偏りを試算します。保有数などはこのブラウザ内だけに保存されます。</p>
+    <div class="sim-grid">
+      <div class="sim-panel"><h3>① 現在のポートフォリオ</h3><p><b>${base.length}銘柄</b>${imported?` ／ 取込 ${new Date(imported).toLocaleString('ja-JP')}`:" ／ 未取込"}</p><button class="btn sub" onclick="openPortfolioImport()">管理シートのデータを取り込む</button></div>
+      <div class="sim-panel"><h3>② 購入予定を追加</h3><div class="sim-inputs"><label>銘柄<select id="simCode">${options}</select></label><label>予算（円）<input id="simAmount" type="number" min="0" step="1000" placeholder="例：100000"></label><button class="btn" onclick="addSimItem()">追加</button></div></div>
+    </div>
+    <h3>購入予定</h3>${basket.length?`<div class="tblwrap"><table class="sim-table"><tr><th>銘柄</th><th>予算</th><th>概算株数</th><th>概算購入額</th><th>年間配当</th><th></th></tr>${planRows}</table></div><button class="btn sub" onclick="clearSimBasket()">購入予定をすべて消す</button>`:'<p class="kome">まだ追加されていません。1回の購入で複数銘柄をまとめて比較できます。</p>'}
+    <h3>③ 購入前 → 購入後</h3><div class="sim-metrics">
+      ${metricHtml("時価評価額",yen(b.value),yen(a.value))}
+      ${metricHtml("予想年間配当",yen(b.dividend),yen(a.dividend))}
+      ${metricHtml("ディフェンシブ比率",fmt(b.defensive,1)+"%",fmt(a.defensive,1),"%")}
+      ${metricHtml("青枠（減配なし）比率",fmt(b.stable,1)+"%",fmt(a.stable,1),"%")}
+    </div>
+    ${notices.length?`<div class="box warn">${notices.join("<br>")}</div>`:""}
+    <h3>セクター構成の変化</h3>${sectors.length?`<div class="tblwrap"><table class="sim-table"><tr><th>セクター</th><th>現在</th><th>購入後</th><th>変化</th></tr>${secRows}</table></div>`:'<p class="kome">保有データまたは購入予定を入れると表示されます。</p>'}`;
+  $("overlay").style.display="block";
+}
+function addSimItem(){
+  const code=$("simCode").value, amount=+$("simAmount").value;
+  if(!amount||amount<=0){ $("simAmount").focus(); return; }
+  const a=simBasket(), found=a.find(x=>x.code===code);
+  if(found) found.amount=(+found.amount||0)+amount; else a.push({code,amount});
+  saveSimBasket(a); openSimulator();
+}
+function removeSimItem(i){ const a=simBasket(); a.splice(i,1); saveSimBasket(a); openSimulator(); }
+function clearSimBasket(){ saveSimBasket([]); openSimulator(); }
+function openPortfolioImport(){
+  $("modal").className="modal sim-modal";
+  $("modal").innerHTML=`<span class="close" onclick="closeModal()">✕</span><h2>管理シートの保有データを取り込む</h2>
+    <div class="box info"><b class="ttl">管理シートが正本です</b>AIに管理シートを見てもらい、下の形式に変換して貼り付ければ、手入力は不要です。内容はこのブラウザ内だけに保存され、公開ページやGitHubには送信されません。</div>
+    <p class="kome">形式: <code>{"stocks":[{"code":"8584","shares":100,"avg_price":1400}]}</code></p>
+    <textarea id="portfolioImportText" rows="12" placeholder='{"stocks":[...]}' style="font-family:monospace;font-size:12px;margin-top:8px"></textarea>
+    <div id="portfolioImportMsg" style="margin-top:8px"></div><button class="btn" onclick="applyPortfolioImport()">この内容を取り込む</button><button class="btn sub" onclick="openSimulator()">戻る</button>`;
+  $("overlay").style.display="block";
+}
+function applyPortfolioImport(){
+  const msg=$("portfolioImportMsg"); let obj;
+  try{ obj=JSON.parse($("portfolioImportText").value.trim()); }catch(e){ msg.innerHTML='<span class="err">JSONとして読み取れませんでした。</span>';return; }
+  const rows=Array.isArray(obj)?obj:obj.stocks, known=new Set(DATA.stocks.map(s=>s.code)); let n=0,unknown=[];
+  if(!Array.isArray(rows)){ msg.innerHTML='<span class="err">stocksの一覧が見つかりません。</span>';return; }
+  rows.forEach(r=>{const code=String(r.code||""),shares=+r.shares||0,avg=+r.avg_price||0;if(!known.has(code)){if(code)unknown.push(code);return;}if(shares<=0)return;LS.set("shares_"+code,shares);LS.set("holding_"+code,"1");if(avg>0)LS.set("buyprice_"+code,avg);n++;});
+  if(!n){ msg.innerHTML='<span class="err">取り込める保有銘柄がありませんでした。</span>';return; }
+  LS.set("portfolio_imported_at",new Date().toISOString());
+  msg.innerHTML=`<span class="c-green">✅ ${n}銘柄を取り込みました</span>${unknown.length?`<br><span class="c-orange">トラッカー未登録: ${unknown.join("、")}</span>`:""}`;
+  render(); setTimeout(openSimulator,500);
+}
 
 /* ---------- 取得単価の一括入力 ---------- */
 // このブラウザのlocalStorageにだけ保存する。コード・リポジトリには一切書き込まない。
@@ -767,8 +902,8 @@ function applyBulkPrices(){
 
 /* ---------- データのバックアップ・復元 ---------- */
 // タグ・投資額・取得単価・メモなど、このアプリが使うlocalStorageキーだけを対象にする
-const BACKUP_PREFIXES = ["holding_","watch_","candidate_","invest_","buyprice_","buy_yield_","manual_","memo_"];
-const BACKUP_EXACT_KEYS = ["tdr_value"];
+const BACKUP_PREFIXES = ["holding_","watch_","candidate_","invest_","buyprice_","buy_yield_","manual_","memo_","shares_","sim_"];
+const BACKUP_EXACT_KEYS = ["tdr_value","portfolio_imported_at"];
 function isBackupKey(k){ return BACKUP_PREFIXES.some(p=>k.startsWith(p)) || BACKUP_EXACT_KEYS.includes(k); }
 function collectBackupData(){
   const data = {};
@@ -884,6 +1019,12 @@ async function init(){
     document.querySelector('.qf button[data-f="hold"]').classList.toggle("on", FIL_HOLD===true);
     document.querySelector('.qf button[data-f="unhold"]').classList.toggle("on", FIL_HOLD===false);
     document.querySelector('.qf button[data-f="low"]').classList.toggle("on", FIL_LOW);
+    render();
+  });
+  $("borderFilter").addEventListener("click",e=>{
+    const key=e.target.dataset.border; if(!key) return;
+    if(FIL_BORDERS.has(key)) FIL_BORDERS.delete(key); else FIL_BORDERS.add(key);
+    e.target.classList.toggle("on",FIL_BORDERS.has(key));
     render();
   });
   render();
