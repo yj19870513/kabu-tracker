@@ -263,6 +263,13 @@ function divTrend(s){
 const DIV_START_YEAR = 2008;
 const DIV_MIN_YEARS = 10;
 function divHistory(s){
+  const adjusted = (window.DIV_ADJUSTED||{})[s.code];
+  if (adjusted && adjusted.history) {
+    const cy = Number(currentYear());
+    return Object.keys(adjusted.history).map(y=>({year:String(y),value:Number(adjusted.history[y])}))
+      .filter(x=>Number(x.year)<cy && Number.isFinite(x.value))
+      .sort((a,b)=>a.year.localeCompare(b.year)).slice(-20);
+  }
   const e = eff(s);
   let by = e.div_confirmed || e.div_by_year || {};
   // 更新データによっては日付ごとの履歴（div_hist）のみの場合があるため、年度合計に補正
@@ -286,10 +293,13 @@ function dividendCutCount(s, history){
 }
 function dividendStability(s){
   const history=divHistory(s);
+  const review=(window.DIV_ADJUSTED||{})[s.code];
   if(history.length<DIV_MIN_YEARS || Number(history[0].year.slice(0,4))>2009)
     return {key:"none", label:"配当履歴：確認不足", history:history, cuts:null};
   const cuts=dividendCutCount(s,history);
-  if(cuts===0) return {key:"blue", label:"減配なし", history:history, cuts:cuts};
+  if(cuts===0 && review && review.status!=="blue_ok")
+    return {key:"none", label:"配当履歴：調整確認中", history:history, cuts:0};
+  if(cuts===0) return {key:"blue", label:review&&review.method?"減配なし（調整後）":"減配なし", history:history, cuts:cuts};
   if(cuts===1) return {key:"green", label:"減配1回", history:history, cuts:cuts};
   return {key:"red", label:"複数回減配・要注意", history:history, cuts:cuts};
 }
@@ -1097,6 +1107,10 @@ function enhanceModal(code){
     const r=await fetch("data/dividend_verified.json?t="+t);
     window.DIV_VERIFIED=await r.json();
   }catch(e){ window.DIV_VERIFIED={}; }
+  try{
+    const r3=await fetch("data/dividend_history_adjusted.json?t="+t);
+    window.DIV_ADJUSTED=await r3.json();
+  }catch(e){ window.DIV_ADJUSTED={}; }
   try{
     const r2=await fetch("data/financial8_verified.json?t="+t);
     window.FIN8=await r2.json();
