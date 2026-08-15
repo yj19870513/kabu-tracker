@@ -483,11 +483,11 @@ function card(s){
     <span class="price">${yen(e.price)}</span>${chgHtml}
     <div class="yield">${ydisp}</div>
     <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円</div>
-    ${cardPosition(s)}
     ${dividendHistoryCard(s)}
     ${isExempt(s.code)
       ? `<div class="scorebar"><span>財務評価は対象外</span></div>`
       : `<div class="scorebar"><i style="width:${sc/8*100}%;background:${scoreColor(sc)}"></i><span>${sc}/8</span></div>`}
+    ${cardPosition(s)}
   </div>`;
 }
 /* ---------- ディフェンシブ／景気敏感 分類 ----------
