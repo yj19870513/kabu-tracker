@@ -41,7 +41,7 @@
   /* 部品サンプル */
   .swatch { display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:-2px; margin-right:5px; }
   .demo-card { display:inline-block; background:var(--card); border-radius:10px; padding:8px 12px; font-size:12.5px; margin:4px 6px 4px 0; }
-  .b-red { border:2px solid var(--red); } .b-orange { border:2px solid var(--orange); }
+  .b-red { border:2px solid var(--red); } .b-green { border:2px solid var(--green); }
   .b-blue { border:2px solid var(--blue); } .b-none { border:1px solid var(--line); }
   /* 注意ボックス */
   .box { border-radius:10px; padding:10px 14px; margin:10px 0; font-size:13.5px; border:1px solid; }
@@ -152,22 +152,26 @@
     <h2>4. 銘柄カードの見方</h2>
 
     <h3>枠の色</h3>
-    <p>ひと目で「利回りが高い銘柄」がわかるように、枠の色が変わります。</p>
+    <p>現在の利回りではなく、<b>2008年以降の配当の安定性</b>で枠の色が変わります。赤色は「高利回り」ではなく、配当面で注意が必要という意味です。</p>
     <div>
-      <span class="demo-card b-red">赤枠＝利回り4%以上</span>
-      <span class="demo-card b-orange">オレンジ枠＝利回り3.7%以上</span>
-      <span class="demo-card b-none">枠なし＝該当なし</span>
+      <span class="demo-card b-blue">青枠＝2008年以降、実質減配なし</span>
+      <span class="demo-card b-green">緑枠＝減配1回</span>
+      <span class="demo-card b-red">赤枠＝複数回減配・要注意</span>
+      <span class="demo-card b-none">枠なし＝確認不足</span>
     </div>
     <div class="box warn">
-      <b>⚠️ 利回りが高い＝良い銘柄、ではありません</b>
-      株価が下がると利回りは自動的に上がります。「業績が悪化して株価が下がった結果、見かけの利回りが高くなっている」ケースがあるため、赤枠の銘柄ほど中身の確認が必要です（詳細画面の「罠銘柄チェック」を参照）。
+      <b>⚠️ 赤枠は要注意です</b>
+      複数回の実質減配が確認されている銘柄です。株式分割による見かけ上の減配は、できるだけ区別しています。枠なしは、確認期間が短い、または配当履歴が十分でない銘柄です。
     </div>
 
+    <h3>配当推移グラフ</h3>
+    <p>カードには2008年以降、最大20年分の1株配当の推移を簡易グラフで表示します。銘柄をタップすると、グラフと年度別の具体的な配当額を確認できます。確定配当を基本に表示し、詳しい調査メモがある場合は詳細画面で補足します。</p>
+
     <h3>下の細いバー（財務スコア）</h3>
-    <p>後述の8項目チェックで何点取れたかを表しています。バーの塗りが長いほど財務が良好で、バーの中に「5/8」のように点数がそのまま表示されます（8点満点）。色も点数によって変わります：<span style="color:#3b82f6">4点以下＝青</span>／<span style="color:#22c55e">5点＝緑</span>／<span style="color:#a3e635">6点＝黄緑</span>／<span style="color:#f5a623">7点＝オレンジ寄りの黄色</span>／<span style="color:#e2566c">8点＝赤</span>。一目で高得点の銘柄が分かるようにしています。</p>
+    <p>後述の8項目チェックで何点取れたかを表しています。バーの塗りが長いほど財務が良好で、バーの中に「5/8」のように点数がそのまま表示されます（8点満点）。色も点数によって変わります：<span style="color:#d92d43">0〜3点＝赤</span>／<span style="color:#f5a623">4〜5点＝オレンジ〜黄色</span>／<span style="color:#22c55e">6点＝緑</span>／<span style="color:#3b82f6">7点＝青</span>／<span style="color:#174ea6">8点＝濃い青</span>。一目で高得点の銘柄が分かるようにしています。</p>
 
     <h3>右上のバッジ</h3>
-    <p>「保有」「👀（ウォッチ）」「候補」は自分で付けたタグです。「📉安値圏」は52週の安値圏（下から33%以内）にある銘柄に自動でつくバッジで、利回りの枠色とは別に表示されるため、両方に該当する銘柄も一目でわかります。トップ30タブでは点数も表示されます。</p>
+    <p>「保有」「👀（ウォッチ）」「候補」は自分で付けたタグです。「📉安値圏」は52週の安値圏（下から33%以内）にある銘柄に自動でつくバッジで、配当安定性の枠色とは別に表示されるため、両方に該当する銘柄も一目でわかります。トップ30タブでは点数も表示されます。</p>
   </section>
 
   <section id="detail">
