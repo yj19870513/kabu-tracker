@@ -223,11 +223,11 @@ function divHistory(s){
     by = {};
     e.div_hist.forEach(x=>{
       const y=String(x.date||"").slice(0,4), v=Number(x.amount);
-      if (/^\\d{4}$/.test(y) && Number.isFinite(v)) by[y]=(by[y]||0)+v;
+      if (/^\d{4}$/.test(y) && Number.isFinite(v)) by[y]=(by[y]||0)+v;
     });
   }
   return Object.keys(by).map(y=>({year:String(y), value:Number(by[y])}))
-    .filter(x=>/^\\d{4}/.test(x.year) && Number(x.year.slice(0,4))>=DIV_START_YEAR && Number.isFinite(x.value))
+    .filter(x=>/^\d{4}/.test(x.year) && Number(x.year.slice(0,4))>=DIV_START_YEAR && Number.isFinite(x.value))
     .sort((a,b)=>a.year.localeCompare(b.year)).slice(-20);
 }
 function dividendCutCount(s, history){
