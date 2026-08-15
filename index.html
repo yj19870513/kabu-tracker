@@ -294,6 +294,9 @@ function dividendCutCount(s, history){
 function dividendStability(s){
   const history=divHistory(s);
   const review=(window.DIV_ADJUSTED||{})[s.code];
+  // 調整根拠のある確認データがない銘柄は、配当安定性を推測しない
+  if(!review)
+    return {key:"none", label:"配当履歴：確認不足", history:history, cuts:null};
   if(history.length<DIV_MIN_YEARS || Number(history[0].year.slice(0,4))>2009)
     return {key:"none", label:"配当履歴：確認不足", history:history, cuts:null};
   const cuts=dividendCutCount(s,history);
