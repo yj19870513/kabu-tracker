@@ -15,7 +15,8 @@
     --red:#c6283d; --orange:#b86b00; --blue:#0b3d91; --aqua:#007f9e; --green:#2f8f3e; }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { background:var(--bg); color:var(--text); font-family:-apple-system,"Hiragino Kaku Gothic ProN",sans-serif; font-size:14px; line-height:1.6; padding:16px; -webkit-font-smoothing:antialiased; }
-  .wrap { max-width:1200px; margin:0 auto; }
+  /* 画面を有効活用。カード自体の読みやすさは最小幅で守る */
+  .wrap { width:100%; max-width:none; margin:0 auto; }
   h1 { font-size:20px; margin-bottom:4px; }
   .head { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
   .guidelink { font-size:13px; text-decoration:none; border:1px solid var(--line); background:var(--card); border-radius:16px; padding:3px 12px; box-shadow:var(--shadow); }
@@ -76,7 +77,7 @@
   .border-filter button.on[data-border="pending"], .border-filter button.on[data-border="short"] { color:var(--text); background:#e7eaf0; border-color:#aeb6c4; }
   .border-filter button small { opacity:.78; font-size:10px; margin-left:2px; }
   /* カード */
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; cursor:pointer; position:relative; box-shadow:var(--shadow); transition:box-shadow .18s, transform .18s, border-color .18s; }
   .card:hover { box-shadow:0 2px 4px rgba(20,30,60,.08), 0 8px 20px rgba(20,30,60,.07); transform:translateY(-1px); }
   /* 枠は「評価の強さ」を、外側へ薄くなる光と上辺の反射で見せる */
