@@ -145,6 +145,8 @@
   .badges { position:absolute; top:10px; right:12px; display:flex; gap:4px; }
   .badge { font-size:10px; border-radius:4px; padding:1px 6px; background:#eef3fb; color:#3a5680; border:1px solid #dde6f5; }
   .badge-low { background:#e9f1ff; color:#1d6fd6; border-color:#c8ddfa; }
+  .source-badge { cursor:pointer; background:#f5f8fc; color:#53657d; border-color:#d8e1ec; }
+  .source-badge:hover { background:#eaf1fa; color:var(--blue); }
   .scorebar { position:relative; height:16px; background:#eceff5; border-radius:8px; margin-top:8px; overflow:hidden; }
   .scorebar i { display:block; height:100%; background:linear-gradient(90deg,#4d9ce8,#2fae6d); }
   .scorebar span { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#1f2430; text-shadow:0 0 3px #fff,0 0 3px #fff; }
@@ -163,6 +165,12 @@
   .box.danger { background:#fdf0f2; border-color:#f4ccd4; color:#a3122b; }
   .box.info { background:#eef4fd; border-color:#cfdff7; color:#1a5399; }
   .kome { color:var(--muted); font-size:11.5px; margin-top:6px; }
+  .source-panel { background:#f7f9fc; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:12px; }
+  .source-panel p { margin:5px 0; }
+  .source-list { margin:6px 0 0 18px; padding:0; }
+  .source-list li { margin:4px 0; }
+  .source-meta { color:var(--muted); font-size:11px; }
+  .source-caution { color:#8a5b06; background:#fff8ea; border:1px solid #f2dfb4; border-radius:7px; padding:6px 8px; }
   /* モーダル */
   .overlay { display:none; position:fixed; inset:0; background:rgba(25,32,48,.42); z-index:50; overflow-y:auto; padding:24px 12px; }
   .modal { max-width:640px; margin:0 auto; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:0 12px 40px rgba(20,30,60,.18); }
@@ -332,6 +340,13 @@ function divTrend(s){
 const DIV_START_YEAR = 2008;
 const DIV_MIN_YEARS = 10;
 function divHistory(s){
+  const source = (window.DIV_SOURCES||{})[s.code];
+  if (source && source.history) {
+    const cy = Number(currentYear());
+    return Object.keys(source.history).map(y=>({year:String(y),value:Number(source.history[y])}))
+      .filter(x=>Number(x.year)<cy && Number.isFinite(x.value))
+      .sort((a,b)=>a.year.localeCompare(b.year)).slice(-20);
+  }
   const adjusted = (window.DIV_ADJUSTED||{})[s.code];
   if (adjusted && adjusted.history) {
     const cy = Number(currentYear());
@@ -354,6 +369,8 @@ function divHistory(s){
     .sort((a,b)=>a.year.localeCompare(b.year)).slice(-20);
 }
 function dividendCutCount(s, history){
+  const source = (window.DIV_SOURCES||{})[s.code];
+  if(source && Number.isFinite(Number(source.confirmed_real_cuts))) return Number(source.confirmed_real_cuts);
   const review=(window.DIV_ADJUSTED||{})[s.code];
   if(review && Number.isFinite(Number(review.confirmed_real_cuts))) return Number(review.confirmed_real_cuts);
   const dv = divVerified(s.code);
@@ -364,9 +381,10 @@ function dividendCutCount(s, history){
 }
 function dividendStability(s){
   const history=divHistory(s);
+  const source=(window.DIV_SOURCES||{})[s.code];
   const review=(window.DIV_ADJUSTED||{})[s.code];
   // 枠色は「減配回数」、確認範囲はラベルと線種で分ける。情報不足を減配なしとは扱わない。
-  if(!review)
+  if(!review && !source)
     return {key:"pending", label:"確認中：調整データなし", history:history, cuts:null, coverage:"unknown"};
   const firstYear=history.length ? Number(history[0].year.slice(0,4)) : null;
   const longCoverage=history.length>=DIV_MIN_YEARS && firstYear<=2009;
@@ -374,8 +392,9 @@ function dividendStability(s){
   const cuts=dividendCutCount(s,history);
   if(cuts>=2) return {key:longCoverage?"red":"red-partial", label:longCoverage?"複数回減配・要注意":"複数回減配（期間不足）・要注意", history:history, cuts:cuts, coverage:longCoverage?"long":"partial"};
   if(cuts===1) return {key:longCoverage?"green":"amber", label:longCoverage?"減配1回":"減配1回（期間不足）", history:history, cuts:cuts, coverage:longCoverage?"long":"partial"};
-  if(longCoverage && review.status==="blue_ok") return {key:"blue", label:review.method?"減配なし（調整後）":"減配なし", history:history, cuts:cuts, coverage:"long"};
-  if(midCoverage && review.status==="blue_ok") return {key:"aqua", label:"減配なし（2010年以降）", history:history, cuts:cuts, coverage:"partial"};
+  const reviewStatus=(source&&source.status)|| (review&&review.status);
+  if(longCoverage && reviewStatus==="blue_ok") return {key:"blue", label:(source||review).method?"減配なし（調整後）":"減配なし", history:history, cuts:cuts, coverage:"long"};
+  if(midCoverage && reviewStatus==="blue_ok") return {key:"aqua", label:"減配なし（2010年以降）", history:history, cuts:cuts, coverage:"partial"};
   if(history.length<DIV_MIN_YEARS) return {key:"short", label:"確認不足（10年未満）", history:history, cuts:cuts, coverage:"short"};
   return {key:"pending", label:"調整確認中（減配判定保留）", history:history, cuts:cuts, coverage:"partial"};
 }
@@ -647,10 +666,11 @@ function card(s){
   const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `利回り <b>${fmt(y)}%</b>`;
   const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">前日比 ${chg>=0?"+":""}${fmt(chg)}%</span>`;
   const tagB = t?`<span class="badge">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
+  const sourceB = `<button class="badge source-badge" onclick="event.stopPropagation();openModal('${s.code}')" title="配当・分割の根拠を確認">根拠</button>`;
   const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
   const t30 = top30Score(s);
   return `<div class="card ${borderClass(s)}" onclick="openModal('${s.code}')">
-    <div class="badges">${tagB}${lowB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
+    <div class="badges">${tagB}${lowB}${sourceB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
     <div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>
@@ -1269,6 +1289,7 @@ function enhanceCards(){
 }
 function enhanceModal(code){
   const dv=divVerified(code);
+  const src=(window.DIV_SOURCES||{})[code];
   const s=DATA.stocks.find(function(x){return x.code===code;});
   if (!s) return;
   const ti=triggerInfo(s);
@@ -1293,6 +1314,13 @@ function enhanceModal(code){
     html+= cuts ? ("<ul style=\"margin-left:18px;font-size:12.5px\">"+cuts+"</ul>") : "<p class=\"kome\">実質減配の記録なし</p>";
     if (dv.notes) html+="<p class=\"kome\">"+dv.notes+"</p>";
   }
+  {
+    const links=(src&&Array.isArray(src.sources)) ? src.sources.map(function(x){
+      return `<li><a href="${x.url}" target="_blank" rel="noopener">${x.label}</a>${x.period?`<span class="source-meta">（${x.period}）</span>`:""}</li>`;
+    }).join("") : `<li><a href="https://irbank.net/${code}/dividend" target="_blank" rel="noopener">IR BANKの配当推移を開く</a><span class="source-meta">（確認用リンク）</span></li>`;
+    const note=src&&src.note ? `<p>${src.note}</p>` : `<p class="source-caution">この銘柄は調査メモと確認用リンクを表示しています。個別の分割・記念配当まで確認済みの銘柄には、今後この欄へ一次資料を追加します。</p>`;
+    html+=`<h3>配当・分割の出典</h3><div class="source-panel"><p><b>${src?"個別確認済み":"確認用リンク"}</b><span class="source-meta">${src&&src.checked_at?`　確認日：${src.checked_at}`:""}</span></p><ul class="source-list">${links}</ul>${note}</div>`;
+  }
   const st=dividendStability(s), h=st.history;
   if (h.length){
     const rows=h.map(x=>`<tr><td>${x.year}年</td><td style=\"text-align:right\">${fmt(x.value,0)}円</td></tr>`).join("");
@@ -1308,6 +1336,10 @@ function enhanceModal(code){
 })();
 (async function(){
   const t = Date.now();
+  try{
+    const rs=await fetch("data/dividend_sources.json?t="+t);
+    window.DIV_SOURCES=await rs.json();
+  }catch(e){ window.DIV_SOURCES={}; }
   try{
     const r=await fetch("data/dividend_verified.json?t="+t);
     window.DIV_VERIFIED=await r.json();
