@@ -89,6 +89,8 @@
   .card.b-green { border:4px solid var(--green); box-shadow:0 0 0 1px rgba(47,143,62,.20), 0 5px 16px rgba(47,143,62,.16), inset 0 1px 0 rgba(255,255,255,.88); }
   .card .code { color:var(--muted); font-size:12px; }
   .card .name { font-size:15.5px; font-weight:700; margin-bottom:4px; }
+  .market-price { display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; }
+  .price-label { color:var(--muted); font-size:10px; font-weight:600; }
   .card .price { font-size:19px; font-weight:700; }
   .card .chg { font-size:12.5px; margin-left:6px; }
   .card .yield { font-size:15px; margin-top:2px; }
@@ -105,7 +107,7 @@
   .divtrend-label.b-pending, .divtrend-label.b-short { color:#7b8492; }
   .divspark { display:block; width:100%; height:34px; margin-top:3px; overflow:visible; }
   .divtrend-foot { display:flex; justify-content:space-between; color:var(--muted); font-size:10px; }
-  .card-pos { margin-top:8px; padding-top:7px; border-top:1px solid #eef1f6; }
+  .card-pos, .card-buy { margin-top:8px; padding-top:7px; border-top:1px solid #eef1f6; min-height:64px; }
   .card-pos-head { display:flex; justify-content:space-between; align-items:center; color:var(--muted); font-size:10.5px; }
   .card-pos-head b { color:var(--text); font-weight:600; }
   .card-pos-head b.low { color:var(--blue); }
@@ -113,6 +115,19 @@
   .card-posbar { position:relative; height:7px; margin:4px 1px 2px; border-radius:5px; background:linear-gradient(90deg,#4d9ce8 0%,#2fae6d 50%,#e2566c 100%); }
   .card-posbar i { position:absolute; top:-3px; width:3px; height:13px; background:#1f2430; border-radius:2px; box-shadow:0 0 0 1px #fff; }
   .card-pos-labels { display:flex; justify-content:space-between; color:var(--muted); font-size:9.5px; }
+  .card-pos-foot { color:var(--muted); font-size:10px; margin-top:2px; }
+  .card-buy-head { display:flex; justify-content:space-between; align-items:center; gap:8px; color:var(--muted); font-size:10.5px; }
+  .card-buy-head b { color:var(--text); font-size:11px; }
+  .card-buybar { position:relative; height:7px; margin:4px 1px 2px; border-radius:5px; background:linear-gradient(90deg,#91a5c2 0 48%,#d7dee9 52% 84%,#d24358 90% 100%); }
+  .card-buybar.defensive { background:linear-gradient(90deg,#91a5c2 0 47%,#e4a43a 52% 84%,#d24358 90% 100%); }
+  .card-buybar::before { content:""; position:absolute; left:50%; top:-2px; height:11px; border-left:1px solid rgba(255,255,255,.9); }
+  .card-buybar i { position:absolute; top:-3px; width:3px; height:13px; background:#1f2430; border-radius:2px; box-shadow:0 0 0 1px #fff; }
+  .card-buy-labels { display:grid; grid-template-columns:1fr 1fr 1fr; color:var(--muted); font-size:9px; }
+  .card-buy-labels span:nth-child(2) { text-align:center; }
+  .card-buy-labels span:last-child { text-align:right; }
+  .card-buy-meta { display:flex; justify-content:space-between; gap:8px; color:var(--muted); font-size:9.5px; margin-top:2px; }
+  .card-buy.unknown { display:flex; flex-direction:column; justify-content:center; border-top-style:dashed; }
+  .card-buy.unknown b { color:var(--orange); font-size:11px; }
   .stability-chip { display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:700; border-radius:5px; padding:1px 6px; border:1px solid; background:#fff; }
   .stability-chip.blue { color:var(--blue); border-color:#8aa9dc; }
   .stability-chip.aqua { color:var(--aqua); border-color:#79b8c5; border-style:double; }
@@ -574,7 +589,23 @@ function cardPosition(s){
   if(p===null) return "";
   const n=Math.max(0,Math.min(100,p)), zone=p<=33?"安値圏":p>=67?"高値圏":"中間";
   const cls=p<=33?"low":p>=67?"high":"";
-  return `<div class="card-pos"><div class="card-pos-head"><span>52週位置</span><b class="${cls}">${zone} ${fmt(p,0)}%</b></div><div class="card-posbar"><i style="left:calc(${n}% - 1px)"></i></div><div class="card-pos-labels"><span>${yen(e.low52)}</span><span>${yen(e.high52)}</span></div></div>`;
+  const lowGap=e.low52&&e.price?(e.price/e.low52-1)*100:null;
+  return `<div class="card-pos"><div class="card-pos-head"><span>新規購入の価格目安</span><b class="${cls}">52週 ${zone} ${fmt(p,0)}%</b></div><div class="card-posbar"><i style="left:calc(${n}% - 1px)"></i></div><div class="card-pos-labels"><span>安値 ${yen(e.low52)}</span><span>高値 ${yen(e.high52)}</span></div>${lowGap===null?"":`<div class="card-pos-foot">52週安値から +${fmt(lowGap,1)}%（補助）</div>`}</div>`;
+}
+function cardBuyGuide(s){
+  const e=eff(s), ti=triggerInfo(s);
+  if(!ti||ti.unknown||!ti.last||!e.price){
+    return `<div class="card-buy unknown"><span class="price-label">買い増しの価格目安</span><b>前回購入価格 未確認</b></div>`;
+  }
+  const fromLast=(e.price/ti.last-1)*100;
+  const drop=Math.max(0,-fromLast), marker=Math.max(0,Math.min(100,drop/20*100));
+  const statusCls=fromLast<=-20?"c-red":ti.observing?"c-orange":"c-blue";
+  const barCls=ti.sectorType==="defensive"?" defensive":"";
+  const date=LS.get("lastbuydate_"+s.code,"");
+  return `<div class="card-buy"><div class="card-buy-head"><span>買い増しの価格目安</span><b class="${statusCls}">前回購入比 ${fromLast>=0?"+":""}${fmt(fromLast,1)}%</b></div><div class="card-buybar${barCls}"><i style="left:calc(${marker}% - 1px)"></i></div><div class="card-buy-labels"><span>前回 0%</span><span>−10%</span><span>基準 −20%</span></div><div class="card-buy-meta"><span>前回 ${yen(ti.last)}${date?`（${date}）`:""}</span><span>20%基準 ${yen(ti.basis)}</span></div></div>`;
+}
+function cardPriceGuide(s){
+  return LS.get("holding_"+s.code)?cardBuyGuide(s):cardPosition(s);
 }
 function render(){
   const list = filtered();
@@ -599,21 +630,21 @@ function render(){
 function card(s){
   const e=eff(s), y=yieldOf(s), sc=qualityScore(s), t=tagOf(s.code), p=pos52(s);
   const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `利回り <b>${fmt(y)}%</b>`;
-  const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">${chg>=0?"+":""}${fmt(chg)}%</span>`;
+  const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">前日比 ${chg>=0?"+":""}${fmt(chg)}%</span>`;
   const tagB = t?`<span class="badge">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
   const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
   const t30 = top30Score(s);
   return `<div class="card ${borderClass(s)}" onclick="openModal('${s.code}')">
     <div class="badges">${tagB}${lowB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
     <div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
-    <span class="price">${yen(e.price)}</span>${chgHtml}
+    <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>
     <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円</div>
     ${dividendHistoryCard(s)}
     ${isExempt(s.code)
       ? `<div class="scorebar"><span>財務評価は対象外</span></div>`
       : `<div class="scorebar"><i style="width:${sc/8*100}%;background:${scoreColor(sc)}"></i><span>${sc}/8</span></div>`}
-    ${cardPosition(s)}
+    ${cardPriceGuide(s)}
   </div>`;
 }
 /* ---------- ディフェンシブ／景気敏感 分類 ----------
@@ -1158,7 +1189,7 @@ async function init(){
     $("updated").innerHTML='<span class="err">data/stocks.json を読み込めませんでした。Webサーバー経由（GitHub Pages等）で開いてください。</span>';
     return;
   }
-  $("updated").textContent = "データ更新: "+DATA.updated;
+  $("updated").textContent = "株価データ更新: "+DATA.updated+"（自動取得・リアルタイムではありません）";
   if (DATA.vix!==null) showVix(DATA.vix,"（"+(DATA.vix_updated||"")+" 時点）");
   liveVix();
   tdrView();
@@ -1219,32 +1250,7 @@ function triggerInfo(s){
 }
 function divVerified(code){ return (window.DIV_VERIFIED||{})[code]||null; }
 function enhanceCards(){
-  document.querySelectorAll("#grid .card").forEach(function(el){
-    const codeEl=el.querySelector(".code");
-    if (!codeEl) return;
-    const code=codeEl.textContent.trim();
-    const s=DATA.stocks.find(function(x){return x.code===code;});
-    if (!s) return;
-    const ti=triggerInfo(s);
-    if (!ti) return;
-    if (ti.unknown){
-      const div=document.createElement("div");
-      div.className="sub c-orange";
-      div.textContent="🎯 前回購入価格未確認";
-      el.appendChild(div);
-      return;
-    }
-    const cls=ti.triggered?"c-red":(ti.observing||ti.gap<=10?"c-orange":"c-blue");
-    let txt;
-    if(ti.kind==="candidate") txt=ti.triggered?"📍 52週安値以下（補助目安）":"📍 52週安値まで +"+fmt(ti.gap,1)+"%（補助）";
-    else if(ti.triggered) txt="🔎 20%基準到達・業績確認";
-    else if(ti.observing) txt="👀 観察圏（前回価格から-10〜-20%）";
-    else txt="🎯 20%基準まで +"+fmt(ti.gap,1)+"%";
-    const div=document.createElement("div");
-    div.className="sub "+cls;
-    div.textContent=txt;
-    el.appendChild(div);
-  });
+  // 価格判断欄はcardPriceGuideでカード本体へ組み込み済み。
 }
 function enhanceModal(code){
   const dv=divVerified(code);
@@ -1256,10 +1262,11 @@ function enhanceModal(code){
     if(ti.unknown){
       html+="<h3>買い増し基準</h3><p class=\"kome c-orange\">前回購入価格が未確認のため、20%基準は表示していません。平均取得単価では代用していません。</p>";
     }else if(ti.kind==="candidate"){
-      html+="<h3>新規候補の価格目安</h3><div class=\"kv\"><div><span>52週安値（補助目安）</span><b>"+yen(ti.basis)+"</b></div><div><span>現在値との距離</span><b>"+(ti.gap>=0?"+":"")+fmt(ti.gap,1)+"%</b></div></div><p class=\"kome\">52週安値はリベ大流の中心ルールではありません。配当・財務・過去の利回りやPER/PBRと一緒に確認します。</p>";
+      html+="<h3>新規購入の価格目安</h3><div class=\"kv\"><div><span>現在値（自動取得）</span><b>"+yen(eff(s).price)+"</b></div><div><span>52週安値（補助目安）</span><b>"+yen(ti.basis)+"</b></div><div><span>52週安値から</span><b>"+(ti.gap>=0?"+":"")+fmt(ti.gap,1)+"%</b></div></div><p class=\"kome\">52週安値はリベ大流の中心ルールではありません。配当・財務・過去の利回りやPER/PBRと一緒に確認します。</p>";
     }else{
-      const status=ti.triggered?"20%基準到達・要確認":ti.observing?"観察圏（-10〜-20%）":((ti.gap>=0?"+":"")+fmt(ti.gap,1)+"%");
-      html+="<h3>暴落時の買い増し基準</h3><div class=\"kv\"><div><span>前回購入価格</span><b>"+yen(ti.last)+"</b></div><div><span>20%基準</span><b>"+yen(ti.basis)+"</b></div>"+(ti.watchBasis?"<div><span>ディフェンシブ観察線（-10%）</span><b>"+yen(ti.watchBasis)+"</b></div>":"")+"<div><span>現在の状態</span><b class=\""+(ti.triggered?"c-red":ti.observing?"c-orange":"")+"\">"+status+"</b></div></div><p class=\"kome\">基準到達は自動的な買いサインではありません。業績・配当の安全性を確認し、今回分を2〜3回に分けます。購入後は、その約定価格を次の「前回購入価格」に更新してください。</p>";
+      const current=eff(s).price, fromLast=(current/ti.last-1)*100;
+      const status=ti.triggered?"20%基準到達・要確認":ti.observing?"観察圏（-10〜-20%）":"基準未到達";
+      html+="<h3>暴落時の買い増し基準</h3><div class=\"kv\"><div><span>現在値（自動取得）</span><b>"+yen(current)+"</b></div><div><span>前回購入価格</span><b>"+yen(ti.last)+"</b></div><div><span>前回購入比</span><b class=\""+(fromLast<=-20?"c-red":ti.observing?"c-orange":"c-blue")+"\">"+(fromLast>=0?"+":"")+fmt(fromLast,1)+"%</b></div><div><span>20%基準</span><b>"+yen(ti.basis)+"</b></div>"+(ti.watchBasis?"<div><span>ディフェンシブ観察線（-10%）</span><b>"+yen(ti.watchBasis)+"</b></div>":"")+"<div><span>現在の状態</span><b class=\""+(ti.triggered?"c-red":ti.observing?"c-orange":"")+"\">"+status+"</b></div></div><p class=\"kome\">基準到達は自動的な買いサインではありません。業績・配当の安全性を確認し、今回分を2〜3回に分けます。購入後は、その約定価格を次の「前回購入価格」に更新してください。</p>";
     }
   }
   if (dv){
