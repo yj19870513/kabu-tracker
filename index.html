@@ -426,9 +426,11 @@ function dividendSparkline(history, color){
 function dividendHistoryCard(s){
   const st=dividendStability(s), color={blue:"#0b3d91",aqua:"#007f9e",green:"#2f8f3e",amber:"#b86b00",red:"#c6283d","red-partial":"#c6283d",pending:"#687384",short:"#9aa3b2"}[st.key]||"#9aa3b2";
   const h=st.history;
+  const source=(window.DIV_SOURCES||{})[s.code];
+  const basisLabel=source&&source.exclude_special_dividends?"通常配当ベース・":"";
   if(!h.length) return `<div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label\">配当推移</span><span>確認不足</span></div></div>`;
   const mark={blue:"◆",aqua:"◇",green:"●",amber:"▲",red:"■","red-partial":"■",pending:"□",short:"□"}[st.key]||"□";
-  return `<div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${mark} ${st.label}</span><span>${h.length}年分</span></div>${dividendSparkline(h,color)}<div class=\"divtrend-foot\"><span>${h[0].year.slice(0,4)}年 ${fmt(h[0].value,0)}円</span><span>${h[h.length-1].year.slice(0,4)}年 ${fmt(h[h.length-1].value,0)}円</span></div></div>`;
+  return `<div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${mark} ${st.label}</span><span>${basisLabel}${h.length}年分</span></div>${dividendSparkline(h,color)}<div class=\"divtrend-foot\"><span>${h[0].year.slice(0,4)}年 ${fmt(h[0].value,0)}円</span><span>${h[h.length-1].year.slice(0,4)}年 ${fmt(h[h.length-1].value,0)}円</span></div></div>`;
 }
 function isGrowingDividend(s){
   // 過去10年で概ね増配基調か（成長企業は過去平均が低いので「割安」に見えてしまうため区別する）
@@ -1325,7 +1327,8 @@ function enhanceModal(code){
   if (h.length){
     const rows=h.map(x=>`<tr><td>${x.year}年</td><td style=\"text-align:right\">${fmt(x.value,0)}円</td></tr>`).join("");
     const color={blue:"#0b3d91",aqua:"#007f9e",green:"#2f8f3e",amber:"#b86b00",red:"#c6283d","red-partial":"#c6283d",pending:"#687384",short:"#9aa3b2"}[st.key]||"#9aa3b2";
-    html+=`<h3>配当推移（${h[0].year.slice(0,4)}〜${h[h.length-1].year.slice(0,4)}年）</h3><div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${st.label}</span><span>${h.length}年分</span></div>${dividendSparkline(h,color)}</div><div class=\"tblwrap\"><table class=\"divtable\"><thead><tr><th>年度</th><th style=\"text-align:right\">確定配当（1株）</th></tr></thead><tbody>${rows}</tbody></table></div><p class=\"kome\">株式分割の影響を含むデータです。配当の増減は、必要に応じて下の調査メモも確認してください。</p>`;
+    const basisNote=src&&src.exclude_special_dividends?"記念配当・特別配当を除いた通常配当ベースです。":"株式分割の影響を含むデータです。";
+    html+=`<h3>配当推移（${h[0].year.slice(0,4)}〜${h[h.length-1].year.slice(0,4)}年）</h3><div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${st.label}</span><span>${src&&src.exclude_special_dividends?"通常配当ベース・":""}${h.length}年分</span></div>${dividendSparkline(h,color)}</div><div class=\"tblwrap\"><table class=\"divtable\"><thead><tr><th>年度</th><th style=\"text-align:right\">${src&&src.exclude_special_dividends?"通常配当（1株）":"確定配当（1株）"}</th></tr></thead><tbody>${rows}</tbody></table></div><p class=\"kome\">${basisNote} 配当の増減は、必要に応じて下の調査メモも確認してください。</p>`;
   }
   if (html) $("modal").insertAdjacentHTML("beforeend", html);
 }
