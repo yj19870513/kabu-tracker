@@ -1,0 +1,54 @@
+{
+  "2169": {
+    "status": "reviewed",
+    "checked_at": "2026-08-16",
+    "history": {
+      "2009": 10,
+      "2010": 16.5,
+      "2011": 22.5,
+      "2012": 29.5,
+      "2013": 36,
+      "2014": 36,
+      "2015": 36,
+      "2016": 40,
+      "2017": 40,
+      "2018": 44,
+      "2019": 50,
+      "2020": 55,
+      "2021": 56,
+      "2022": 60,
+      "2023": 66,
+      "2024": 78,
+      "2025": 74
+    },
+    "confirmed_real_cuts": 1,
+    "confidence": "high",
+    "note": "2013年1月1日の1株→200株分割を反映。2012年の5,900円は分割前の額面で、分割後は29.5円相当。2024年は記念配当を含むため、2025年74円への減少は実質減配として扱う。2008年は公開値の整合性が弱いため判定対象から除外。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/2169/dividend",
+        "period": "2009〜2025年"
+      },
+      {
+        "kind": "split",
+        "label": "CDS公式 決算説明資料（株式分割）",
+        "url": "https://www2.jpx.co.jp/disc/21690/140120160303427016.pdf",
+        "period": "2013年1月1日 1株→200株"
+      },
+      {
+        "kind": "dividend",
+        "label": "CDS公式 配当予想修正資料",
+        "url": "https://f.irbank.net/pdf/20131202/140120131202066993.pdf",
+        "period": "2013年"
+      },
+      {
+        "kind": "dividend",
+        "label": "CDS公式 記念配当資料",
+        "url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20240809/20240725554716.pdf",
+        "period": "2024年"
+      }
+    ]
+  }
+}
