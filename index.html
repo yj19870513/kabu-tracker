@@ -112,14 +112,14 @@
   .card-pos-head b { color:var(--text); font-weight:600; }
   .card-pos-head b.low { color:var(--blue); }
   .card-pos-head b.high { color:var(--red); }
-  .card-posbar { position:relative; height:7px; margin:4px 1px 2px; border-radius:5px; background:linear-gradient(90deg,#4d9ce8 0%,#2fae6d 50%,#e2566c 100%); }
+  .card-posbar { position:relative; height:7px; margin:4px 1px 2px; border-radius:5px; background:linear-gradient(90deg,#a8cdf1 0%,#add9c1 50%,#efb1ba 100%); }
   .card-posbar i { position:absolute; top:-3px; width:3px; height:13px; background:#1f2430; border-radius:2px; box-shadow:0 0 0 1px #fff; }
   .card-pos-labels { display:flex; justify-content:space-between; color:var(--muted); font-size:9.5px; }
   .card-pos-foot { color:var(--muted); font-size:10px; margin-top:2px; }
   .card-buy-head { display:flex; justify-content:space-between; align-items:center; gap:8px; color:var(--muted); font-size:10.5px; }
   .card-buy-head b { color:var(--text); font-size:11px; }
-  .card-buybar { position:relative; height:7px; margin:4px 1px 2px; border-radius:5px; background:linear-gradient(90deg,#2374d8 0%,#39a878 48%,#e6a52f 72%,#d24358 100%); }
-  .card-buybar.defensive { background:linear-gradient(90deg,#2374d8 0%,#39a878 42%,#e6a52f 58%,#d24358 100%); }
+  .card-buybar { position:relative; height:7px; margin:4px 1px 2px; border-radius:5px; background:linear-gradient(90deg,#a6c8f0 0%,#afd8c0 48%,#efd09f 72%,#e9a9b3 100%); }
+  .card-buybar.defensive { background:linear-gradient(90deg,#a6c8f0 0%,#afd8c0 42%,#efd09f 58%,#e9a9b3 100%); }
   .card-buybar::before { content:""; position:absolute; left:50%; top:-2px; height:11px; border-left:1px solid rgba(255,255,255,.9); }
   .card-buybar i { position:absolute; top:-3px; width:3px; height:13px; background:#1f2430; border-radius:2px; box-shadow:0 0 0 1px #fff; }
   .card-buy-labels { display:grid; grid-template-columns:1fr 1fr 1fr; color:var(--muted); font-size:9px; }
@@ -143,10 +143,13 @@
   .stability-chip.red, .stability-chip.red-partial { color:var(--red); border-color:#e18b98; }
   .stability-chip.pending, .stability-chip.short { color:#687384; border-color:#aeb6c4; }
   .badges { position:absolute; top:10px; right:12px; display:flex; gap:4px; }
-  .badge { font-size:10px; border-radius:4px; padding:1px 6px; background:#eef3fb; color:#3a5680; border:1px solid #dde6f5; }
-  .badge-low { background:#e9f1ff; color:#1d6fd6; border-color:#c8ddfa; }
-  .source-badge { cursor:pointer; background:#f5f8fc; color:#53657d; border-color:#d8e1ec; }
-  .source-badge:hover { background:#eaf1fa; color:var(--blue); }
+  .badge { font-size:10px; border-radius:5px; padding:2px 6px; background:#f2f4f7; color:#536070; border:1px solid #d8dee7; font-weight:600; }
+  .badge-holding { background:#e7f6ed; color:#087a43; border-color:#a7ddbe; }
+  .badge-watch { background:#f1eafe; color:#6b45a6; border-color:#d8c6f4; }
+  .badge-candidate { background:#fff1dc; color:#a65c00; border-color:#f0cf9b; }
+  .badge-low { background:#e5f5f7; color:#087886; border-color:#b8e0e5; }
+  .source-badge { cursor:pointer; background:#f7f7f7; color:#4b5563; border-color:#b9c0cb; }
+  .source-badge:hover { background:#e9edf2; color:var(--blue); }
   .scorebar { position:relative; height:16px; background:#eceff5; border-radius:8px; margin-top:8px; overflow:hidden; }
   .scorebar i { display:block; height:100%; background:linear-gradient(90deg,#4d9ce8,#2fae6d); }
   .scorebar span { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#1f2430; text-shadow:0 0 3px #fff,0 0 3px #fff; }
@@ -217,6 +220,7 @@
   @media(max-width:700px){ .sim-grid{grid-template-columns:1fr}.sim-inputs{grid-template-columns:1fr 1fr}.sim-inputs .btn{grid-column:1/-1}.sim-metrics{grid-template-columns:1fr}.mode-steps{grid-template-columns:1fr 1fr} }
   /* 財務8項目テーブル */
   .f8note { font-size:11.5px; color:var(--muted); margin:2px 0 8px; }
+  .f8-source-link { font-size:11px; font-weight:600; color:var(--blue); white-space:nowrap; }
   .f8row { border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin-bottom:7px; background:var(--field); }
   .f8head { display:flex; align-items:center; gap:8px; }
   .f8head b { font-size:13.5px; flex:1; }
@@ -393,8 +397,9 @@ function dividendStability(s){
   if(cuts>=2) return {key:longCoverage?"red":"red-partial", label:longCoverage?"複数回減配・要注意":"複数回減配（期間不足）・要注意", history:history, cuts:cuts, coverage:longCoverage?"long":"partial"};
   if(cuts===1) return {key:longCoverage?"green":"amber", label:longCoverage?"減配1回":"減配1回（期間不足）", history:history, cuts:cuts, coverage:longCoverage?"long":"partial"};
   const reviewStatus=(source&&source.status)|| (review&&review.status);
-  if(longCoverage && reviewStatus==="blue_ok") return {key:"blue", label:(source||review).method?"減配なし（調整後）":"減配なし", history:history, cuts:cuts, coverage:"long"};
-  if(midCoverage && reviewStatus==="blue_ok") return {key:"aqua", label:"減配なし（2010年以降）", history:history, cuts:cuts, coverage:"partial"};
+  const sourceReviewed=source&&source.status==="reviewed";
+  if(longCoverage && (reviewStatus==="blue_ok"||sourceReviewed) && cuts===0) return {key:"blue", label:(source||review).method?"減配なし（調整後）":"減配なし", history:history, cuts:cuts, coverage:"long"};
+  if(midCoverage && (reviewStatus==="blue_ok"||sourceReviewed) && cuts===0) return {key:"aqua", label:"減配なし（2010年以降）", history:history, cuts:cuts, coverage:"partial"};
   if(history.length<DIV_MIN_YEARS) return {key:"short", label:"確認不足（10年未満）", history:history, cuts:cuts, coverage:"short"};
   return {key:"pending", label:"調整確認中（減配判定保留）", history:history, cuts:cuts, coverage:"partial"};
 }
@@ -667,7 +672,7 @@ function card(s){
   const e=eff(s), y=yieldOf(s), sc=qualityScore(s), t=tagOf(s.code), p=pos52(s);
   const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `利回り <b>${fmt(y)}%</b>`;
   const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">前日比 ${chg>=0?"+":""}${fmt(chg)}%</span>`;
-  const tagB = t?`<span class="badge">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
+  const tagB = t?`<span class="badge badge-${t}">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
   const sourceB = `<button class="badge source-badge" onclick="event.stopPropagation();openModal('${s.code}')" title="配当・分割の根拠を確認">根拠</button>`;
   const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
   const t30 = top30Score(s);
@@ -828,18 +833,19 @@ function openModal(code){
 /* 財務8項目パネル（判定・根拠・基準をまとめて表示） */
 function fin8Panel(code){
   const f = fin8(code);
+  const irbankLink=`<a class="f8-source-link" href="https://irbank.net/${code}" target="_blank" rel="noopener">IR BANKの決算・財務ページ ↗</a>`;
   if (!f || !f.items){
     // 調査データが無い銘柄は、従来どおりの自動判定を明示したうえで表示する
     const s = DATA.stocks.find(x=>x.code===code);
     const items = s ? scoreItems(s) : [];
     const rows = items.map(x=>
       `<div class="f8row"><div class="f8head"><b>${x[0]}</b><span class="f8j ${x[1]?"j-o":"j-x"}">${x[1]?"○":"×"}</span></div></div>`).join("");
-    return `<h3>財務スコア ${s?qualityScore(s):"-"}/8点</h3>
+    return `<h3>財務スコア ${s?qualityScore(s):"-"}/8点 ${irbankLink}</h3>
       <div class="f8note">⚠️ この銘柄はIR BANKでの長期調査データがまだありません。証券データから自動計算した<b>直近4年分</b>の判定を表示しています（根拠の数字は出せません）。</div>${rows}`;
   }
   const c = fin8Counts(code);
   if (c["対象外"] >= 8){
-    return `<h3>財務8項目</h3>
+    return `<h3>財務8項目 ${irbankLink}</h3>
       <div class="f8note">${f.score || "ETFのため財務8指標による評価はできません"}</div>`;
   }
   const order = (window.FIN8 && window.FIN8.order) || Object.keys(f.items);
@@ -855,7 +861,7 @@ function fin8Panel(code){
   const spanNote = (f.span!==null && f.span!==undefined && f.span < 15)
     ? `⚠️ この銘柄はIR BANKで遡れるデータが<b>${f.span}年分</b>にとどまります（${f.years}）。上場から日が浅いなどの理由で、他の銘柄の15〜20年分の判定とは重みが異なる点にご注意ください。`
     : `IR BANKの長期データ（${f.years}）にもとづく判定です。`;
-  return `<h3>財務8項目　<span style="font-weight:400;font-size:12.5px">${c["○"]}/8（○${c["○"]} △${c["△"]} ×${c["×"]}${c["不明"]?" 不明"+c["不明"]:""}）</span></h3>
+  return `<h3>財務8項目 ${irbankLink}　<span style="font-weight:400;font-size:12.5px">${c["○"]}/8（○${c["○"]} △${c["△"]} ×${c["×"]}${c["不明"]?" 不明"+c["不明"]:""}）</span></h3>
     <div class="f8note">${spanNote}　調査時点：${(window.FIN8&&window.FIN8.generated_at)||"-"}（株価と違い自動更新されません）</div>
     ${rows}`;
 }
