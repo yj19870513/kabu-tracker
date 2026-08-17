@@ -76,6 +76,13 @@
   .border-filter button.on[data-border="red"], .border-filter button.on[data-border="red-partial"] { color:#fff; background:var(--red); border-color:var(--red); }
   .border-filter button.on[data-border="pending"], .border-filter button.on[data-border="short"] { color:var(--text); background:#e7eaf0; border-color:#aeb6c4; }
   .border-filter button small { opacity:.78; font-size:10px; margin-left:2px; }
+  .buy-filter { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+  .buy-filter > span { color:var(--muted); font-size:12px; margin-right:2px; }
+  .buy-filter button { background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:16px; padding:5px 12px; cursor:pointer; font-size:12.5px; box-shadow:var(--shadow); }
+  .buy-filter button.on { color:#fff; background:var(--blue); border-color:var(--blue); }
+  .buy-filter button[data-buy-zone="up20"].on { background:var(--red); border-color:var(--red); }
+  .buy-filter button[data-buy-zone="down20"].on { background:#3978c8; border-color:#3978c8; }
+  .buy-filter button small { opacity:.78; font-size:10px; margin-left:2px; }
   /* カード */
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; cursor:pointer; position:relative; box-shadow:var(--shadow); transition:box-shadow .18s, transform .18s, border-color .18s; }
@@ -122,7 +129,7 @@
   .card-buybar.defensive { background:linear-gradient(90deg,#a6c8f0 0%,#afd8c0 42%,#efd09f 58%,#e9a9b3 100%); }
   .card-buybar::before { content:""; position:absolute; left:50%; top:-2px; height:11px; border-left:1px solid rgba(255,255,255,.9); }
   .card-buybar i { position:absolute; top:-3px; width:3px; height:13px; background:#1f2430; border-radius:2px; box-shadow:0 0 0 1px #fff; }
-  .card-buy-labels { display:grid; grid-template-columns:1fr 1fr 1fr; color:var(--muted); font-size:9px; }
+  .card-buy-labels { display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr; color:var(--muted); font-size:9px; }
   .card-buy-labels span:nth-child(2) { text-align:center; }
   .card-buy-labels span:last-child { text-align:right; }
   .card-buy-meta { display:flex; justify-content:space-between; gap:8px; color:var(--muted); font-size:9.5px; margin-top:2px; }
@@ -291,6 +298,14 @@
     <button data-border="pending">枠なし｜確認中</button>
     <button data-border="short">枠なし｜短期</button>
   </div>
+  <div class="buy-filter" id="buyFilter">
+    <span>買い増し価格帯</span>
+    <button data-buy-zone="down20">−20%以下</button>
+    <button data-buy-zone="down10">−20〜−10%</button>
+    <button data-buy-zone="flat">−10〜0%</button>
+    <button data-buy-zone="up20">0〜＋20%</button>
+    <button data-buy-zone="over20">＋20%以上</button>
+  </div>
   <div class="fcount" id="fcount"></div>
 
   <div id="holdArea"></div>
@@ -305,6 +320,7 @@
 "use strict";
 let DATA = null, TAB = "all", FIL_HOLD = null, FIL_LOW = false;
 const FIL_BORDERS = new Set();
+const FIL_BUY_ZONES = new Set();
 const $ = id => document.getElementById(id);
 const LS = {
   get:(k,d=null)=>{ const v=localStorage.getItem(k); return v===null?d:v; },
@@ -414,6 +430,21 @@ function refreshDividendFilterCounts(){
   document.querySelectorAll("#borderFilter button[data-border]").forEach(btn=>{
     const key=btn.dataset.border;
     btn.innerHTML=`${DIVIDEND_FILTER_LABELS[key]} <small>${counts[key]||0}</small>`;
+  });
+}
+function refreshBuyFilterCounts(){
+  if(!DATA) return;
+  const counts={down20:0,down10:0,flat:0,up20:0,over20:0};
+  DATA.stocks.filter(s=>!s.error).forEach(s=>{
+    const chg=buyChange(s); if(chg===null) return;
+    if(chg<=-20) counts.down20++;
+    else if(chg<=-10) counts.down10++;
+    else if(chg<0) counts.flat++;
+    else if(chg<20) counts.up20++;
+    else counts.over20++;
+  });
+  document.querySelectorAll("#buyFilter button[data-buy-zone]").forEach(btn=>{
+    btn.innerHTML=`${btn.textContent.replace(/\s*\d+$/,"")} <small>${counts[btn.dataset.buyZone]||0}</small>`;
   });
 }
 function dividendSparkline(history, color){
@@ -561,6 +592,11 @@ function tagOf(code){
 
 /* ---------- フィルター＆描画 ---------- */
 const TABS = [["all","全銘柄"],["y4","4%以上"],["y37","3.7%以上"],["holding","保有中"],["watch","ウォッチ"],["candidate","候補"],["top30","トップ30"],["error","エラー"]];
+function buyChange(s){
+  if(!LS.get("holding_"+s.code)) return null;
+  const last=+LS.get("lastbuyprice_"+s.code,0)||0, current=eff(s).price;
+  return last>0&&Number.isFinite(+current) ? (+current/last-1)*100 : null;
+}
 function filtered(){
   let list = DATA.stocks.slice();
   const sec=$("secSel").value, smin=+$("scoreSel").value, q=$("q").value.trim().toLowerCase();
@@ -578,6 +614,17 @@ function filtered(){
   if (FIL_HOLD===true) list = list.filter(s=>LS.get("holding_"+s.code));
   if (FIL_HOLD===false) list = list.filter(s=>!LS.get("holding_"+s.code));
   if (FIL_LOW) list = list.filter(s=>{ const p=pos52(s); return p!==null&&p<=33; });
+  if (FIL_BUY_ZONES.size) list = list.filter(s=>{
+    const chg=buyChange(s);
+    if (chg===null) return false;
+    return [...FIL_BUY_ZONES].some(z=>
+      (z==="down20"&&chg<=-20) ||
+      (z==="down10"&&chg>-20&&chg<=-10) ||
+      (z==="flat"&&chg>-10&&chg<0) ||
+      (z==="up20"&&chg>=0&&chg<20) ||
+      (z==="over20"&&chg>=20)
+    );
+  });
   if (FIL_BORDERS.size) list = list.filter(s=>FIL_BORDERS.has(dividendStability(s).key));
   const key=$("sort").value;
   if (TAB!=="top30") list.sort((a,b)=>{
@@ -639,11 +686,11 @@ function cardBuyGuide(s){
     return `<div class="card-buy unknown"><span class="price-label">買い増しの価格目安</span><b>前回購入価格 未確認</b>${card52wMini(s)}</div>`;
   }
   const fromLast=(e.price/ti.last-1)*100;
-  const marker=Math.max(0,Math.min(100,(fromLast+20)/20*100));
+  const marker=Math.max(0,Math.min(100,(fromLast+20)/40*100));
   const statusCls=fromLast<=-20?"c-red":ti.observing?"c-orange":"c-blue";
   const barCls=ti.sectorType==="defensive"?" defensive":"";
   const date=LS.get("lastbuydate_"+s.code,"");
-  return `<div class="card-buy"><div class="card-buy-head"><span>買い増しの価格目安</span><b class="${statusCls}">前回購入比 ${fromLast>=0?"+":""}${fmt(fromLast,1)}%</b></div><div class="card-buybar${barCls}"><i style="left:calc(${marker}% - 1px)"></i></div><div class="card-buy-labels"><span>基準 −20%</span><span>−10%</span><span>前回 0%</span></div><div class="card-buy-meta"><span>前回 ${yen(ti.last)}${date?`（${date}）`:""}</span><span>20%基準 ${yen(ti.basis)}</span></div>${card52wMini(s)}</div>`;
+  return `<div class="card-buy"><div class="card-buy-head"><span>買い増しの価格目安</span><b class="${statusCls}">前回購入比 ${fromLast>=0?"+":""}${fmt(fromLast,1)}%</b></div><div class="card-buybar${barCls}"><i style="left:calc(${marker}% - 1px)"></i></div><div class="card-buy-labels"><span>−20%</span><span>−10%</span><span>0%</span><span>＋10%</span><span>＋20%</span></div><div class="card-buy-meta"><span>前回 ${yen(ti.last)}${date?`（${date}）`:""}</span><span>20%基準 ${yen(ti.basis)}</span></div>${card52wMini(s)}</div>`;
 }
 function cardPriceGuide(s){
   return LS.get("holding_"+s.code)?cardBuyGuide(s):cardPosition(s);
@@ -652,6 +699,7 @@ function render(){
   const list = filtered();
   refreshTabs();
   refreshDividendFilterCounts();
+  refreshBuyFilterCounts();
   // 統計バー：利回りより、保有状況と暴落時の確認事項を優先
   const tc=triggerCounts();
   $("stats").innerHTML =
@@ -1271,6 +1319,13 @@ async function init(){
     btn.classList.toggle("on",FIL_BORDERS.has(key));
     render();
   });
+  $("buyFilter").addEventListener("click",e=>{
+    const btn=e.target.closest("button[data-buy-zone]"); if(!btn) return;
+    const key=btn.dataset.buyZone;
+    if(FIL_BUY_ZONES.has(key)) FIL_BUY_ZONES.delete(key); else FIL_BUY_ZONES.add(key);
+    btn.classList.toggle("on",FIL_BUY_ZONES.has(key));
+    render();
+  });
   render();
 }
 init();
@@ -1309,7 +1364,7 @@ function enhanceModal(code){
       html+="<h3>新規購入の価格目安</h3><div class=\"kv\"><div><span>現在値（自動取得）</span><b>"+yen(eff(s).price)+"</b></div><div><span>52週安値（補助目安）</span><b>"+yen(ti.basis)+"</b></div><div><span>52週安値から</span><b>"+(ti.gap>=0?"+":"")+fmt(ti.gap,1)+"%</b></div></div><p class=\"kome\">52週安値はリベ大流の中心ルールではありません。配当・財務・過去の利回りやPER/PBRと一緒に確認します。</p>";
     }else{
       const current=eff(s).price, fromLast=(current/ti.last-1)*100;
-      const status=ti.triggered?"20%基準到達・要確認":ti.observing?"観察圏（-10〜-20%）":"基準未到達";
+      const status=ti.triggered?"20%基準到達・要確認":ti.observing?"観察圏（-10〜0%）":"基準未到達";
       html+="<h3>暴落時の買い増し基準</h3><div class=\"kv\"><div><span>現在値（自動取得）</span><b>"+yen(current)+"</b></div><div><span>前回購入価格</span><b>"+yen(ti.last)+"</b></div><div><span>前回購入比</span><b class=\""+(fromLast<=-20?"c-red":ti.observing?"c-orange":"c-blue")+"\">"+(fromLast>=0?"+":"")+fmt(fromLast,1)+"%</b></div><div><span>20%基準</span><b>"+yen(ti.basis)+"</b></div>"+(ti.watchBasis?"<div><span>ディフェンシブ観察線（-10%）</span><b>"+yen(ti.watchBasis)+"</b></div>":"")+"<div><span>現在の状態</span><b class=\""+(ti.triggered?"c-red":ti.observing?"c-orange":"")+"\">"+status+"</b></div></div><p class=\"kome\">基準到達は自動的な買いサインではありません。業績・配当の安全性を確認し、今回分を2〜3回に分けます。購入後は、その約定価格を次の「前回購入価格」に更新してください。</p>";
     }
   }
