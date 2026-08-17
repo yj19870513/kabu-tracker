@@ -426,6 +426,20 @@
       }
     ]
   },
+  "7989": {
+    "status": "blue_ok",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {"2008":10,"2009":10,"2010":10,"2011":10,"2012":10,"2013":10,"2014":10,"2015":15,"2016":15,"2017":15,"2018":23,"2019":28,"2020":29,"2021":30,"2022":31,"2023":36,"2024":46,"2025":70,"2026":120},
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "株式分割・併合は確認されず。2008年12月期は最終赤字でも10円を維持し、2008年以降の通常配当ベースで減配なし。2026年は予想値。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/7989/dividend","period":"2009〜2026年"},
+      {"kind":"ir","label":"立川ブラインド工業 第67期 有価証券報告書","url":"https://www.blind.co.jp/_assets/img/company/ir/library/houkoku_12.pdf","period":"2008〜2012年"},
+      {"kind":"ir","label":"立川ブラインド工業 第68期 有価証券報告書","url":"https://www.blind.co.jp/_assets/img/company/ir/library/houkoku_13.pdf","period":"2009〜2013年"}
+    ]
+  },
   "4008": {
     "status": "blue_ok",
     "checked_at": "2026-08-17",
