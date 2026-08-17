@@ -1,7 +1,7 @@
 {
- "updated": "2026-08-17 16:40",
- "vix": 14.99,
- "vix_updated": "2026-08-17 16:40",
+ "updated": "2026-08-17 18:40",
+ "vix": 14.93,
+ "vix_updated": "2026-08-17 18:40",
  "stocks": [
   {
    "code": "1343",
@@ -1395,7 +1395,7 @@
    "yield_pct": 3.85,
    "name_en": "HULIC CO LTD",
    "sector": "不動産",
-   "market_cap": 1321216376832.0,
+   "market_cap": 1321442082816.0,
    "per": 11.07,
    "pbr": 1.39,
    "op_margin": 25.9,
@@ -1511,8 +1511,8 @@
      "value": 269239000000.0
     }
    ],
-   "shares_outstanding": 759319729.0,
-   "div_capacity_years": -40.89,
+   "shares_outstanding": 759449485.0,
+   "div_capacity_years": -40.88,
    "high52": 2094.0,
    "low52": 1525.5,
    "ma25": 1773.28,
@@ -7438,7 +7438,7 @@
    "yield_pct": 5.24,
    "name_en": "TACHIKAWA CORP",
    "sector": "一般消費財",
-   "market_cap": 53750198272.0,
+   "market_cap": 53749911552.0,
    "per": 16.4,
    "pbr": 0.93,
    "op_margin": 9.13,
@@ -7554,7 +7554,7 @@
      "value": 4522933000.0
     }
    ],
-   "shares_outstanding": 20101046.0,
+   "shares_outstanding": 20100941.0,
    "div_capacity_years": 6.22,
    "high52": 2704.0,
    "low52": 1776.0,
@@ -8168,7 +8168,7 @@
    "yield_pct": 2.75,
    "name_en": "SUMITOMO MITSUI TRUST GP INC",
    "sector": "金融",
-   "market_cap": 4759171891200.0,
+   "market_cap": 1189793497088.0,
    "per": 13.09,
    "pbr": 1.3,
    "op_margin": 39.5,
@@ -8284,8 +8284,8 @@
      "value": 1220375000000.0
     }
    ],
-   "shares_outstanding": 2753353840.0,
-   "div_capacity_years": 45.26,
+   "shares_outstanding": 688338750.0,
+   "div_capacity_years": 181.04,
    "high52": 1767.0,
    "low52": 1003.0,
    "ma25": 1683.02,
@@ -8293,7 +8293,7 @@
    "div_warning": null,
    "avg_yield_10y": 4.82,
    "avg_per_10y": 16.19,
-   "avg_pbr_10y": 0.71,
+   "avg_pbr_10y": 0.18,
    "hist_years_used": 10,
    "name": "三井住友トラストグループ"
   },
@@ -10062,7 +10062,7 @@
    "sector": "生活必需品",
    "market_cap": 28550754304.0,
    "per": 15.44,
-   "pbr": 3.49,
+   "pbr": 3.77,
    "op_margin": -1.16,
    "payout": 60.56,
    "roe": 26.19,
@@ -11417,7 +11417,7 @@
    "yield_pct": 3.81,
    "name_en": "NIHON M&A CENTER HOLDINGS INC",
    "sector": "金融",
-   "market_cap": 207799369728.0,
+   "market_cap": 207974121472.0,
    "per": 16.64,
    "pbr": 4.37,
    "op_margin": 25.81,
@@ -11533,8 +11533,8 @@
      "value": 15551000000.0
     }
    ],
-   "shares_outstanding": 317057300.0,
-   "div_capacity_years": 4.6,
+   "shares_outstanding": 317323937.0,
+   "div_capacity_years": 4.59,
    "high52": 813.0,
    "low52": 607.7,
    "ma25": 664.33,
@@ -12539,9 +12539,9 @@
    "market_cap": 20161945600.0,
    "per": 16.5,
    "pbr": 3.57,
-   "op_margin": 40.39,
+   "op_margin": 7.34,
    "payout": 43.94,
-   "roe": 21.82,
+   "roe": 20.19,
    "equity_ratio": 79.92,
    "equity_hist": [
     {
@@ -12907,7 +12907,7 @@
    "yield_pct": 3.51,
    "name_en": "AKATSUKI INC",
    "sector": "通信サービス",
-   "market_cap": 41150361600.0,
+   "market_cap": 49324158976.0,
    "per": 8.72,
    "pbr": 1.09,
    "op_margin": 46.81,
@@ -13023,8 +13023,8 @@
      "value": 2693000000.0
     }
    ],
-   "shares_outstanding": 12032269.0,
-   "div_capacity_years": 13.09,
+   "shares_outstanding": 14422269.0,
+   "div_capacity_years": 10.92,
    "high52": 3520.0,
    "low52": 2480.0,
    "ma25": 3038.68,
@@ -13032,7 +13032,7 @@
    "div_warning": null,
    "avg_yield_10y": 2.64,
    "avg_per_10y": 22.01,
-   "avg_pbr_10y": 0.69,
+   "avg_pbr_10y": 0.82,
    "hist_years_used": 10,
    "name": "アカツキ"
   },
@@ -15912,7 +15912,7 @@
    "yield_pct": 4.35,
    "name_en": "NIPPON CERAMIC CO LTD",
    "sector": "情報技術",
-   "market_cap": 77847625728.0,
+   "market_cap": 78560706560.0,
    "per": 14.71,
    "pbr": 1.71,
    "op_margin": 21.95,
@@ -16028,8 +16028,8 @@
      "value": 4888000000.0
     }
    ],
-   "shares_outstanding": 20513208.0,
-   "div_capacity_years": 8.84,
+   "shares_outstanding": 20701108.0,
+   "div_capacity_years": 8.76,
    "high52": 4280.0,
    "low52": 3110.0,
    "ma25": 3747.6,
@@ -16155,7 +16155,7 @@
    "yield_pct": 3.92,
    "name_en": "NAGAILEBEN CO",
    "sector": "一般消費財",
-   "market_cap": 52768837632.0,
+   "market_cap": 53412151296.0,
    "per": 21.58,
    "pbr": 1.36,
    "op_margin": 26.26,
@@ -16254,8 +16254,8 @@
      "value": 2180900000.0
     }
    ],
-   "shares_outstanding": 29562374.0,
-   "div_capacity_years": 11.72,
+   "shares_outstanding": 29922774.0,
+   "div_capacity_years": 11.58,
    "high52": 2326.0,
    "low52": 1598.0,
    "ma25": 1770.32,
@@ -16263,7 +16263,7 @@
    "div_warning": null,
    "avg_yield_10y": 3.1,
    "avg_per_10y": 20.91,
-   "avg_pbr_10y": 1.38,
+   "avg_pbr_10y": 1.4,
    "hist_years_used": 10,
    "name": "ナガイレーベン"
   },
@@ -16607,7 +16607,7 @@
    "yield_pct": 2.94,
    "name_en": "SHOEI CO LTD",
    "sector": "一般消費財",
-   "market_cap": null,
+   "market_cap": 104555937792.0,
    "per": 16.62,
    "pbr": 3.22,
    "op_margin": 31.01,
@@ -16723,8 +16723,8 @@
      "value": 9757207000.0
     }
    ],
-   "shares_outstanding": null,
-   "div_capacity_years": null,
+   "shares_outstanding": 51202714.0,
+   "div_capacity_years": 6.34,
    "high52": 2080.0,
    "low52": 1551.0,
    "ma25": 1949.0,
@@ -16732,7 +16732,7 @@
    "div_warning": null,
    "avg_yield_10y": 3.0,
    "avg_per_10y": 16.54,
-   "avg_pbr_10y": null,
+   "avg_pbr_10y": 3.89,
    "hist_years_used": 10,
    "name": "SHOEI"
   },
@@ -19786,7 +19786,7 @@
    "yield_pct": 3.14,
    "name_en": "STELLA CHEMIFA",
    "sector": "素材",
-   "market_cap": 69940830208.0,
+   "market_cap": 69942263808.0,
    "per": 22.19,
    "pbr": 1.47,
    "op_margin": 12.74,
@@ -19902,7 +19902,7 @@
      "value": 6009000000.0
     }
    ],
-   "shares_outstanding": 12206079.0,
+   "shares_outstanding": 12206329.0,
    "div_capacity_years": 4.22,
    "high52": 8100.0,
    "low52": 3890.0,
@@ -23746,7 +23746,7 @@
    "yield_pct": 4.03,
    "name_en": "NIRECO CORPORATION",
    "sector": "情報技術",
-   "market_cap": 21301129216.0,
+   "market_cap": 7100376064.0,
    "per": 15.34,
    "pbr": 1.26,
    "op_margin": 8.05,
@@ -23862,8 +23862,8 @@
      "value": 1861560000.0
     }
    ],
-   "shares_outstanding": 21472911.0,
-   "div_capacity_years": 5.31,
+   "shares_outstanding": 7157637.0,
+   "div_capacity_years": 15.92,
    "high52": 1033.33,
    "low52": 594.67,
    "ma25": 921.0,
@@ -23871,7 +23871,7 @@
    "div_warning": null,
    "avg_yield_10y": 4.54,
    "avg_per_10y": 3.45,
-   "avg_pbr_10y": 0.63,
+   "avg_pbr_10y": 0.21,
    "hist_years_used": 10,
    "name": "ニレコ"
   },
