@@ -1,4 +1,157 @@
 {
+  "1928": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2010": 10,
+      "2011": 16,
+      "2012": 20,
+      "2013": 28,
+      "2014": 43,
+      "2015": 50,
+      "2016": 54,
+      "2017": 64,
+      "2018": 77,
+      "2019": 79,
+      "2020": 81,
+      "2021": 84,
+      "2022": 90,
+      "2023": 110,
+      "2024": 123,
+      "2025": 135,
+      "2026": 144
+    },
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "2011年の創立50周年記念配当5円を除外。2010〜2026年の通常配当ベースでは減配なし。2008〜2009年の比較可能な通常配当を安全に連結できないため、水色扱い。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/1928/dividend","period":"2010〜2026年"},
+      {"kind":"ir","label":"積水ハウス 株主還元","url":"https://www.sekisuihouse.co.jp/company/financial/holders/kangen/","period":"配当方針・記念配当の確認"}
+    ]
+  },
+  "3003": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2009": 10,
+      "2010": 10,
+      "2011": 5,
+      "2012": 2.5,
+      "2013": 6.5,
+      "2014": 10.5,
+      "2015": 15.5,
+      "2016": 16,
+      "2017": 21,
+      "2018": 25.5,
+      "2019": 31.5,
+      "2020": 36,
+      "2021": 39,
+      "2022": 42,
+      "2023": 50,
+      "2024": 54,
+      "2025": 62
+    },
+    "confirmed_real_cuts": 2,
+    "confidence": "high",
+    "note": "2009〜2025年の通常配当ベースでも、2010年10円→2011年5円、2011年5円→2012年2.5円の減少が確認できる。2016年は10周年記念配当1円を除いた通常配当16円で表示。複数回減配のため赤枠相当。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/3003/dividend","period":"2009〜2026年"},
+      {"kind":"ir","label":"ヒューリック 株式情報","url":"https://www.hulic.co.jp/ir/stock/basic/","period":"配当方針・株式情報の確認"}
+    ]
+  },
+  "3076": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2010": 16,
+      "2011": 16,
+      "2012": 16,
+      "2013": 20,
+      "2014": 24,
+      "2015": 30,
+      "2016": 30,
+      "2017": 36,
+      "2018": 38,
+      "2019": 40,
+      "2020": 45,
+      "2021": 45,
+      "2022": 60,
+      "2023": 80,
+      "2024": 90,
+      "2025": 90
+    },
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "2010〜2025年の通常配当ベースで減配なし。2025年の特別配当10円は除外し、通常配当90円で表示。2008〜2009年は現在の比較対象から外しているため、水色扱い。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/3076/dividend","period":"2010〜2026年"},
+      {"kind":"ir","label":"あいホールディングス IR","url":"https://www.aiholdings.co.jp/ir/","period":"特別配当・配当方針の確認"}
+    ]
+  },
+  "3231": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2010": 5,
+      "2011": 5,
+      "2012": 5,
+      "2013": 6,
+      "2014": 7,
+      "2015": 9,
+      "2016": 11.5,
+      "2017": 13,
+      "2018": 14,
+      "2019": 15,
+      "2020": 16,
+      "2021": 16.5,
+      "2022": 19.5,
+      "2023": 24,
+      "2024": 28,
+      "2025": 34
+    },
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "2010〜2025年の分割調整後通常配当で減配なし。2025年4月1日の1株5分割後の2026年値は年度途中の比較が混在するため、判定履歴から除外。2008〜2009年を安全に連結できないため、水色扱い。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/3231/dividend","period":"2010〜2026年"},
+      {"kind":"ir","label":"野村不動産HD 株主還元","url":"https://www.nomura-re-hd.co.jp/ir/","period":"株式分割・配当推移の確認"}
+    ]
+  },
+  "4042": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2010": 12,
+      "2011": 12,
+      "2012": 12,
+      "2013": 12,
+      "2014": 12,
+      "2015": 20,
+      "2016": 28,
+      "2017": 48,
+      "2018": 56,
+      "2019": 56,
+      "2020": 56,
+      "2021": 60,
+      "2022": 80,
+      "2023": 80,
+      "2024": 85,
+      "2025": 100,
+      "2026": 100
+    },
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "IR BANKの分割調整後配当を使用。2010〜2026年の通常配当ベースで減配なし。2008〜2009年の比較可能な数値を安全に連結できないため、水色扱い。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/4042/dividend","period":"2010〜2026年"},
+      {"kind":"ir","label":"東ソー IR","url":"https://www.tosoh.co.jp/ir/","period":"配当方針・決算資料の確認"}
+    ]
+  },
   "2659": {
     "status": "reviewed",
     "checked_at": "2026-08-17",
