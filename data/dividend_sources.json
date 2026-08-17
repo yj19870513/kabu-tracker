@@ -755,6 +755,188 @@
       }
     ]
   },
+  "2169": {
+    "status": "blue_ok",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2009": 10,
+      "2010": 16.5,
+      "2011": 22.5,
+      "2012": 27,
+      "2013": 34,
+      "2014": 36,
+      "2015": 36,
+      "2016": 40,
+      "2017": 40,
+      "2018": 44,
+      "2019": 50,
+      "2020": 50,
+      "2021": 56,
+      "2022": 60,
+      "2023": 66,
+      "2024": 68,
+      "2025": 74
+    },
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "2013年1月1日の1株200分割を反映。2012年の記念配当500円（分割調整後2.5円）、2013年の上場指定記念配当4円、2020年の創立40周年記念配当5円、2024年の記念配当10円を通常配当から除外。2009〜2025年の通常配当ベースで減配なし。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/2169/dividend",
+        "period": "2009〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "CDS 株式情報",
+        "url": "https://www.cds-japan.jp/ja/ir/stockinformation/",
+        "period": "株式分割・配当方針の確認"
+      }
+    ]
+  },
+  "1384": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2015": 12,
+      "2016": 14,
+      "2017": 15,
+      "2018": 15,
+      "2019": 10,
+      "2020": 10,
+      "2021": 10,
+      "2022": 15,
+      "2023": 20,
+      "2024": 40,
+      "2025": 70
+    },
+    "confirmed_real_cuts": 1,
+    "confidence": "high",
+    "note": "2014年11月の1株3分割を反映。2015〜2025年の確認期間では2019年12円相当→10円で1回の減配が残るため、青枠にはしない。2008〜2014年は安全な連結値が不足するため期間不足として扱う。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/1384/dividend",
+        "period": "2015〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "ホクリヨウ IR",
+        "url": "https://www.hokuryo.co.jp/ir/",
+        "period": "株式分割・配当の確認"
+      }
+    ]
+  },
+  "4481": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2014": 5.83,
+      "2015": 25,
+      "2016": 25,
+      "2017": 10.83,
+      "2018": 13.33,
+      "2019": 20,
+      "2020": 30,
+      "2021": 35,
+      "2022": 76,
+      "2023": 92,
+      "2024": 102,
+      "2025": 117
+    },
+    "confirmed_real_cuts": 1,
+    "confidence": "high",
+    "note": "2020年6月・2022年10月の株式分割を反映。2021年の創立25周年記念配当10円を除外。2016年25円→2017年10.83円の減配が残るため青枠にはしない。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/4481/dividend",
+        "period": "2014〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "ベース IR",
+        "url": "https://www.base-corp.co.jp/ir/",
+        "period": "株式分割・記念配当の確認"
+      }
+    ]
+  },
+  "4595": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2015": 4.62,
+      "2016": 6.25,
+      "2017": 10.5,
+      "2018": 14.5,
+      "2019": 14.5,
+      "2020": 5,
+      "2021": 77.5,
+      "2022": 125,
+      "2023": 40,
+      "2024": 100,
+      "2025": 100
+    },
+    "confirmed_real_cuts": 2,
+    "confidence": "high",
+    "note": "2015年10月、2017年7月、2018年6月、2024年7月の株式分割を反映。2023年は普通配当ベース40円で、特別配当を除外。2020年の減配と2022年から2023年の通常配当減少が残るため、青枠にはしない。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/4595/dividend",
+        "period": "2015〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "ミズホメディー IR",
+        "url": "https://www.mizuho-m.co.jp/ir/",
+        "period": "株式分割・特別配当の確認"
+      }
+    ]
+  },
+  "6088": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2015": 6,
+      "2016": 6,
+      "2017": 6,
+      "2018": 7.5,
+      "2019": 9,
+      "2020": 11,
+      "2021": 11,
+      "2022": 13,
+      "2023": 8,
+      "2024": 13.5,
+      "2025": 21
+    },
+    "confirmed_real_cuts": 1,
+    "confidence": "medium",
+    "note": "2014年4月1日の1株4分割と2024年12月1日の1株2分割を反映。IR BANK自身が2014年の調整値にエラー可能性を注記しているため、長期の青枠にはしない。2022年13円→2023年8円の減配が残る。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/6088/dividend",
+        "period": "2015〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "シグマクシスHD 株主還元",
+        "url": "https://www.sigmaxyz.com/ja/ir/shareholder/capitalefficiency.html",
+        "period": "株式分割・配当推移の確認"
+      }
+    ]
+  },
   "2148": {
     "status": "reviewed",
     "checked_at": "2026-08-17",
