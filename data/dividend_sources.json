@@ -1,4 +1,64 @@
 {
+  "4097": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 3,
+    "confidence": "high",
+    "note": "2004年、2009年、2010年に実質減配を確認。2013年は創立55周年記念配当の終了による見かけの減少を通常配当判定から区別している。景気後退時の減配歴があるため赤枠相当。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/4097/dividend","period":"2003〜2026年"},
+      {"kind":"ir","label":"高圧ガス工業 IR","url":"https://www.koatsugas.co.jp/ir/","period":"記念配当・配当方針の確認"}
+    ]
+  },
+  "4641": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 3,
+    "confidence": "high",
+    "note": "2008年は創業40周年記念配当を含むため通常配当と区別。2009年はリーマンショック、2012年にも実質減配を確認。複数回減配のため赤枠相当。2026年の株式分割は将来値の比較から除外。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/4641/dividend","period":"2006〜2026年"},
+      {"kind":"ir","label":"アルプス技研 IR","url":"https://www.alpsgiken.co.jp/ir/","period":"記念配当・株式分割の確認"}
+    ]
+  },
+  "4674": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 1,
+    "confidence": "high",
+    "note": "2009年の株式分割を調整しても、2010年に実質減配が残る。2023年の記念配当、2024年7月の株式分割を整理し、減配1回として緑枠相当。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/4674/dividend","period":"2007〜2026年"},
+      {"kind":"ir","label":"クレスコ 株主還元","url":"https://www.cresco.co.jp/ja/ir/stockholder/dividend.html","period":"記念配当・株式分割の確認"}
+    ]
+  },
+  "4832": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 1,
+    "confidence": "high",
+    "note": "2010年にリーマンショック後の実質減配を確認。2013年の1株100分割、2021年・2025年の株式分割を調整し、2024年3月期の記念配当10円は通常配当から除外する。減配1回のため緑枠相当。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/4832/dividend","period":"2007〜2026年"},
+      {"kind":"ir","label":"JFEシステムズ 配当政策","url":"https://www.jfe-systems.com/ir/stock/haitou.html","period":"記念配当・株式分割の確認"}
+    ]
+  },
+  "5108": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 3,
+    "confidence": "high",
+    "note": "2008年・2009年のリーマンショック時と2020年のコロナ禍に実質減配を確認。2026年1月1日の1株2分割を調整し、景気敏感株として複数回減配の赤枠相当。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/5108/dividend","period":"2006〜2026年"},
+      {"kind":"ir","label":"ブリヂストン 配当・株主還元","url":"https://www.bridgestone.co.jp/ir/stock-rating/dividend/","period":"株式分割・配当方針の確認"}
+    ]
+  },
   "1928": {
     "status": "reviewed",
     "checked_at": "2026-08-17",
