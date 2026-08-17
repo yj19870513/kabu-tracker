@@ -1,4 +1,123 @@
 {
+  "2003": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 1,
+    "confidence": "high",
+    "note": "株式併合・記念配当を調整。2009年8円相当→2010年7円で実質減配1回を確認。2022年の高配当からの減少は特別配当等を含む比較のため、通常配当判定では減配と数えない。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/2003/dividend","period":"2010〜2026年"},
+      {"kind":"ir","label":"日東富士製粉 IR","url":"https://www.nittofuji.co.jp/ir/","period":"配当方針・株式併合・記念配当の確認"}
+    ]
+  },
+  "9986": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 3,
+    "confidence": "high",
+    "note": "株式分割なし。2009年30円→2010年18円、2020年61円→2021年53円、2023年109円→2024年100円の実質減配を確認。複数回のため赤枠相当。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/9986/dividend","period":"2010〜2027年"},
+      {"kind":"ir","label":"蔵王産業 IR","url":"https://www.zaoh.co.jp/ir/","period":"配当方針・記念配当の確認"}
+    ]
+  },
+  "2301": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 1,
+    "confidence": "medium",
+    "note": "2010年以降では2020年10月期に42円予想から実績30円へ減少。以後は37円→43円→51円→65円→67円と回復・増配しているが、1回の減配は残る。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/2301/dividend","period":"2010〜2026年"},
+      {"kind":"ir","label":"学情 IR","url":"https://company.gakujo.ne.jp/ir/","period":"配当方針・決算資料の確認"}
+    ]
+  },
+  "3433": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 4,
+    "confidence": "medium",
+    "note": "2018年3月の1株4分割を調整。2012年、2018年、2019年、2020年に実質減配が残る。2021年以降は増配基調だが、過去の複数回減配のため赤枠相当。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/3433/dividend","period":"2010〜2026年"},
+      {"kind":"ir","label":"トーカロ IR","url":"https://www.tocalo.co.jp/ir/","period":"株式分割・配当方針の確認"}
+    ]
+  },
+  "3635": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 1,
+    "confidence": "medium",
+    "note": "株式分割調整後でも2023年3月期に108円相当→50円の大幅な実質減配を確認。その他の年は増配基調だが、2010年以降の確認期間内に1回の減配がある。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/3635/dividend","period":"2010〜2026年"},
+      {"kind":"ir","label":"コーエーテクモ HD IR","url":"https://www.koeitecmo.co.jp/ir/","period":"株式分割・配当方針の確認"}
+    ]
+  },
+  "3649": {
+    "status": "pending",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confidence": "low",
+    "note": "株式分割が複数回あり、IR BANKには過去データの分割調整異常を示す注記がある。配当推移の確認用リンクは登録するが、調整根拠が弱いため減配回数・枠色は確定しない。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移（要再確認）","url":"https://irbank.net/3649/dividend","period":"2009〜2026年"},
+      {"kind":"ir","label":"ファインデックス IR","url":"https://www.findex.co.jp/ir/","period":"株式分割・配当資料の確認"}
+    ]
+  },
+  "3912": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 2,
+    "confidence": "medium",
+    "note": "2015年上場後、2018〜2022年に無配化。2023年に8円で復配し、その後は増配しているが、無配化は明確な減配・配当中断として複数回減配相当で扱う。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/3912/dividend","period":"2015〜2026年"},
+      {"kind":"ir","label":"モバイルファクトリー IR","url":"https://www.mobilefactory.jp/ir/","period":"配当方針・復配資料の確認"}
+    ]
+  },
+  "3932": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 1,
+    "confidence": "medium",
+    "note": "2018年以降の配当実績は短く、2019年50円→2020年30円の減少が残る。長期判定には期間不足のため、青枠にはしない。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/3932/dividend","period":"2018〜2026年"},
+      {"kind":"ir","label":"アカツキ IR","url":"https://aktsk.jp/ir/","period":"配当方針・決算資料の確認"}
+    ]
+  },
+  "3937": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 0,
+    "confidence": "medium",
+    "note": "配当実績は2019年以降の短期間で、5円→40円まで減配なし。ただし10年未満かつリーマン期を含まないため、無減配の青・水色判定ではなく枠なし（短期）とする。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/3937/dividend","period":"2019〜2026年"},
+      {"kind":"ir","label":"Ubicom HD IR","url":"https://www.ubicom-hd.com/ir/","period":"配当方針・決算資料の確認"}
+    ]
+  },
+  "4251": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 2,
+    "confidence": "medium",
+    "note": "2023年1月1日の1株2分割を調整しても、2017年と2023年に実質減配が残る。分割だけによる見かけ上の減少ではないため、期間不足の赤枠相当。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/4251/dividend","period":"2013〜2026年"},
+      {"kind":"ir","label":"恵和 IR","url":"https://www.keiwa.co.jp/ir/","period":"株式分割・配当方針の確認"}
+    ]
+  },
   "6073": {"status":"reviewed","checked_at":"2026-08-17","exclude_special_dividends":true,"confirmed_real_cuts":0,"confidence":"medium","note":"上場前のリーマンショック期は比較対象にできない。上場後の2014年以降は減配なしだが、長期無減配の実績とは分けて扱うため水色相当。","sources":[{"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/6073/dividend","period":"2010〜2027年"},{"kind":"ir","label":"アサンテ IR","url":"https://www.asante.co.jp/ir/","period":"上場時期・配当方針の確認"}]},
   "6345": {"status":"reviewed","checked_at":"2026-08-17","exclude_special_dividends":true,"confirmed_real_cuts":1,"confidence":"high","note":"2010年に20円→10円の実質減配を確認。リーマンショック期の減配が残るため、緑枠相当。","sources":[{"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/6345/dividend","period":"2004〜2027年"},{"kind":"ir","label":"アイチコーポレーション IR","url":"https://www.aichi-corp.co.jp/ir/","period":"決算・配当方針の確認"}]},
   "6432": {"status":"reviewed","checked_at":"2026-08-17","exclude_special_dividends":true,"confirmed_real_cuts":3,"confidence":"high","note":"2009年の減配、2010〜2011年の無配、2015年の減配を確認。景気敏感な建設機械メーカーで、複数回減配のため赤枠相当。","sources":[{"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/6432/dividend","period":"2007〜2027年"},{"kind":"ir","label":"竹内製作所 IR","url":"https://www.takeuchi-mfg.co.jp/ir/","period":"決算・配当方針の確認"}]},
