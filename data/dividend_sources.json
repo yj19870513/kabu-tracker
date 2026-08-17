@@ -755,6 +755,276 @@
       }
     ]
   },
+  "2148": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "confirmed_real_cuts": 0,
+    "confidence": "medium",
+    "note": "2015年12月1日の1株3分割と記念配当の存在は確認できるが、2013年以前を含む分割調整後の通常配当を一次資料で安全に連結できないため、枠色は変更しない。現状は未確認扱いを維持する。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/2148/dividend",
+        "period": "2010〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "ITmedia 決算説明資料",
+        "url": "https://corp.itmedia.co.jp/ir/library/",
+        "period": "株式分割・記念配当の確認"
+      }
+    ]
+  },
+  "6929": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2008": 20,
+      "2009": 15,
+      "2010": 20,
+      "2011": 30,
+      "2012": 30,
+      "2013": 30,
+      "2014": 35,
+      "2015": 50,
+      "2016": 50,
+      "2017": 50,
+      "2018": 70,
+      "2019": 70,
+      "2020": 70,
+      "2021": 100,
+      "2022": 100,
+      "2023": 100,
+      "2024": 125,
+      "2025": 165
+    },
+    "confirmed_real_cuts": 1,
+    "confidence": "medium",
+    "note": "2015〜2025年の特別・記念配当を通常配当判定から除外。2008年20円→2009年15円の減配が残るため青枠にはしない。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/6929/dividend",
+        "period": "2009〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "日本セラミック IR",
+        "url": "https://www.nicera.co.jp/ir/irinformation",
+        "period": "特別配当・配当方針の確認"
+      }
+    ]
+  },
+  "7849": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2010": 12.5,
+      "2011": 15,
+      "2012": 15,
+      "2013": 15,
+      "2014": 15,
+      "2015": 15,
+      "2016": 15,
+      "2017": 15,
+      "2018": 17.5,
+      "2019": 17.5,
+      "2020": 17.5,
+      "2021": 20,
+      "2022": 60,
+      "2023": 60,
+      "2024": 110,
+      "2025": 120
+    },
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "2010〜2025年の分割調整後・通常配当ベースで減配なし。2008〜2009年の安全な比較値がないため、長期の青枠ではなく2010年以降確認として扱う。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/7849/dividend",
+        "period": "2010〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "スターツ出版 IR",
+        "url": "https://starts-pub.jp/ir/",
+        "period": "株式分割・配当の確認"
+      }
+    ]
+  },
+  "9364": {
+    "status": "blue_ok",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2008": 8.5,
+      "2009": 8.5,
+      "2010": 8.5,
+      "2011": 8.5,
+      "2012": 9,
+      "2013": 10,
+      "2014": 11,
+      "2015": 12,
+      "2016": 13,
+      "2017": 15,
+      "2018": 28,
+      "2019": 45,
+      "2020": 46,
+      "2021": 50,
+      "2022": 73,
+      "2023": 90,
+      "2024": 100,
+      "2025": 130
+    },
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "2008〜2025年の通常配当ベースで減配なし。2026年予想は判定対象外。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/9364/dividend",
+        "period": "2008〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "上組 IR",
+        "url": "https://www.kamigumi.co.jp/ir/",
+        "period": "配当方針・決算資料の確認"
+      }
+    ]
+  },
+  "9381": {
+    "status": "blue_ok",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2008": 4.375,
+      "2009": 5.625,
+      "2010": 8.125,
+      "2011": 10.625,
+      "2012": 13.5,
+      "2013": 15,
+      "2014": 26,
+      "2015": 30,
+      "2016": 30,
+      "2017": 30,
+      "2018": 35,
+      "2019": 36,
+      "2020": 36,
+      "2021": 38,
+      "2022": 58,
+      "2023": 80,
+      "2024": 80,
+      "2025": 80
+    },
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "株式分割と記念配当を調整し、2008〜2025年の通常配当ベースで減配なし。海外売上比率など財務評価の未確認項目とは別に、配当履歴は確認済み。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/9381/dividend",
+        "period": "2008〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "エーアイテイー IR",
+        "url": "https://www.ait.co.jp/ir/",
+        "period": "株式分割・記念配当の確認"
+      }
+    ]
+  },
+  "9513": {
+    "status": "blue_ok",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2008": 70,
+      "2009": 70,
+      "2010": 70,
+      "2011": 70,
+      "2012": 70,
+      "2013": 70,
+      "2014": 70,
+      "2015": 70,
+      "2016": 70,
+      "2017": 70,
+      "2018": 75,
+      "2019": 75,
+      "2020": 75,
+      "2021": 75,
+      "2022": 75,
+      "2023": 90,
+      "2024": 100,
+      "2025": 100
+    },
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "2008〜2025年の通常配当ベースで減配なし。70円の長期据え置き期間は減配ではなく、2018年以降は増配・据え置き。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/9513/dividend",
+        "period": "2008〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "電源開発 IR",
+        "url": "https://www.jpower.co.jp/ir/",
+        "period": "配当方針・決算資料の確認"
+      }
+    ]
+  },
+  "9795": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {
+      "2010": 18,
+      "2011": 19,
+      "2012": 22,
+      "2013": 24,
+      "2014": 24,
+      "2015": 26,
+      "2016": 30,
+      "2017": 33,
+      "2018": 34,
+      "2019": 38,
+      "2020": 40,
+      "2021": 40,
+      "2022": 46,
+      "2023": 72,
+      "2024": 77,
+      "2025": 85
+    },
+    "confirmed_real_cuts": 0,
+    "confidence": "medium",
+    "note": "2013年の記念配当を除外した通常配当ベースで2010〜2025年の減配なし。2008〜2009年は安全な比較値がないため、2010年以降確認として扱う。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移",
+        "url": "https://irbank.net/9795/dividend",
+        "period": "2010〜2026年"
+      },
+      {
+        "kind": "ir",
+        "label": "ステップ IR",
+        "url": "https://www.stepnet.co.jp/ir/",
+        "period": "記念配当・配当方針の確認"
+      }
+    ]
+  },
   "9989": {
     "status": "blue_ok",
     "checked_at": "2026-08-17",
