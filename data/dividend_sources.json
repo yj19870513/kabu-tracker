@@ -426,6 +426,32 @@
       }
     ]
   },
+  "1717": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {"2010":4,"2011":4,"2012":5,"2013":5,"2014":6,"2015":8.5,"2016":10,"2017":12.5,"2018":13,"2019":16,"2020":16.5,"2021":26,"2022":28,"2023":31.5,"2024":37.5,"2025":42.5},
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "IR BANKの2010〜2025年実績を確認。株式分割の記載はなく、確認期間中の通常配当は一度も減配なし。2008〜2009年の確認値がないため、長期の青枠ではなく2010年以降確認として扱う。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/1717/dividend","period":"2010〜2026年"},
+      {"kind":"ir","label":"明豊ファシリティワークス IR","url":"https://www.meiho.co.jp/ir/","period":"配当方針・決算資料の確認"}
+    ]
+  },
+  "4516": {
+    "status": "reviewed",
+    "checked_at": "2026-08-17",
+    "exclude_special_dividends": true,
+    "history": {"2010":19,"2011":19,"2012":19,"2013":21,"2014":23,"2015":25,"2016":28,"2017":48,"2018":52,"2019":70,"2020":86,"2021":99,"2022":110,"2023":114,"2024":124,"2025":124},
+    "confirmed_real_cuts": 0,
+    "confidence": "high",
+    "note": "IR BANKの2010〜2025年実績を確認。株式分割の記載はなく、確認期間中の通常配当は前年比同額または増配で、減配なし。2008〜2009年の確認値がないため、2010年以降確認として扱う。",
+    "sources": [
+      {"kind":"dividend","label":"IR BANK 配当推移","url":"https://irbank.net/4516/dividend","period":"2010〜2026年"},
+      {"kind":"ir","label":"日本新薬 IR","url":"https://www.nippon-shinyaku.co.jp/ir/","period":"配当方針・決算資料の確認"}
+    ]
+  },
   "7989": {
     "status": "blue_ok",
     "checked_at": "2026-08-17",
