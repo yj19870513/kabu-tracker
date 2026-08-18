@@ -231,6 +231,8 @@
   .sim-bulk { margin-top:10px; border-top:1px solid var(--line); padding-top:8px; }
   .sim-bulk summary { cursor:pointer; color:var(--blue); font-weight:600; font-size:12.5px; }
   .sim-quick-search { margin:8px 0; }
+  .sim-bulk-file { margin-top:8px; font-size:11.5px; color:var(--muted); }
+  .sim-bulk-text { min-height:58px; margin-top:6px; font-family:monospace; font-size:11px; }
   .sim-quick-list { max-height:190px; overflow:auto; border:1px solid var(--line); border-radius:8px; background:var(--card); padding:5px; }
   .sim-quick-row { display:grid; grid-template-columns:minmax(0,1fr) 100px; gap:6px; align-items:center; padding:4px 5px; font-size:11.5px; border-bottom:1px solid #edf0f5; }
   .sim-quick-row label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -1058,6 +1060,24 @@ function addSimItems(){
   });
   saveSimBasket(a); openSimulator();
 }
+function handleSimBasketFile(ev){ const file=ev.target.files[0]; if(!file)return; const reader=new FileReader(); reader.onload=e=>{$("simBasketImportText").value=e.target.result;}; reader.readAsText(file); }
+function parseSimBasketImport(raw){
+  const text=String(raw||"").trim(); if(!text)return null;
+  if(/^[\[{]/.test(text)){ const obj=JSON.parse(text); const rows=Array.isArray(obj)?obj:(obj.items||obj.basket||obj.stocks); return Array.isArray(rows)?rows:null; }
+  const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean); if(lines.length<2)return null;
+  const delimiter=lines[0].includes("\t")?"\t":","; const headers=splitImportLine(lines[0],delimiter).map(h=>h.replace(/^\ufeff/,"").trim().toLowerCase());
+  const ci=headers.findIndex(h=>h==="code"||h.includes("コード")||h.includes("証券")), ai=headers.findIndex(h=>h==="amount"||h.includes("予算")||h.includes("金額"));
+  if(ci<0||ai<0)return null; return lines.slice(1).map(line=>{const v=splitImportLine(line,delimiter);return {code:v[ci],amount:v[ai]};});
+}
+function applySimBasketImport(){
+  const msg=$("simBasketImportMsg"); let rows;
+  try{ rows=parseSimBasketImport($("simBasketImportText").value); }catch(e){ msg.innerHTML='<span class="err">CSV／JSONを読み取れませんでした。</span>';return; }
+  if(!Array.isArray(rows)){ msg.innerHTML='<span class="err">codeとamount（予算）の列が見つかりません。</span>';return; }
+  const known=new Set(DATA.stocks.map(s=>s.code)), a=simBasket(), unknown=[]; let n=0;
+  rows.forEach(r=>{const code=String(r.code||r.code_no||"").trim(),amount=+(String(r.amount??r.budget??"").replace(/[,￥円\s]/g,""))||0;if(!known.has(code)){if(code)unknown.push(code);return;}if(amount<=0)return;const found=a.find(x=>x.code===code);if(found)found.amount=(+found.amount||0)+amount;else a.push({code,amount});n++;});
+  if(!n){msg.innerHTML='<span class="err">取り込める購入予定がありませんでした。</span>';return;}
+  saveSimBasket(a); msg.innerHTML=`<span class="c-green">✅ ${n}件の購入予定を取り込みました</span>${unknown.length?`<br><span class="c-orange">トラッカー未登録: ${unknown.join("、")}</span>`:""}`; setTimeout(openSimulator,700);
+}
 function simMix(rows){
   const out={defensive:0,cyclical:0,neutral:0}, total=rows.reduce((n,r)=>n+r.value,0)||0;
   rows.forEach(r=>{ const k=sectorType(r.s); out[k]=(out[k]||0)+r.value; });
@@ -1135,7 +1155,7 @@ function openSimulator(){
     <div class="box ${crash?'danger':'info'}"><b class="ttl">${crash?'暴落時モード':'平常時モード'}</b>${crash?'銘柄3%・セクター10%の超過は事実として表示しますが、暴落中の一時的な偏りは許容し、平常時の新規買付で戻します。':'銘柄2〜3%・セクター10%を目安に、新しい買付で偏りを整えます。厳密な上限ではなく確認の目安です。'}</div>
     <div class="sim-grid">
       <div class="sim-panel"><h3>① 現在のポートフォリオ</h3><p><b>${base.length}銘柄</b>${imported?` ／ 取込 ${new Date(imported).toLocaleString('ja-JP')}`:" ／ 未取込"}</p><button class="btn sub" onclick="openPortfolioImport()">管理シートのデータを取り込む</button></div>
-      <div class="sim-panel"><h3>② 今回分だけを追加</h3><div class="sim-sort-row"><label>銘柄の並び順<select onchange="LS.set('sim_sort',this.value);openSimulator()"><option value="code" ${simSort==="code"?"selected":""}>コード順</option><option value="kana" ${simSort==="kana"?"selected":""}>五十音順</option></select></label><span class="kome">現在：${simSortLabel}</span></div><div class="sim-inputs"><label>銘柄<select id="simCode">${options}</select></label><label>今回の予算（円）<input id="simAmount" type="number" min="0" step="1000" placeholder="例：100000"></label><button class="btn" onclick="addSimItem()">追加</button></div><details class="sim-bulk"><summary>複数銘柄をまとめて追加</summary><input class="sim-quick-search" type="search" placeholder="コード・銘柄名で絞り込み" oninput="filterSimQuickList(this.value)"><div class="sim-quick-list">${quickRows}</div><button class="btn" onclick="addSimItems()">選択した銘柄を追加</button></details><p class="kome">暴落時は予定総額を2〜3回に分け、この画面には今回使う分だけを入れます。</p></div>
+      <div class="sim-panel"><h3>② 今回分だけを追加</h3><div class="sim-sort-row"><label>銘柄の並び順<select onchange="LS.set('sim_sort',this.value);openSimulator()"><option value="code" ${simSort==="code"?"selected":""}>コード順</option><option value="kana" ${simSort==="kana"?"selected":""}>五十音順</option></select></label><span class="kome">現在：${simSortLabel}</span></div><div class="sim-inputs"><label>銘柄<select id="simCode">${options}</select></label><label>今回の予算（円）<input id="simAmount" type="number" min="0" step="1000" placeholder="例：100000"></label><button class="btn" onclick="addSimItem()">追加</button></div><details class="sim-bulk"><summary>複数銘柄をまとめて追加</summary><input class="sim-quick-search" type="search" placeholder="コード・銘柄名で絞り込み" oninput="filterSimQuickList(this.value)"><div class="sim-quick-list">${quickRows}</div><button class="btn" onclick="addSimItems()">選択した銘柄を追加</button><div class="sim-bulk-file">CSV／JSONから一括取込（code,amount または 証券コード,予算）</div><input type="file" accept=".json,.csv,.tsv,.txt" onchange="handleSimBasketFile(event)"><textarea id="simBasketImportText" class="sim-bulk-text" rows="3" placeholder='[{&quot;code&quot;:&quot;8584&quot;,&quot;amount&quot;:50000}]'></textarea><div id="simBasketImportMsg"></div><button class="btn sub" onclick="applySimBasketImport()">CSV／JSONを取り込む</button></details><p class="kome">暴落時は予定総額を2〜3回に分け、この画面には今回使う分だけを入れます。</p></div>
     </div>
     <h3>購入予定</h3>${basket.length?`<div class="tblwrap"><table class="sim-table"><tr><th>銘柄</th><th>予算</th><th>概算株数</th><th>概算購入額</th><th>年間配当</th><th></th></tr>${planRows}</table></div><button class="btn sub" onclick="clearSimBasket()">購入予定をすべて消す</button>`:'<p class="kome">まだ追加されていません。1回の購入で複数銘柄をまとめて比較できます。</p>'}
     <h3>③ 購入前 → 購入後</h3><div class="sim-metrics">
