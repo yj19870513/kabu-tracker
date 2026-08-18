@@ -1,7 +1,7 @@
 {
- "updated": "2026-08-18 16:26",
- "vix": 14.25,
- "vix_updated": "2026-08-18 16:26",
+ "updated": "2026-08-18 18:32",
+ "vix": 15.88,
+ "vix_updated": "2026-08-18 18:32",
  "stocks": [
   {
    "code": "1343",
@@ -16607,7 +16607,7 @@
    "yield_pct": 2.93,
    "name_en": "SHOEI CO LTD",
    "sector": "一般消費財",
-   "market_cap": null,
+   "market_cap": 104811954176.0,
    "per": 16.65,
    "pbr": 3.23,
    "op_margin": 31.01,
@@ -16723,8 +16723,8 @@
      "value": 9757207000.0
     }
    ],
-   "shares_outstanding": null,
-   "div_capacity_years": null,
+   "shares_outstanding": 51202714.0,
+   "div_capacity_years": 6.34,
    "high52": 2080.0,
    "low52": 1551.0,
    "ma25": 1957.84,
@@ -16732,7 +16732,7 @@
    "div_warning": null,
    "avg_yield_10y": 3.0,
    "avg_per_10y": 16.54,
-   "avg_pbr_10y": null,
+   "avg_pbr_10y": 3.89,
    "hist_years_used": 10,
    "name": "SHOEI"
   },
@@ -25320,7 +25320,7 @@
    "sector": "資本財",
    "market_cap": 120497364992.0,
    "per": 14.03,
-   "pbr": 1.21,
+   "pbr": 1.2,
    "op_margin": 15.73,
    "payout": 45.92,
    "roe": 9.12,
