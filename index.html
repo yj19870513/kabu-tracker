@@ -228,7 +228,25 @@
   .sim-table th,.sim-table td { border-bottom:1px solid var(--line); padding:7px 6px; text-align:left; }
   .sim-table th { color:var(--muted); font-size:11.5px; }
   .sim-delta.up { color:var(--red); } .sim-delta.down { color:var(--blue); }
-  @media(max-width:700px){ .sim-grid{grid-template-columns:1fr}.sim-inputs{grid-template-columns:1fr 1fr}.sim-inputs .btn{grid-column:1/-1}.sim-metrics{grid-template-columns:1fr}.mode-steps{grid-template-columns:1fr 1fr} }
+  .sim-bulk { margin-top:10px; border-top:1px solid var(--line); padding-top:8px; }
+  .sim-bulk summary { cursor:pointer; color:var(--blue); font-weight:600; font-size:12.5px; }
+  .sim-quick-search { margin:8px 0; }
+  .sim-quick-list { max-height:190px; overflow:auto; border:1px solid var(--line); border-radius:8px; background:var(--card); padding:5px; }
+  .sim-quick-row { display:grid; grid-template-columns:minmax(0,1fr) 100px; gap:6px; align-items:center; padding:4px 5px; font-size:11.5px; border-bottom:1px solid #edf0f5; }
+  .sim-quick-row label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .sim-quick-row input[type="checkbox"] { accent-color:var(--blue); }
+  .sim-quick-row input[type="number"] { margin:0; }
+  .sim-scenarios { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; padding:9px 10px; border:1px solid var(--line); border-radius:8px; background:var(--field); font-size:12px; }
+  .sim-scenarios .btn { margin-top:0; }
+  .sim-scenarios select { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:6px 8px; font-size:12px; }
+  .sim-mix-row { margin:10px 0 14px; }
+  .sim-mix-label { color:var(--muted); font-size:11.5px; margin-bottom:4px; }
+  .sim-mixbar { display:flex; height:14px; overflow:hidden; border-radius:7px; background:#edf0f5; box-shadow:inset 0 0 0 1px rgba(40,55,80,.08); }
+  .sim-mix-seg { display:block; min-width:0; transition:width .2s ease; }
+  .sim-mix-legend { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; color:var(--muted); font-size:10.5px; }
+  .sim-mix-legend span { display:inline-flex; align-items:center; gap:3px; }
+  .sim-mix-legend i { width:8px; height:8px; border-radius:2px; display:inline-block; }
+  @media(max-width:700px){ .sim-grid{grid-template-columns:1fr}.sim-inputs{grid-template-columns:1fr 1fr}.sim-inputs .btn{grid-column:1/-1}.sim-metrics{grid-template-columns:1fr}.sim-quick-row{grid-template-columns:minmax(0,1fr) 90px}.sim-scenarios{align-items:stretch}.sim-scenarios select{flex:1;min-width:180px}.mode-steps{grid-template-columns:1fr 1fr} }
   /* 財務8項目テーブル */
   .f8note { font-size:11.5px; color:var(--muted); margin:2px 0 8px; }
   .f8-source-link { font-size:11px; font-weight:600; color:var(--blue); white-space:nowrap; }
@@ -1006,6 +1024,45 @@ function portfolioRows(){
 }
 function simBasket(){ try{ const a=JSON.parse(LS.get("sim_basket","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function saveSimBasket(a){ LS.set("sim_basket",JSON.stringify(a)); }
+function simScenarios(){ try{ const a=JSON.parse(LS.get("sim_scenarios","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function saveSimScenarios(a){ LS.set("sim_scenarios",JSON.stringify(a)); }
+function saveSimScenario(){
+  const basket=simBasket();
+  if(!basket.length){ alert("購入予定がないため、保存できません。銘柄と予算を追加してください。"); return; }
+  const name=prompt("購入案の名前を入力してください",`購入案 ${new Date().toLocaleDateString('ja-JP')}`);
+  if(!name||!name.trim()) return;
+  const list=simScenarios().filter(x=>x.name!==name.trim());
+  list.unshift({name:name.trim(),saved_at:new Date().toISOString(),basket:basket});
+  saveSimScenarios(list.slice(0,10)); openSimulator();
+}
+function loadSimScenario(i){ const x=simScenarios()[+i]; if(!x) return; saveSimBasket(Array.isArray(x.basket)?x.basket:[]); openSimulator(); }
+function deleteSimScenario(){ const sel=$("simScenario"); if(!sel||sel.value==="") return; const i=+sel.value, list=simScenarios(); if(!list[i]) return; if(!confirm(`「${list[i].name}」を削除しますか？`)) return; list.splice(i,1); saveSimScenarios(list); openSimulator(); }
+function toggleSimPick(code, checked){ const input=$("simPickAmt_"+code); if(input) input.disabled=!checked; }
+function filterSimQuickList(query){
+  const q=String(query||"").trim().toLowerCase();
+  document.querySelectorAll(".sim-quick-row").forEach(row=>{ row.style.display=(!q||row.dataset.search.includes(q))?"grid":"none"; });
+}
+function addSimItems(){
+  const a=simBasket();
+  document.querySelectorAll(".sim-pick-check:checked").forEach(ch=>{
+    const code=ch.value, amount=+($("simPickAmt_"+code)?.value||0);
+    if(!amount||amount<=0) return;
+    const found=a.find(x=>x.code===code); if(found) found.amount=(+found.amount||0)+amount; else a.push({code,amount});
+  });
+  saveSimBasket(a); openSimulator();
+}
+function simMix(rows){
+  const out={defensive:0,cyclical:0,neutral:0}, total=rows.reduce((n,r)=>n+r.value,0)||0;
+  rows.forEach(r=>{ const k=sectorType(r.s); out[k]=(out[k]||0)+r.value; });
+  return Object.fromEntries(Object.entries(out).map(([k,v])=>[k,total?v/total*100:0]));
+}
+function simMixHtml(label,mix){
+  const labels={defensive:"ディフェンシブ",cyclical:"景気敏感",neutral:"その他"};
+  const colors={defensive:"#2d9b78",cyclical:"#d78b43",neutral:"#aeb8c8"};
+  const seg=Object.keys(labels).map(k=>`<span class="sim-mix-seg" style="width:${mix[k]}%;background:${colors[k]}" title="${labels[k]} ${fmt(mix[k],1)}%"></span>`).join("");
+  const legend=Object.keys(labels).map(k=>`<span><i style="background:${colors[k]}"></i>${labels[k]} ${fmt(mix[k],1)}%</span>`).join("");
+  return `<div class="sim-mix-row"><div class="sim-mix-label">${label}</div><div class="sim-mixbar">${seg}</div><div class="sim-mix-legend">${legend}</div></div>`;
+}
 function portfolioSummary(rows){
   const value=rows.reduce((n,r)=>n+r.value,0), dividend=rows.reduce((n,r)=>n+r.dividend,0);
   const defensive=rows.filter(r=>sectorType(r.s)==="defensive").reduce((n,r)=>n+r.value,0);
@@ -1034,7 +1091,11 @@ function openSimulator(){
   const base=portfolioRows(), after=projectedRows(), b=portfolioSummary(base), a=portfolioSummary(after), basket=simBasket();
   const simSort=LS.get("sim_sort","code");
   const simSortLabel=simSort==="kana"?"五十音順":"コード順";
-  const options=DATA.stocks.filter(s=>!s.error).sort((x,y)=>simSort==="kana"?String(x.name||x.code).localeCompare(String(y.name||y.code),"ja")||x.code.localeCompare(y.code):x.code.localeCompare(y.code,{numeric:true})).map(s=>`<option value="${s.code}">${s.code} ${s.name}</option>`).join("");
+  const simStocks=DATA.stocks.filter(s=>!s.error).sort((x,y)=>simSort==="kana"?String(x.name||x.code).localeCompare(String(y.name||y.code),"ja")||x.code.localeCompare(y.code):x.code.localeCompare(y.code,{numeric:true}));
+  const options=simStocks.map(s=>`<option value="${s.code}">${s.code} ${s.name}</option>`).join("");
+  const quickRows=simStocks.map(s=>`<div class="sim-quick-row" data-search="${String(s.code+" "+(s.name||"")).toLowerCase()}"><label><input class="sim-pick-check" type="checkbox" value="${s.code}" onchange="toggleSimPick('${s.code}',this.checked)"> ${s.code} ${s.name}</label><input id="simPickAmt_${s.code}" type="number" min="0" step="1000" placeholder="予算" disabled></div>`).join("");
+  const scenarios=simScenarios();
+  const scenarioOptions=scenarios.map((x,i)=>`<option value="${i}">${x.name}</option>`).join("");
   const planRows=basket.map((x,i)=>{
     const s=DATA.stocks.find(v=>v.code===x.code); if(!s) return "";
     const e=eff(s), shares=e.price?Math.floor((+x.amount||0)/e.price):0, cost=shares*(e.price||0), div=shares*(e.dividend||0);
@@ -1048,6 +1109,7 @@ function openSimulator(){
     const bp=b.value?(sectorBefore[k]||0)/b.value*100:0, ap=a.value?(sectorAfter[k]||0)/a.value*100:0, d=ap-bp;
     return `<tr><td>${k}</td><td>${fmt(bp,1)}%</td><td>${fmt(ap,1)}%</td><td class="sim-delta ${d>0.05?'up':d<-.05?'down':''}">${d>=0?'+':''}${fmt(d,1)}pt</td></tr>`;
   }).join("");
+  const mixBefore=simMix(base), mixAfter=simMix(after);
   const imported=LS.get("portfolio_imported_at","");
   const mode=operationMode(), crash=mode==="crash";
   const stockOver=after.filter(r=>a.value&&r.value/a.value*100>3).sort((x,y)=>y.value-x.value).slice(0,8);
@@ -1064,7 +1126,7 @@ function openSimulator(){
     <div class="box ${crash?'danger':'info'}"><b class="ttl">${crash?'暴落時モード':'平常時モード'}</b>${crash?'銘柄3%・セクター10%の超過は事実として表示しますが、暴落中の一時的な偏りは許容し、平常時の新規買付で戻します。':'銘柄2〜3%・セクター10%を目安に、新しい買付で偏りを整えます。厳密な上限ではなく確認の目安です。'}</div>
     <div class="sim-grid">
       <div class="sim-panel"><h3>① 現在のポートフォリオ</h3><p><b>${base.length}銘柄</b>${imported?` ／ 取込 ${new Date(imported).toLocaleString('ja-JP')}`:" ／ 未取込"}</p><button class="btn sub" onclick="openPortfolioImport()">管理シートのデータを取り込む</button></div>
-      <div class="sim-panel"><h3>② 今回分だけを追加</h3><div class="sim-sort-row"><label>銘柄の並び順<select onchange="LS.set('sim_sort',this.value);openSimulator()"><option value="code" ${simSort==="code"?"selected":""}>コード順</option><option value="kana" ${simSort==="kana"?"selected":""}>五十音順</option></select></label><span class="kome">現在：${simSortLabel}</span></div><div class="sim-inputs"><label>銘柄<select id="simCode">${options}</select></label><label>今回の予算（円）<input id="simAmount" type="number" min="0" step="1000" placeholder="例：100000"></label><button class="btn" onclick="addSimItem()">追加</button></div><p class="kome">暴落時は予定総額を2〜3回に分け、この画面には今回使う分だけを入れます。</p></div>
+      <div class="sim-panel"><h3>② 今回分だけを追加</h3><div class="sim-sort-row"><label>銘柄の並び順<select onchange="LS.set('sim_sort',this.value);openSimulator()"><option value="code" ${simSort==="code"?"selected":""}>コード順</option><option value="kana" ${simSort==="kana"?"selected":""}>五十音順</option></select></label><span class="kome">現在：${simSortLabel}</span></div><div class="sim-inputs"><label>銘柄<select id="simCode">${options}</select></label><label>今回の予算（円）<input id="simAmount" type="number" min="0" step="1000" placeholder="例：100000"></label><button class="btn" onclick="addSimItem()">追加</button></div><details class="sim-bulk"><summary>複数銘柄をまとめて追加</summary><input class="sim-quick-search" type="search" placeholder="コード・銘柄名で絞り込み" oninput="filterSimQuickList(this.value)"><div class="sim-quick-list">${quickRows}</div><button class="btn" onclick="addSimItems()">選択した銘柄を追加</button></details><p class="kome">暴落時は予定総額を2〜3回に分け、この画面には今回使う分だけを入れます。</p></div>
     </div>
     <h3>購入予定</h3>${basket.length?`<div class="tblwrap"><table class="sim-table"><tr><th>銘柄</th><th>予算</th><th>概算株数</th><th>概算購入額</th><th>年間配当</th><th></th></tr>${planRows}</table></div><button class="btn sub" onclick="clearSimBasket()">購入予定をすべて消す</button>`:'<p class="kome">まだ追加されていません。1回の購入で複数銘柄をまとめて比較できます。</p>'}
     <h3>③ 購入前 → 購入後</h3><div class="sim-metrics">
@@ -1073,9 +1135,10 @@ function openSimulator(){
       ${metricHtml("ディフェンシブ比率（管理シート区分）",fmt(b.defensive,1)+"%",fmt(a.defensive,1),"%")}
       ${metricHtml("安定枠比率（青＋水色）",fmt(b.stable,1)+"%",fmt(a.stable,1),"%")}
     </div>
+    <div class="sim-scenarios"><b>購入案を保存</b><span class="kome">このブラウザ内に最大10件</span><button class="btn sub" onclick="saveSimScenario()">現在の案を保存</button>${scenarios.length?`<select id="simScenario" onchange="loadSimScenario(this.value)"><option value="">保存した案を呼び出す</option>${scenarioOptions}</select><button class="btn sub" onclick="deleteSimScenario()">選択案を削除</button>`:""}</div>
     <p class="kome">ディフェンシブ比率は管理シートから取り込んだ区分を優先しています${b.sectorMissing?`。未区分：${b.sectorMissing}銘柄（旧データはセクターからの暫定判定）`:""}。安定枠比率は、長期で減配なしの青枠と、2010年以降確認できる水色枠の合計です。</p>
     ${notices.length?`<div class="box ${crash?'info':'warn'}"><b class="ttl">${crash?'一時的な偏りを確認':'分散目安を確認'}</b>${notices.join("<br>")}${crash?'<br>基準超過だけで候補を外さず、業績と配当の安全性を優先します。':''}</div>`:""}
-    <h3>セクター構成の変化</h3>${sectors.length?`<div class="tblwrap"><table class="sim-table"><tr><th>セクター</th><th>現在</th><th>購入後</th><th>変化</th></tr>${secRows}</table></div>`:'<p class="kome">保有データまたは購入予定を入れると表示されます。</p>'}`;
+    <h3>セクター構成の変化</h3>${sectors.length?`${simMixHtml("現在",mixBefore)}${simMixHtml("購入後",mixAfter)}<div class="tblwrap"><table class="sim-table"><tr><th>セクター</th><th>現在</th><th>購入後</th><th>変化</th></tr>${secRows}</table></div>`:'<p class="kome">保有データまたは購入予定を入れると表示されます。</p>'}`;
   $("overlay").style.display="block";
 }
 function addSimItem(){
