@@ -254,6 +254,16 @@
   .storage-notice b { color:#174b89; }
   .card .sub { min-height:18px; }
   .card .divtrend, .card .scorebar, .card .card-buy, .card .card-pos { margin-top:8px; }
+  .card-primary { padding-bottom:9px; border-bottom:1px solid var(--line); }
+  .card-support { margin-top:8px; }
+  .card-support summary { display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:pointer; list-style:none; color:var(--muted); font-size:10.5px; font-weight:700; letter-spacing:.02em; padding:2px 0; }
+  .card-support summary::-webkit-details-marker { display:none; }
+  .card-support summary::before { content:"＋"; color:var(--blue); font-size:13px; width:14px; }
+  .card-support[open] summary::before { content:"−"; }
+  .card-support summary span { margin-left:auto; font-weight:500; font-size:10px; color:#8792a5; }
+  .card-support > *:not(summary) { animation:cardSupportIn .16s ease-out; }
+  @keyframes cardSupportIn { from{opacity:.4;transform:translateY(-2px)} to{opacity:1;transform:none} }
+  @media(prefers-reduced-motion:reduce){ .card-support > *:not(summary){animation:none} }
   @media(max-width:700px){ .sim-grid{grid-template-columns:1fr}.sim-inputs{grid-template-columns:1fr 1fr}.sim-inputs .btn{grid-column:1/-1}.sim-metrics{grid-template-columns:1fr}.sim-quick-row{grid-template-columns:minmax(0,1fr) 90px}.sim-scenarios{align-items:stretch}.sim-scenarios select{flex:1;min-width:180px}.storage-notice{font-size:11.5px}.card{padding:12px 11px}.card .name{font-size:16px}.card .market-price .price{font-size:21px}.card .divtrend-foot,.card .card-buy-meta,.card .card-buy-52w-foot{font-size:10px}.mode-steps{grid-template-columns:1fr 1fr} }
   /* 財務8項目テーブル */
   .f8note { font-size:11.5px; color:var(--muted); margin:2px 0 8px; }
@@ -769,17 +779,17 @@ function card(s){
   const sourceB = `<button class="badge source-badge" onclick="event.stopPropagation();openModal('${s.code}')" title="配当・分割の根拠を確認">根拠</button>`;
   const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
   const t30 = top30Score(s);
+  const scoreHtml=isExempt(s.code)
+    ? `<div class="scorebar"><span>財務評価は対象外</span></div>`
+    : `<div class="scorebar"><i style="width:${sc/8*100}%;background:${scoreColor(sc)}"></i><span>${sc}/8</span></div>`;
   return `<div class="card ${borderClass(s)}" onclick="openModal('${s.code}')">
     <div class="badges">${tagB}${lowB}${sourceB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
-    <div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
+    <div class="card-primary"><div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>
     <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円</div>
-    ${dividendHistoryCard(s)}
-    ${isExempt(s.code)
-      ? `<div class="scorebar"><span>財務評価は対象外</span></div>`
-      : `<div class="scorebar"><i style="width:${sc/8*100}%;background:${scoreColor(sc)}"></i><span>${sc}/8</span></div>`}
-    ${cardPriceGuide(s)}
+    ${dividendHistoryCard(s)}</div>
+    <details class="card-support" open onclick="event.stopPropagation()"><summary>補助情報 <span>財務・買い増し・52週（タップで開閉）</span></summary>${scoreHtml}${cardPriceGuide(s)}</details>
   </div>`;
 }
 /* ---------- ディフェンシブ／景気敏感 分類 ----------
