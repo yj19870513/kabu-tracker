@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+"""配当履歴・出典データの機械チェック。
+
+判定を自動で青・緑・赤へ変更するスクリプトではありません。
+入力データの欠落や、明らかな形式不整合を検出して推測判定を防ぎます。
+"""
+import argparse
+import json
+import sys
+from pathlib import Path
+from urllib.parse import urlparse
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load(name):
+    with (ROOT / "data" / name).open(encoding="utf-8") as f:
+        return json.load(f)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--json", action="store_true", help="結果をJSONで出力")
+    args = parser.parse_args()
+
+    stocks = load("stocks.json")
+    sources = load("dividend_sources.json")
+    adjusted = load("dividend_history_adjusted.json")
+    stock_rows = stocks.get("stocks", stocks) if isinstance(stocks, dict) else stocks
+    stock_codes = {str(row.get("code")) for row in stock_rows if isinstance(row, dict)}
+    errors, warnings = [], []
+    source_codes = set(sources)
+
+    for code, item in sources.items():
+        if code not in stock_codes:
+            errors.append(f"出典コード {code} がstocks.jsonにありません")
+        if not isinstance(item, dict):
+            errors.append(f"{code}: 出典データがオブジェクトではありません")
+            continue
+        urls = item.get("sources", [])
+        if item.get("status") == "reviewed" and not urls:
+            warnings.append(f"{code}: reviewed ですが出典リンクがありません")
+        for source in urls:
+            url = str(source.get("url", "")) if isinstance(source, dict) else ""
+            parsed = urlparse(url)
+            if parsed.scheme not in ("http", "https") or not parsed.netloc:
+                errors.append(f"{code}: URL形式が不正です: {url}")
+
+    for code, item in adjusted.items():
+        history = item.get("history", {}) if isinstance(item, dict) else {}
+        years = []
+        for year, value in history.items():
+            try:
+                year_num, value_num = int(str(year)[:4]), float(value)
+                if value_num < 0:
+                    raise ValueError
+                years.append(year_num)
+            except (TypeError, ValueError):
+                errors.append(f"{code}: 配当履歴の値が不正です: {year}={value}")
+        if len(years) < 2:
+            warnings.append(f"{code}: グラフ比較用の履歴が2年未満です")
+        years.sort()
+        gaps = [f"{a}〜{b}" for a, b in zip(years, years[1:]) if b - a > 1]
+        if gaps:
+            warnings.append(f"{code}: 年度の空白があります（{', '.join(gaps)}）")
+        drops = item.get("remaining_drops", [])
+        if item.get("status") in ("blue_ok", "reviewed") and drops:
+            warnings.append(f"{code}: 青系ステータスですがremaining_dropsが残っています")
+
+    missing = sorted(stock_codes - source_codes)
+    result = {
+        "stocks": len(stock_codes),
+        "sources": len(source_codes),
+        "adjusted": len(adjusted),
+        "missing_sources": missing,
+        "errors": errors,
+        "warnings": warnings,
+    }
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+    else:
+        print(f"銘柄 {result['stocks']} / 出典 {result['sources']} / 調整履歴 {result['adjusted']}")
+        print(f"出典未登録: {len(missing)}銘柄")
+        print(f"エラー: {len(errors)}件 / 警告: {len(warnings)}件")
+        for line in errors:
+            print(f"ERROR: {line}")
+        for line in warnings[:30]:
+            print(f"WARN: {line}")
+        if len(warnings) > 30:
+            print(f"WARN: …ほか{len(warnings) - 30}件")
+    return 1 if errors else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
