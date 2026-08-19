@@ -245,7 +245,7 @@
   .sim-mix-row { margin:10px 0 14px; }
   .sim-mix-label { color:var(--muted); font-size:11.5px; margin-bottom:4px; }
   .sim-mixbar { display:flex; height:14px; overflow:hidden; border-radius:7px; background:#edf0f5; box-shadow:inset 0 0 0 1px rgba(40,55,80,.08); }
-  .sim-mix-seg { display:block; min-width:0; transition:width .2s ease; }
+  .sim-mix-seg { display:flex; align-items:center; justify-content:center; min-width:0; color:#fff; font-size:10px; font-weight:700; white-space:nowrap; overflow:hidden; text-shadow:0 1px 2px rgba(0,0,0,.35); transition:width .2s ease; }
   .sim-mix-legend { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; color:var(--muted); font-size:10.5px; }
   .sim-mix-legend span { display:inline-flex; align-items:center; gap:3px; }
   .sim-mix-legend i { width:8px; height:8px; border-radius:2px; display:inline-block; }
@@ -1107,7 +1107,7 @@ function simMix(rows){
 function simMixHtml(label,mix){
   const labels={defensive:"ディフェンシブ",cyclical:"景気敏感",neutral:"その他"};
   const colors={defensive:"#2d9b78",cyclical:"#d78b43",neutral:"#aeb8c8"};
-  const seg=Object.keys(labels).map(k=>`<span class="sim-mix-seg" style="width:${mix[k]}%;background:${colors[k]}" title="${labels[k]} ${fmt(mix[k],1)}%"></span>`).join("");
+  const seg=Object.keys(labels).map(k=>`<span class="sim-mix-seg" style="width:${mix[k]}%;background:${colors[k]}" title="${labels[k]} ${fmt(mix[k],1)}%">${mix[k]>=8?fmt(mix[k],1)+"%":""}</span>`).join("");
   const legend=Object.keys(labels).map(k=>`<span><i style="background:${colors[k]}"></i>${labels[k]} ${fmt(mix[k],1)}%</span>`).join("");
   return `<div class="sim-mix-row"><div class="sim-mix-label">${label}（年間配当ベース）</div><div class="sim-mixbar">${seg}</div><div class="sim-mix-legend">${legend}</div></div>`;
 }
