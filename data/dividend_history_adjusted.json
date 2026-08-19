@@ -831,7 +831,7 @@
       "2012": 8.5,
       "2013": 9.0,
       "2014": 10.0,
-      "2015": 12.0,
+    "2015": 10.0,
       "2016": 13.0,
       "2017": 130.0,
       "2018": 130.0,
@@ -2674,15 +2674,16 @@
       "2021": 16.0,
       "2022": 16.0,
       "2023": 16.0,
-      "2024": 18.0,
-      "2025": 38.0,
-      "2026": 65.0
+    "2024": 14.0,
+    "2025": 16.0
     },
-    "method": "verified_dividend_history_adjusted",
-    "status": "not_blue",
-    "remaining_drops": [],
-    "confirmed_real_cuts": 0,
-    "confidence": "medium"
+    "actual_latest": {"year": "2026", "value": 61.0},
+    "forecast": {"year": "2027", "value": 66.0},
+    "method": "IR BANK通常配当・分割調整後履歴",
+    "status": "reviewed",
+    "remaining_drops": [{"from_year":"2023","to_year":"2024","from":16.0,"to":14.0}],
+    "confirmed_real_cuts": 1,
+    "confidence": "high"
   },
   "6863": {
     "code": "6863",
@@ -2745,8 +2746,10 @@
       "2024": 55.0,
       "2025": 65.0
     },
-    "method": "verified_dividend_history_adjusted",
-    "status": "not_blue",
+    "actual_latest": {"year": "2026", "value": 75.0},
+    "forecast": {"year": "2027", "value": 85.0},
+    "method": "IR BANK合併後履歴",
+    "status": "partial_ok",
     "remaining_drops": [],
     "confirmed_real_cuts": 0,
     "confidence": "medium"
@@ -2998,9 +3001,9 @@
       "2010": 0.83,
       "2011": 1.25,
       "2012": 2.0,
-      "2013": 3.33,
-      "2014": 5.0,
-      "2015": 7.0,
+    "2013": 2.0,
+    "2014": 3.33,
+    "2015": 1.67,
       "2016": 7.0,
       "2017": 7.0,
       "2018": 7.5,
@@ -3012,11 +3015,13 @@
       "2024": 15.0,
       "2025": 22.0
     },
-    "method": "verified_dividend_history_adjusted",
-    "status": "not_blue",
-    "remaining_drops": [],
-    "confirmed_real_cuts": 0,
-    "confidence": "medium"
+    "actual_latest": {"year": "2025", "value": 22.0},
+    "forecast": {"year": "2026", "value": 27.0},
+    "method": "IR BANK分割調整後履歴",
+    "status": "reviewed",
+    "remaining_drops": [{"from_year":"2014","to_year":"2015","from":3.33,"to":1.67}],
+    "confirmed_real_cuts": 1,
+    "confidence": "high"
   },
   "3932": {
     "code": "3932",
