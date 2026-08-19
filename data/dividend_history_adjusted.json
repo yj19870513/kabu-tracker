@@ -3298,6 +3298,19 @@
       "2024": 15.6,
       "2025": 20.0
     },
+    "actual_latest": {
+      "year": "2026",
+      "value": 41.6
+    },
+    "forecast": {
+      "year": "2027",
+      "value": 42.0
+    },
+    "history_notes": {
+      "2014": "IR BANK実績1.70円のうち記念配当3円を除外した通常配当ベース",
+      "2019": "IR BANK実績4.30円のうち記念配当5円を除外した通常配当ベース",
+      "2026": "株式分割後の直近実績。IR BANK記載の年間配当41.60円"
+    },
     "method": "verified_dividend_history_adjusted",
     "status": "not_blue",
     "remaining_drops": [],
