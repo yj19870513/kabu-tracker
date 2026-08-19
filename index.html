@@ -1092,8 +1092,8 @@ function applySimBasketImport(){
   saveSimBasket(a); msg.innerHTML=`<span class="c-green">✅ ${n}件の購入予定を取り込みました</span>${unknown.length?`<br><span class="c-orange">トラッカー未登録: ${unknown.join("、")}</span>`:""}`; setTimeout(openSimulator,700);
 }
 function simMix(rows){
-  const out={defensive:0,cyclical:0,neutral:0}, total=rows.reduce((n,r)=>n+r.value,0)||0;
-  rows.forEach(r=>{ const k=sectorType(r.s); out[k]=(out[k]||0)+r.value; });
+  const out={defensive:0,cyclical:0,neutral:0}, total=rows.reduce((n,r)=>n+r.dividend,0)||0;
+  rows.forEach(r=>{ const k=sectorType(r.s); out[k]=(out[k]||0)+r.dividend; });
   return Object.fromEntries(Object.entries(out).map(([k,v])=>[k,total?v/total*100:0]));
 }
 function simMixHtml(label,mix){
@@ -1101,14 +1101,14 @@ function simMixHtml(label,mix){
   const colors={defensive:"#2d9b78",cyclical:"#d78b43",neutral:"#aeb8c8"};
   const seg=Object.keys(labels).map(k=>`<span class="sim-mix-seg" style="width:${mix[k]}%;background:${colors[k]}" title="${labels[k]} ${fmt(mix[k],1)}%"></span>`).join("");
   const legend=Object.keys(labels).map(k=>`<span><i style="background:${colors[k]}"></i>${labels[k]} ${fmt(mix[k],1)}%</span>`).join("");
-  return `<div class="sim-mix-row"><div class="sim-mix-label">${label}</div><div class="sim-mixbar">${seg}</div><div class="sim-mix-legend">${legend}</div></div>`;
+  return `<div class="sim-mix-row"><div class="sim-mix-label">${label}（年間配当ベース）</div><div class="sim-mixbar">${seg}</div><div class="sim-mix-legend">${legend}</div></div>`;
 }
 function portfolioSummary(rows){
   const value=rows.reduce((n,r)=>n+r.value,0), dividend=rows.reduce((n,r)=>n+r.dividend,0);
-  const defensive=rows.filter(r=>sectorType(r.s)==="defensive").reduce((n,r)=>n+r.value,0);
-  const stable=rows.filter(r=>["blue","aqua"].includes(dividendStability(r.s).key)).reduce((n,r)=>n+r.value,0);
+  const defensive=rows.filter(r=>sectorType(r.s)==="defensive").reduce((n,r)=>n+r.dividend,0);
+  const stable=rows.filter(r=>["blue","aqua"].includes(dividendStability(r.s).key)).reduce((n,r)=>n+r.dividend,0);
   const imported=rows.filter(r=>Boolean(importedSectorType(r.s.code))).length;
-  return {value,dividend,defensive:value?defensive/value*100:0,stable:value?stable/value*100:0,sectorImported:imported,sectorMissing:rows.length-imported};
+  return {value,dividend,defensive:dividend?defensive/dividend*100:0,stable:dividend?stable/dividend*100:0,sectorImported:imported,sectorMissing:rows.length-imported};
 }
 function projectedRowsForBasket(basket){
   const byCode={};
@@ -1144,25 +1144,25 @@ function openSimulator(){
     return `<tr><td>${s.name}<br><span class="kome">${s.code}</span></td><td>${yen(+x.amount||0)}</td><td>${shares}株</td><td>${yen(cost)}</td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
   }).join("");
   const sectorBefore={},sectorAfter={};
-  base.forEach(r=>{const k=eff(r.s).sector||"その他";sectorBefore[k]=(sectorBefore[k]||0)+r.value;});
-  after.forEach(r=>{const k=eff(r.s).sector||"その他";sectorAfter[k]=(sectorAfter[k]||0)+r.value;});
+  base.forEach(r=>{const k=eff(r.s).sector||"その他";sectorBefore[k]=(sectorBefore[k]||0)+r.dividend;});
+  after.forEach(r=>{const k=eff(r.s).sector||"その他";sectorAfter[k]=(sectorAfter[k]||0)+r.dividend;});
   const sectors=[...new Set([...Object.keys(sectorBefore),...Object.keys(sectorAfter)])].sort((x,y)=>(sectorAfter[y]||0)-(sectorAfter[x]||0));
   const secRows=sectors.map(k=>{
-    const bp=b.value?(sectorBefore[k]||0)/b.value*100:0, ap=a.value?(sectorAfter[k]||0)/a.value*100:0, d=ap-bp;
+    const bp=b.dividend?(sectorBefore[k]||0)/b.dividend*100:0, ap=a.dividend?(sectorAfter[k]||0)/a.dividend*100:0, d=ap-bp;
     return `<tr><td>${k}</td><td>${fmt(bp,1)}%</td><td>${fmt(ap,1)}%</td><td class="sim-delta ${d>0.05?'up':d<-.05?'down':''}">${d>=0?'+':''}${fmt(d,1)}pt</td></tr>`;
   }).join("");
   const mixBefore=simMix(base), mixAfter=simMix(after);
   const imported=LS.get("portfolio_imported_at","");
   const mode=operationMode(), crash=mode==="crash";
-  const stockOver=after.filter(r=>a.value&&r.value/a.value*100>3).sort((x,y)=>y.value-x.value).slice(0,8);
-  const sectorOver=sectors.filter(k=>a.value&&(sectorAfter[k]||0)/a.value*100>20).map(k=>`${k} ${fmt((sectorAfter[k]||0)/a.value*100,1)}%`);
+  const stockOver=after.filter(r=>a.dividend&&r.dividend/a.dividend*100>3).sort((x,y)=>y.dividend-x.dividend).slice(0,8);
+  const sectorOver=sectors.filter(k=>a.dividend&&(sectorAfter[k]||0)/a.dividend*100>20).map(k=>`${k} ${fmt((sectorAfter[k]||0)/a.dividend*100,1)}%`);
   const concentration=after.filter(r=>a.dividend&&r.dividend/a.dividend*100>3).sort((x,y)=>y.dividend-x.dividend).slice(0,6);
   const notices=[];
   if(!base.length) notices.push("管理シートの保有数を取り込むと、現在との比較ができます。");
-  if(stockOver.length) notices.push("購入後に銘柄比率3%を超える: "+stockOver.map(r=>`${r.s.name} ${fmt(r.value/a.value*100,1)}%`).join("、"));
+  if(stockOver.length) notices.push("購入後に年間配当の銘柄比率3%を超える: "+stockOver.map(r=>`${r.s.name} ${fmt(r.dividend/a.dividend*100,1)}%`).join("、"));
   if(sectorOver.length) notices.push("購入後にセクター20%を超える: "+sectorOver.join("、"));
   if(a.defensive<50) notices.push("購入後のディフェンシブ比率が50%未満: "+fmt(a.defensive,1)+"%");
-  if(concentration.length) notices.push("参考・購入後の配当割合が3%を超える: "+concentration.map(r=>`${r.s.name} ${fmt(r.dividend/a.dividend*100,1)}%`).join("、"));
+  if(concentration.length) notices.push("購入後に年間配当の銘柄比率3%を超える: "+concentration.map(r=>`${r.s.name} ${fmt(r.dividend/a.dividend*100,1)}%`).join("、"));
   $("modal").innerHTML=`
     <span class="close" onclick="closeModal()">✕</span><h2>🧮 購入シミュレーター</h2>
     <p class="kome">実際の注文は行いません。表示時点の株価・年間配当で、購入後の偏りを試算します。保有数などはこのブラウザ内だけに保存されます。</p>
@@ -1175,14 +1175,14 @@ function openSimulator(){
     <h3>③ 購入前 → 購入後</h3><div class="sim-metrics">
       ${metricHtml("時価評価額",yen(b.value),yen(a.value))}
       ${metricHtml("予想年間配当",yen(b.dividend),yen(a.dividend))}
-      ${metricHtml("ディフェンシブ比率（管理シート区分）",fmt(b.defensive,1)+"%",fmt(a.defensive,1),"%")}
-      ${metricHtml("安定枠比率（青＋水色）",fmt(b.stable,1)+"%",fmt(a.stable,1),"%")}
+      ${metricHtml("ディフェンシブ比率（年間配当・管理シート区分）",fmt(b.defensive,1)+"%",fmt(a.defensive,1),"%")}
+      ${metricHtml("安定枠比率（年間配当・青＋水色）",fmt(b.stable,1)+"%",fmt(a.stable,1),"%")}
     </div>
     <div class="sim-scenarios"><b>購入案を保存</b><span class="kome">このブラウザ内に最大10件</span><button class="btn sub" onclick="saveSimScenario()">現在の案を保存</button>${scenarios.length?`<select id="simScenario" onchange="loadSimScenario(this.value)"><option value="">保存した案を呼び出す</option>${scenarioOptions}</select><button class="btn sub" onclick="deleteSimScenario()">選択案を削除</button>`:""}</div>
     ${scenarios.length?`<div class="sim-scenario-compare"><h4>保存した購入案の比較</h4><div class="tblwrap"><table class="sim-table"><tr><th>案</th><th>予算</th><th>評価額</th><th>年間配当</th><th>ディフェンシブ</th><th>青＋水色</th></tr>${scenarioCompare}</table></div></div>`:""}
-    <p class="kome">ディフェンシブ比率は管理シートから取り込んだ区分を優先しています${b.sectorMissing?`。未区分：${b.sectorMissing}銘柄（旧データはセクターからの暫定判定）`:""}。安定枠比率は、長期で減配なしの青枠と、2010年以降確認できる水色枠の合計です。</p>
+    <p class="kome">バランス比率は評価額ではなく、年間配当金の構成比で計算しています。ディフェンシブ比率は管理シートから取り込んだ区分を優先しています${b.sectorMissing?`。未区分：${b.sectorMissing}銘柄（旧データはセクターからの暫定判定）`:""}。安定枠比率は、長期で減配なしの青枠と、2010年以降確認できる水色枠の合計です。</p>
     ${notices.length?`<div class="box ${crash?'info':'warn'}"><b class="ttl">${crash?'一時的な偏りを確認':'分散目安を確認'}</b>${notices.join("<br>")}${crash?'<br>基準超過だけで候補を外さず、業績と配当の安全性を優先します。':''}</div>`:""}
-    <h3>セクター構成の変化</h3>${sectors.length?`${simMixHtml("現在",mixBefore)}${simMixHtml("購入後",mixAfter)}<div class="tblwrap"><table class="sim-table"><tr><th>セクター</th><th>現在</th><th>購入後</th><th>変化</th></tr>${secRows}</table></div>`:'<p class="kome">保有データまたは購入予定を入れると表示されます。</p>'}`;
+    <h3>セクター構成の変化（年間配当ベース）</h3>${sectors.length?`${simMixHtml("現在",mixBefore)}${simMixHtml("購入後",mixAfter)}<div class="tblwrap"><table class="sim-table"><tr><th>セクター</th><th>現在</th><th>購入後</th><th>変化</th></tr>${secRows}</table></div>`:'<p class="kome">保有データまたは購入予定を入れると表示されます。</p>'}`;
   $("overlay").style.display="block";
 }
 function addSimItem(){
