@@ -31,7 +31,7 @@ def load_list():
 
 def num(v):
     """floatにできない値・NaN・無限大はNoneに。
-        Infinityが混ざるとJSONとして不正になり、ブラウザ側で読み込みに失敗するため必ず除外する。"""
+    Infinityが混ざるとJSONとして不正になり、ブラウザ側で読み込みに失敗するため必ず除外する。"""
     try:
         if v is None:
             return None
@@ -157,16 +157,28 @@ def fetch_one(code):
         d["div_confirmed"] = {y: v for y, v in div_by_year.items() if y != this_year}
 
         # --- 配当 ---
+        # dividendRateはYahoo Finance側のスナップショット値で、直近1回分だけを
+        # 返すなどの不整合があるため、確定済みの年度履歴を優先する。
         div_rate = num(info.get("dividendRate")) or num(info.get("trailingAnnualDividendRate"))
-        d["dividend"] = rnd(div_rate)
-        if div_rate and price:
-            d["yield_pct"] = rnd(div_rate / price * 100)
+        d["dividend_raw_yahoo"] = rnd(div_rate)
+        conf = d.get("div_confirmed") or {}
+        conf_years = sorted(conf)
+        latest_annual = num(conf[conf_years[-1]]) if conf_years else None
+        if latest_annual is not None and latest_annual > 0:
+            d["dividend"] = rnd(latest_annual)
+            d["dividend_source"] = "配当履歴（年度集計）"
+            d["yield_pct"] = rnd(latest_annual / price * 100) if price else None
         else:
-            y = num(info.get("dividendYield"))
-            # yfinanceのバージョンにより割合(0.042)か%表記(4.2)かが揺れるため補正
-            if y is not None and y < 0.5:
-                y *= 100
-            d["yield_pct"] = rnd(y)
+            d["dividend"] = rnd(div_rate)
+            d["dividend_source"] = "Yahoo Finance参考値" if div_rate else "未確認"
+            if div_rate and price:
+                d["yield_pct"] = rnd(div_rate / price * 100)
+            else:
+                y = num(info.get("dividendYield"))
+                # yfinanceのバージョンにより割合(0.042)か%表記(4.2)かが揺れるため補正
+                if y is not None and y < 0.5:
+                    y *= 100
+                d["yield_pct"] = rnd(y)
 
         # --- 基本情報 ---
         d["name_en"] = info.get("shortName") or info.get("longName") or code
@@ -196,8 +208,8 @@ def fetch_one(code):
         else:
             d["equity_ratio"] = None
         d["equity_hist"] = equity_hist
-        d["cash_hist"] = series_by_year(bs, "Cash And Cash Equivalents")
-        cash_hist = d["cash_hist"]
+        cash_hist = series_by_year(bs, "Cash And Cash Equivalents")
+        d["cash_hist"] = cash_hist
         debt_hist = series_by_year(bs, "Total Debt")
         d["debt_hist"] = debt_hist
 
@@ -217,6 +229,7 @@ def fetch_one(code):
         d["op_cf_hist"] = ocf_hist
 
         d["shares_outstanding"] = num(info.get("sharesOutstanding"))
+
         # --- 配当余力（ネットキャッシュ÷1株配当＝配当何年分の余力か） ---
         # ネットキャッシュ＝現金等－有利子負債。「確かめたい4つのこと」記事の指標⑤に対応。
         d["div_capacity_years"] = None
@@ -227,6 +240,7 @@ def fetch_one(code):
             if d["dividend"] > 0:
                 d["div_capacity_years"] = rnd(net_cash_per_share / d["dividend"])
 
+        # --- テクニカル ---
         d["high52"] = rnd(info.get("fiftyTwoWeekHigh"))
         d["low52"] = rnd(info.get("fiftyTwoWeekLow"))
         d["ma25"] = rnd(sum(closes[-25:]) / 25) if len(closes) >= 25 else None
@@ -236,14 +250,14 @@ def fetch_one(code):
         # yfinanceのdividendRateが直近1回分だけを拾うなど、直近の年間実績と大きく食い違う場合に警告する
         d["div_warning"] = None
         conf = d.get("div_confirmed") or {}
-        if conf and d.get("dividend"):
+        if conf and d.get("dividend_raw_yahoo"):
             latest_year = max(conf)
             latest_annual = conf[latest_year]
             if latest_annual > 0:
-                ratio = d["dividend"] / latest_annual
+                ratio = d["dividend_raw_yahoo"] / latest_annual
                 if ratio < 0.5 or ratio > 2.0:
                     d["div_warning"] = (
-                        f"年間配当{d['dividend']}円は{latest_year}年の実績{latest_annual}円と大きく異なります。"
+                        f"Yahoo参考値{d['dividend_raw_yahoo']}円は{latest_year}年の実績{latest_annual}円と大きく異なります。"
                         "株式分割やデータ不備の可能性があるため、証券会社の情報で必ず確認してください。"
                     )
 
