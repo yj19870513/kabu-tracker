@@ -1644,6 +1644,25 @@ function enhanceModal(code){
     const r3=await fetch("data/dividend_history_adjusted.json?t="+t);
     window.DIV_ADJUSTED=await r3.json();
   }catch(e){ window.DIV_ADJUSTED={}; }
+  // 個別監査で再構成した通常配当・分割調整データを、基礎データより優先する。
+  try{
+    const ro=await fetch("data/dividend_audit_overrides.json?t="+t);
+    const ov=await ro.json();
+    Object.assign(window.DIV_SOURCES, ov.sources||{});
+    Object.assign(window.DIV_ADJUSTED, ov.adjusted||{});
+    Object.entries(ov.stocks||{}).forEach(([code, patch])=>{
+      const stock=(DATA&&DATA.stocks||[]).find(s=>String(s.code)===String(code));
+      if(stock) Object.assign(stock, patch);
+    });
+    Object.entries(ov.adjusted||{}).forEach(([code, canon])=>{
+      const stock=(DATA&&DATA.stocks||[]).find(s=>String(s.code)===String(code));
+      if(!stock) return;
+      if(canon.history) stock.div_by_year=Object.assign({},canon.history);
+      const cy=currentYear();
+      stock.div_confirmed=Object.fromEntries(Object.entries(stock.div_by_year||{}).filter(([y])=>String(y)!==String(cy)));
+      if(canon.actual_latest&&Number.isFinite(Number(canon.actual_latest.value))) stock.dividend=Number(canon.actual_latest.value);
+    });
+  }catch(e){ /* 監査上書きがない旧版でも基礎データで起動する */ }
   try{
     const r2=await fetch("data/financial8_verified.json?t="+t);
     window.FIN8=await r2.json();
