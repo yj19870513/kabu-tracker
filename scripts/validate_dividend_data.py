@@ -26,8 +26,14 @@ def main():
     stocks = load("stocks.json")
     sources = load("dividend_sources.json")
     adjusted = load("dividend_history_adjusted.json")
+    overrides = load("dividend_audit_overrides.json")
+    sources.update(overrides.get("sources", {}))
+    adjusted.update(overrides.get("adjusted", {}))
     stock_rows = stocks.get("stocks", stocks) if isinstance(stocks, dict) else stocks
     stock_by_code = {str(row.get("code")): row for row in stock_rows if isinstance(row, dict)}
+    for code, patch in overrides.get("stocks", {}).items():
+        if code in stock_by_code:
+            stock_by_code[code].update(patch)
     stock_codes = {str(row.get("code")) for row in stock_rows if isinstance(row, dict)}
     errors, warnings = [], []
     source_codes = set(sources)
@@ -69,6 +75,22 @@ def main():
             warnings.append(f"{code}: 青系ステータスですがremaining_dropsが残っています")
 
         row = stock_by_code.get(code)
+        if row and history:
+            stored_history = row.get("div_by_year") or {}
+            for year, adjusted_value in history.items():
+                if year not in stored_history:
+                    errors.append(f"{code}: stocks.jsonに調整履歴{year}がありません")
+                    continue
+                try:
+                    stored_value = float(stored_history[year])
+                    canonical_value = float(adjusted_value)
+                    if abs(stored_value - canonical_value) > 0.01:
+                        errors.append(
+                            f"{code}: stocks.jsonの{year}年配当{stored_value:g}円と"
+                            f"調整履歴{canonical_value:g}円が不一致"
+                        )
+                except (TypeError, ValueError):
+                    errors.append(f"{code}: stocks.jsonの{year}年配当が不正です")
         if row and row.get("dividend") and history:
             latest_meta = item.get("actual_latest") if isinstance(item, dict) else None
             if isinstance(latest_meta, dict) and latest_meta.get("value") is not None:
