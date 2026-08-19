@@ -1074,6 +1074,13 @@ function addSimItems(){
   });
   saveSimBasket(a); openSimulator();
 }
+function updateSimAmount(index,value){
+  const amount=+value||0, a=simBasket();
+  if(!a[index]) return;
+  if(amount<=0){ a.splice(index,1); }
+  else { a[index].amount=amount; }
+  saveSimBasket(a); openSimulator();
+}
 function handleSimBasketFile(ev){ const file=ev.target.files[0]; if(!file)return; const reader=new FileReader(); reader.onload=e=>{$("simBasketImportText").value=e.target.result;}; reader.readAsText(file); }
 function parseSimBasketImport(raw){
   const text=String(raw||"").trim(); if(!text)return null;
@@ -1142,7 +1149,7 @@ function openSimulator(){
   const planRows=basket.map((x,i)=>{
     const s=DATA.stocks.find(v=>v.code===x.code); if(!s) return "";
     const e=eff(s), shares=e.price?Math.floor((+x.amount||0)/e.price):0, cost=shares*(e.price||0), div=shares*(e.dividend||0);
-    return `<tr><td>${s.name}<br><span class="kome">${s.code}</span></td><td>${yen(+x.amount||0)}</td><td>${shares}株</td><td>${yen(cost)}</td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
+    return `<tr><td>${s.name}<br><span class="kome">${s.code}</span></td><td><input type="number" min="0" step="1000" value="${+x.amount||0}" onchange="updateSimAmount(${i},this.value)" style="width:110px"> 円</td><td>${shares}株</td><td>${yen(cost)}</td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
   }).join("");
   const sectorBefore={},sectorAfter={};
   base.forEach(r=>{const k=eff(r.s).sector||"その他";sectorBefore[k]=(sectorBefore[k]||0)+r.dividend;});
