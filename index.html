@@ -390,7 +390,7 @@ function dividendBasis(s){
     const actual=Number(metadata.value), next=forecast&&Number.isFinite(Number(forecast.value))?Number(forecast.value):null;
     return {actual,forecast:next,value:next??actual,actualYear:String(metadata.year||""),forecastYear:forecast?String(forecast.year||""):"",source:"IR BANK調整履歴"};
   }
-  const history=(source&&source.history)||(adjusted&&adjusted.history);
+  const history=adjusted&&adjusted.history;
   if(history){
     const cy=Number(currentYear());
     const years=Object.keys(history).filter(y=>Number(y)<cy&&Number.isFinite(Number(history[y]))).sort((a,b)=>Number(a)-Number(b));
@@ -423,6 +423,10 @@ function yieldOf(s){
   return y;
 }
 function currentYear(){ return DATA && DATA.updated ? DATA.updated.slice(0,4) : String(new Date().getFullYear()); }
+function latestDividendCheckedAt(){
+  const dates=Object.values(window.DIV_SOURCES||{}).map(x=>x&&x.checked_at).filter(Boolean).sort();
+  return dates.length?dates[dates.length-1]:"未確認";
+}
 function divConfirmed(s){
   // 進行中の年を除いた確定配当。旧データにdiv_confirmedが無い場合はdiv_by_yearから作る
   const e = eff(s);
@@ -442,15 +446,7 @@ function divTrend(s){
 const DIV_START_YEAR = 2008;
 const DIV_MIN_YEARS = 10;
 function divHistory(s){
-  const source = (window.DIV_SOURCES||{})[s.code];
-  if (source && source.history) {
-    const cy = Number(currentYear());
-    const out=Object.keys(source.history).map(y=>({year:String(y),value:Number(source.history[y])}))
-      .filter(x=>Number(x.year)<cy && Number.isFinite(x.value))
-      .sort((a,b)=>a.year.localeCompare(b.year));
-    if(source.actual_latest&&Number(source.actual_latest.year)>=cy) out.push({year:String(source.actual_latest.year),value:Number(source.actual_latest.value)});
-    return out.slice(-20);
-  }
+  // 数値履歴の正本は dividend_history_adjusted.json のみ。出典ファイルは根拠情報専用。
   const adjusted = (window.DIV_ADJUSTED||{})[s.code];
   if (adjusted && adjusted.history) {
     const cy = Number(currentYear());
@@ -1541,7 +1537,7 @@ async function init(){
     $("updated").innerHTML='<span class="err">data/stocks.json を読み込めませんでした。Webサーバー経由（GitHub Pages等）で開いてください。</span>';
     return;
   }
-  $("updated").textContent = "株価データ更新: "+DATA.updated+"（自動取得・リアルタイムではありません）";
+  $("updated").innerHTML = `株価更新: ${DATA.updated}（自動取得・リアルタイムではありません）<br><span>配当確認日（登録銘柄の最新）：<b>${latestDividendCheckedAt()}</b></span>`;
   if (DATA.vix!==null) showVix(DATA.vix,"（"+(DATA.vix_updated||"")+" 時点）");
   liveVix();
   tdrView();
@@ -1680,29 +1676,17 @@ function enhanceModal(code){
     const r3=await fetch("data/dividend_history_adjusted.json?t="+t);
     window.DIV_ADJUSTED=await r3.json();
   }catch(e){ window.DIV_ADJUSTED={}; }
-  // 個別監査で再構成した通常配当・分割調整データを、基礎データより優先する。
+  // 出典ファイルは確認日・根拠リンク・判定メモだけを補足する。数値履歴は上の正本を使う。
   try{
     const ro=await fetch("data/dividend_audit_overrides.json?t="+t);
     const ov=await ro.json();
     Object.assign(window.DIV_SOURCES, ov.sources||{});
-    Object.assign(window.DIV_ADJUSTED, ov.adjusted||{});
-    Object.entries(ov.stocks||{}).forEach(([code, patch])=>{
-      const stock=(DATA&&DATA.stocks||[]).find(s=>String(s.code)===String(code));
-      if(stock) Object.assign(stock, patch);
-    });
-    Object.entries(ov.adjusted||{}).forEach(([code, canon])=>{
-      const stock=(DATA&&DATA.stocks||[]).find(s=>String(s.code)===String(code));
-      if(!stock) return;
-      if(canon.history) stock.div_by_year=Object.assign({},canon.history);
-      const cy=currentYear();
-      stock.div_confirmed=Object.fromEntries(Object.entries(stock.div_by_year||{}).filter(([y])=>String(y)!==String(cy)));
-      if(canon.actual_latest&&Number.isFinite(Number(canon.actual_latest.value))) stock.dividend=Number(canon.actual_latest.value);
-    });
   }catch(e){ /* 監査上書きがない旧版でも基礎データで起動する */ }
   try{
     const r2=await fetch("data/financial8_verified.json?t="+t);
     window.FIN8=await r2.json();
   }catch(e){ window.FIN8=null; }
+  if(DATA) $("updated").innerHTML = `株価更新: ${DATA.updated}（自動取得・リアルタイムではありません）<br><span>配当確認日（登録銘柄の最新）：<b>${latestDividendCheckedAt()}</b></span>`;
   if (DATA) render();
 })();
 </script>
