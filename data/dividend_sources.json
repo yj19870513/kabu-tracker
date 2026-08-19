@@ -38,12 +38,11 @@
     ]
   },
   "4828": {
-    "status": "reviewed",
+    "status": "pending",
     "checked_at": "2026-08-17",
     "exclude_special_dividends": true,
-    "confirmed_real_cuts": 3,
     "confidence": "medium",
-    "note": "2010年以降17年の確認で複数回の実質減配を確認。分割調整後の単純な履歴だけでは減配回数が過少になるため、既存の確認メモを優先し赤点線相当とした。",
+    "note": "2010〜2026年のIR BANK配当表を確認。2014年と2019年は記念配当を除いた通常配当ベースを別管理し、2026年実績41.60円・2027年予想42円を実績と予想に分離する。減配回数は分割前後の比較根拠を再点検するまで保留扱いとする。",
     "sources": [
       {
         "kind": "dividend",
