@@ -2966,7 +2966,7 @@
     "2024": 40.0,
     "2025": 40.0
    },
-   "dividend": 70.0,
+   "dividend": 44.0,
    "yield_pct": 4.49,
    "name_en": "SUMITOMO SEIKA CHEMICALS CO",
    "sector": "素材",
@@ -8164,7 +8164,7 @@
     "2024": 31.88,
     "2025": 40.62
    },
-   "dividend": 47.5,
+   "dividend": 46.25,
    "yield_pct": 2.73,
    "name_en": "SUMITOMO MITSUI TRUST GP INC",
    "sector": "金融",
@@ -14579,7 +14579,7 @@
     "2024": 72.0,
     "2025": 80.0
    },
-   "dividend": 180.0,
+   "dividend": 95.0,
    "yield_pct": 3.21,
    "name_en": "JCU CORPORATION",
    "sector": "素材",
@@ -18605,7 +18605,7 @@
     "2024": 43.5,
     "2025": 50.0
    },
-   "dividend": 100.0,
+   "dividend": 75.0,
    "yield_pct": 3.36,
    "name_en": "HIBIYA ENGINEERING",
    "sector": "資本財",
