@@ -27,6 +27,7 @@ def main():
     sources = load("dividend_sources.json")
     adjusted = load("dividend_history_adjusted.json")
     stock_rows = stocks.get("stocks", stocks) if isinstance(stocks, dict) else stocks
+    stock_by_code = {str(row.get("code")): row for row in stock_rows if isinstance(row, dict)}
     stock_codes = {str(row.get("code")) for row in stock_rows if isinstance(row, dict)}
     errors, warnings = [], []
     source_codes = set(sources)
@@ -66,6 +67,16 @@ def main():
         drops = item.get("remaining_drops", [])
         if item.get("status") in ("blue_ok", "reviewed") and drops:
             warnings.append(f"{code}: 青系ステータスですがremaining_dropsが残っています")
+
+        row = stock_by_code.get(code)
+        if row and row.get("dividend") and history:
+            latest_year = max(history, key=lambda y: int(str(y)[:4]))
+            latest_adjusted = float(history[latest_year])
+            raw = float(row["dividend"])
+            if latest_adjusted > 0 and (raw / latest_adjusted < 0.5 or raw / latest_adjusted > 2.0):
+                warnings.append(
+                    f"{code}: stocks.jsonのYahoo配当{raw:g}円と調整履歴{latest_adjusted:g}円が不一致"
+                )
 
     missing = sorted(stock_codes - source_codes)
     result = {
