@@ -372,6 +372,7 @@ const LS = {
 };
 const fmt = (v,n=2)=> (v===null||v===undefined||isNaN(v)) ? "-" : Number(v).toLocaleString("ja-JP",{maximumFractionDigits:n});
 const yen = v => v===null||v===undefined ? "-" : "¥"+fmt(v,0);
+const divFmt = v => fmt(v, Number.isInteger(Number(v)) ? 0 : 2);
 
 /* ---------- データ整形 ---------- */
 function manual(code){ try{ return JSON.parse(LS.get("manual_"+code,"{}")); }catch(e){ return {}; } }
@@ -561,7 +562,7 @@ function dividendHistoryCard(s){
   if(!h.length) return `<div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label\">配当推移</span><span>確認不足</span></div></div>`;
   const mark={blue:"◆",aqua:"◇",green:"●",amber:"▲",red:"■","red-partial":"■",pending:"□",short:"□"}[st.key]||"□";
   const reason=(st.key==="pending"||st.key==="short")?`<div class=\"divtrend-reason\">理由：${dividendStabilityReason(s,st)}</div>`:"";
-  return `<div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${mark} ${st.label}</span><span>${basisLabel}${h.length}年分</span></div>${dividendSparkline(h,color)}<div class=\"divtrend-foot\"><span>${h[0].year.slice(0,4)}年 ${fmt(h[0].value,0)}円</span><span>${h[h.length-1].year.slice(0,4)}年 ${fmt(h[h.length-1].value,0)}円</span></div>${reason}</div>`;
+  return `<div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${mark} ${st.label}</span><span>${basisLabel}${h.length}年分</span></div>${dividendSparkline(h,color)}<div class=\"divtrend-foot\"><span>${h[0].year.slice(0,4)}年 ${divFmt(h[0].value)}円</span><span>${h[h.length-1].year.slice(0,4)}年 ${divFmt(h[h.length-1].value)}円</span></div>${reason}</div>`;
 }
 function isGrowingDividend(s){
   // 過去10年で概ね増配基調か（成長企業は過去平均が低いので「割安」に見えてしまうため区別する）
