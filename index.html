@@ -880,7 +880,7 @@ function card(s){
   const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">前日比 ${chg>=0?"+":""}${fmt(chg)}%</span>`;
   const tagB = t?`<span class="badge badge-${t}">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
   const sourceB = `<button class="badge source-badge" onclick="event.stopPropagation();openModal('${s.code}')" title="配当・分割の根拠を確認">根拠</button>`;
-  const buffettB = `<a class="badge buffett-badge" href="https://www.buffett-code.com/company/${s.code}/" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="バフェット・コードの株価・指標ページを開く">BC株価 ↗</a>`;
+  const buffettB = `<a class="badge buffett-badge" href="https://www.buffett-code.com/company/${s.code}/stockprice" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="バフェット・コードの株価・指標ページを開く">BC株価 ↗</a>`;
   const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
   const t30 = top30Score(s);
   const scoreHtml=isExempt(s.code)
@@ -1051,7 +1051,7 @@ function openModal(code){
     <label style="display:block;margin-top:8px">メモ<textarea id="memoBox" rows="3">${LS.get("memo_"+code,"")}</textarea></label>
     <button class="btn" onclick="saveManual('${code}')">保存</button>
     <button class="btn sub" onclick="clearManual('${code}')">上書きをリセット</button>
-    <h3><a href="https://www.buffett-code.com/company/${code}/" target="_blank" rel="noopener">バフェット・コードで3年推移を確認 →</a></h3>
+    <h3><a href="https://www.buffett-code.com/company/${code}/stockprice" target="_blank" rel="noopener">バフェット・コードで3年推移を確認 →</a></h3>
     <h3><a href="https://finance.yahoo.co.jp/quote/${code}.T" target="_blank" rel="noopener">Yahoo!ファイナンスで見る →</a></h3>`;
   $("overlay").style.display = "block";
 }
