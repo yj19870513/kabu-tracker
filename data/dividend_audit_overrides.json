@@ -1,0 +1,43 @@
+{
+  "sources": {
+    "4828": {
+      "status": "reviewed",
+      "checked_at": "2026-08-19",
+      "exclude_special_dividends": true,
+      "confidence": "medium",
+      "actual_latest": {"year": "2026", "value": 41.6},
+      "forecast": {"year": "2027", "value": 42.0},
+      "note": "IR BANKの分割調整欄を再確認。2014年・2019年は記念配当を除いた通常配当を採用。2010〜2026年の確認範囲では通常配当の減少なし。ただし2008〜2009年はIR BANKで確認できないため、長期（青）ではなく水色相当とする。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/4828/dividend", "period": "2010〜2026年"}]
+    },
+    "6648": {
+      "status": "reviewed",
+      "checked_at": "2026-08-19",
+      "exclude_special_dividends": true,
+      "confidence": "medium",
+      "actual_latest": {"year": "2026", "value": 61.0},
+      "forecast": {"year": "2027", "value": 66.0},
+      "note": "IR BANKの分割調整欄と注記を再確認。2024年は普通配当40円＋特別配当10円のため通常配当14円（調整後）、2026年は普通配当135円＋170円、創業100周年記念配当を除き調整後61円。通常配当ベースでは2024年に16円から14円への減少があるため、減配なしとは判定しない。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/6648/dividend", "period": "2010〜2026年"}, {"kind": "ir", "label": "かわでん IR・配当資料", "url": "https://www.kawaden.co.jp/ir/", "period": "特別配当・分割注記"}]
+    }
+  },
+  "adjusted": {
+    "6648": {
+      "history": {"2010": 10.0, "2011": 10.0, "2012": 10.0, "2013": 10.0, "2014": 10.0, "2015": 10.0, "2016": 14.0, "2017": 14.0, "2018": 14.0, "2019": 16.0, "2020": 16.0, "2021": 16.0, "2022": 16.0, "2023": 16.0, "2024": 14.0, "2025": 16.0},
+      "actual_latest": {"year": "2026", "value": 61.0},
+      "forecast": {"year": "2027", "value": 66.0},
+      "history_notes": {"2024": "普通配当40円＋特別配当10円のうち普通配当のみ", "2026": "普通配当ベース。創業100周年記念配当を除外し、2026年1月1日の1:5分割後に調整"},
+      "method": "IR BANK分割調整・通常配当再構成",
+      "status": "partial_ok",
+      "remaining_drops": [],
+      "confirmed_real_cuts": 1,
+      "confidence": "medium"
+    }
+  },
+  "stocks": {
+    "6648": {
+      "div_by_year": {"2010": 10.0, "2011": 10.0, "2012": 10.0, "2013": 10.0, "2014": 10.0, "2015": 10.0, "2016": 14.0, "2017": 14.0, "2018": 14.0, "2019": 16.0, "2020": 16.0, "2021": 16.0, "2022": 16.0, "2023": 16.0, "2024": 14.0, "2025": 16.0},
+      "dividend": 61.0
+    }
+  }
+}
