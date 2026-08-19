@@ -182,6 +182,14 @@
   .source-meta { color:var(--muted); font-size:11px; }
   .source-caution { color:#8a5b06; background:#fff8ea; border:1px solid #f2dfb4; border-radius:7px; padding:6px 8px; }
   .divtrend-reason { color:#8a5b06; font-size:10.5px; margin-top:3px; }
+  .card-decision { margin-top:7px; padding:6px 8px; border-radius:7px; background:#f7f9fc; border:1px solid #e4e8ef; display:flex; flex-direction:column; gap:1px; font-size:10.5px; }
+  .card-decision b { font-size:10.5px; }
+  .card-decision span { color:var(--muted); }
+  .card-decision.holding { background:#f0f7ff; border-color:#cbdcf3; }
+  .card-decision.holding b { color:var(--blue); }
+  .card-decision.candidate { background:#fff8ed; border-color:#f0dfbf; }
+  .card-decision.candidate b { color:#9b5b00; }
+  .card-decision.unheld b { color:#657083; }
   /* モーダル */
   .overlay { display:none; position:fixed; inset:0; background:rgba(25,32,48,.42); z-index:50; overflow-y:auto; padding:24px 12px; }
   .modal { max-width:640px; margin:0 auto; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:0 12px 40px rgba(20,30,60,.18); }
@@ -750,6 +758,17 @@ function cardBuyGuide(s){
 function cardPriceGuide(s){
   return LS.get("holding_"+s.code)?cardBuyGuide(s):cardPosition(s);
 }
+function cardDecision(s){
+  const tag=tagOf(s.code), st=dividendStability(s), holding=tag==="holding", candidate=tag==="candidate";
+  const kind=holding?"holding":candidate?"candidate":"unheld";
+  const title=holding?"保有中：継続確認":candidate?"新規購入候補：購入前確認":"未保有：候補外または未設定";
+  const points=[];
+  if(holding) points.push("売却は減配・業績・重大な変化を確認");
+  else if(candidate) points.push("52週安値は補助。配当・財務・分散を優先");
+  else points.push("候補タグを付けると購入前の確認対象になります");
+  if(st.key==="pending"||st.key==="short") points.push(dividendStabilityReason(s,st));
+  return `<div class="card-decision ${kind}"><b>${title}</b><span>確認ポイント：${points.join("／")}</span></div>`;
+}
 function render(){
   const list = filtered();
   refreshTabs();
@@ -788,7 +807,7 @@ function card(s){
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>
     <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円</div>
-    ${dividendHistoryCard(s)}</div>
+    ${dividendHistoryCard(s)}${cardDecision(s)}</div>
     <details class="card-support" open onclick="event.stopPropagation()"><summary>補助情報 <span>財務・買い増し・52週（タップで開閉）</span></summary>${scoreHtml}${cardPriceGuide(s)}</details>
   </div>`;
 }
@@ -844,12 +863,12 @@ function holdTable(list){
   }).join("");
   const useAmt = total>0;
 
-  // ① セクター10%目安チェック
+  // ① セクター20%目安チェック（学長マガジンの基本ルール）
   const bySec={};
   rows.forEach(({s,inv})=>{ const k=eff(s).sector||"その他"; bySec[k]=(bySec[k]||0)+(useAmt?inv:1); });
   const secTotal=Object.values(bySec).reduce((a,b)=>a+b,0)||1;
   const colors=["#2f7ed8","#1f9a63","#d1810f","#d24358","#7b62cc","#1f97ad","#a8891a"];
-  const secOver = Object.entries(bySec).filter(([k,v])=>v/secTotal*100>10).map(([k,v])=>`${k}(${fmt(v/secTotal*100,0)}%)`);
+  const secOver = Object.entries(bySec).filter(([k,v])=>v/secTotal*100>20).map(([k,v])=>`${k}(${fmt(v/secTotal*100,0)}%)`);
   const bar = Object.entries(bySec).map(([k,v],i)=>
     `<div style="width:${v/secTotal*100}%;background:${colors[i%colors.length]}" title="${k}">${k} ${fmt(v/secTotal*100,0)}%</div>`).join("");
 
@@ -877,7 +896,8 @@ function holdTable(list){
   }).filter(Boolean);
 
   let warnings = "";
-  if (secOver.length) warnings += `<div class="box warn"><b class="ttl">⚠️ セクター10%目安超</b>${secOver.join("、")}。平常時の新規買付で少しずつ整える目安です。</div>`;
+  if (secOver.length) warnings += `<div class="box warn"><b class="ttl">⚠️ セクター20%目安超</b>${secOver.join("、")}。平常時の新規買付では、別セクターを優先する目安です。</div>`;
+  if (defPct<50) warnings += `<div class="box warn"><b class="ttl">⚠️ ディフェンシブ比率50%未満</b>${fmt(defPct,1)}%。景気敏感株に偏っていないか、購入後の構成を確認してください。</div>`;
   if (divOver.length) warnings += `<div class="box warn"><b class="ttl">⚠️ 配当集中3%超</b>${divOver.join("、")}。この銘柄が減配すると家計への影響が大きくなります。</div>`;
   if (nanpinRows.length) warnings += `<div class="box info"><b class="ttl">📉 20%基準到達・要確認</b>${nanpinRows.join("<br>")}</div>`;
 
@@ -1152,17 +1172,18 @@ function openSimulator(){
   const imported=LS.get("portfolio_imported_at","");
   const mode=operationMode(), crash=mode==="crash";
   const stockOver=after.filter(r=>a.value&&r.value/a.value*100>3).sort((x,y)=>y.value-x.value).slice(0,8);
-  const sectorOver=sectors.filter(k=>a.value&&(sectorAfter[k]||0)/a.value*100>10).map(k=>`${k} ${fmt((sectorAfter[k]||0)/a.value*100,1)}%`);
+  const sectorOver=sectors.filter(k=>a.value&&(sectorAfter[k]||0)/a.value*100>20).map(k=>`${k} ${fmt((sectorAfter[k]||0)/a.value*100,1)}%`);
   const concentration=after.filter(r=>a.dividend&&r.dividend/a.dividend*100>3).sort((x,y)=>y.dividend-x.dividend).slice(0,6);
   const notices=[];
   if(!base.length) notices.push("管理シートの保有数を取り込むと、現在との比較ができます。");
   if(stockOver.length) notices.push("購入後に銘柄比率3%を超える: "+stockOver.map(r=>`${r.s.name} ${fmt(r.value/a.value*100,1)}%`).join("、"));
-  if(sectorOver.length) notices.push("購入後にセクター10%を超える: "+sectorOver.join("、"));
+  if(sectorOver.length) notices.push("購入後にセクター20%を超える: "+sectorOver.join("、"));
+  if(a.defensive<50) notices.push("購入後のディフェンシブ比率が50%未満: "+fmt(a.defensive,1)+"%");
   if(concentration.length) notices.push("参考・購入後の配当割合が3%を超える: "+concentration.map(r=>`${r.s.name} ${fmt(r.dividend/a.dividend*100,1)}%`).join("、"));
   $("modal").innerHTML=`
     <span class="close" onclick="closeModal()">✕</span><h2>🧮 購入シミュレーター</h2>
     <p class="kome">実際の注文は行いません。表示時点の株価・年間配当で、購入後の偏りを試算します。保有数などはこのブラウザ内だけに保存されます。</p>
-    <div class="box ${crash?'danger':'info'}"><b class="ttl">${crash?'暴落時モード':'平常時モード'}</b>${crash?'銘柄3%・セクター10%の超過は事実として表示しますが、暴落中の一時的な偏りは許容し、平常時の新規買付で戻します。':'銘柄2〜3%・セクター10%を目安に、新しい買付で偏りを整えます。厳密な上限ではなく確認の目安です。'}</div>
+    <div class="box ${crash?'danger':'info'}"><b class="ttl">${crash?'暴落時モード':'平常時モード'}</b>${crash?'銘柄3%・セクター20%の超過は事実として表示しますが、暴落中の一時的な偏りは許容し、平常時の新規買付で戻します。':'銘柄2〜3%・セクター20%・ディフェンシブ50%以上を目安に、新しい買付で偏りを整えます。厳密な上限ではなく確認の目安です。'}</div>
     <div class="sim-grid">
       <div class="sim-panel"><h3>① 現在のポートフォリオ</h3><p><b>${base.length}銘柄</b>${imported?` ／ 取込 ${new Date(imported).toLocaleString('ja-JP')}`:" ／ 未取込"}</p><button class="btn sub" onclick="openPortfolioImport()">管理シートのデータを取り込む</button></div>
       <div class="sim-panel"><h3>② 今回分だけを追加</h3><div class="sim-sort-row"><label>銘柄の並び順<select onchange="LS.set('sim_sort',this.value);openSimulator()"><option value="code" ${simSort==="code"?"selected":""}>コード順</option><option value="kana" ${simSort==="kana"?"selected":""}>五十音順</option></select></label><span class="kome">現在：${simSortLabel}</span></div><div class="sim-inputs"><label>銘柄<select id="simCode">${options}</select></label><label>今回の予算（円）<input id="simAmount" type="number" min="0" step="1000" placeholder="例：100000"></label><button class="btn" onclick="addSimItem()">追加</button></div><details class="sim-bulk"><summary>複数銘柄をまとめて追加</summary><input class="sim-quick-search" type="search" placeholder="コード・銘柄名で絞り込み" oninput="filterSimQuickList(this.value)"><div class="sim-quick-list">${quickRows}</div><button class="btn" onclick="addSimItems()">選択した銘柄を追加</button><div class="sim-bulk-file">CSV／JSONから一括取込（code,amount または 証券コード,予算）</div><input type="file" accept=".json,.csv,.tsv,.txt" onchange="handleSimBasketFile(event)"><textarea id="simBasketImportText" class="sim-bulk-text" rows="3" placeholder='[{&quot;code&quot;:&quot;8584&quot;,&quot;amount&quot;:50000}]'></textarea><div id="simBasketImportMsg"></div><button class="btn sub" onclick="applySimBasketImport()">CSV／JSONを取り込む</button></details><p class="kome">暴落時は予定総額を2〜3回に分け、この画面には今回使う分だけを入れます。</p></div>
