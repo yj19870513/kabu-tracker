@@ -15,6 +15,23 @@ JST = timezone(timedelta(hours=9))
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSV_PATH = os.path.join(BASE, "data", "stocks_list.csv")
 OUT_PATH = os.path.join(BASE, "data", "stocks.json")
+ADJUSTED_PATH = os.path.join(BASE, "data", "dividend_history_adjusted.json")
+OVERRIDES_PATH = os.path.join(BASE, "data", "dividend_audit_overrides.json")
+
+
+def load_adjusted_histories():
+    """IR BANK等で確認した分割調整後履歴を表示用配当の正本として読む。"""
+    try:
+        with open(ADJUSTED_PATH, encoding="utf-8") as f:
+            data = json.load(f)
+        try:
+            with open(OVERRIDES_PATH, encoding="utf-8") as f:
+                data.update(json.load(f).get("adjusted", {}))
+        except (OSError, json.JSONDecodeError):
+            pass
+        return {str(code): item for code, item in data.items() if isinstance(item, dict)}
+    except (OSError, json.JSONDecodeError):
+        return {}
 
 
 def load_list():
@@ -112,7 +129,7 @@ def compute_historical_averages(ticker, div_by_year, eps_hist, equity_hist, shar
     return out
 
 
-def fetch_one(code):
+def fetch_one(code, adjusted_histories=None):
     d = {"code": code, "error": False}
     try:
         t = yf.Ticker(f"{code}.T")
@@ -150,6 +167,11 @@ def fetch_one(code):
                 div_hist.append({"date": str(k.date()), "amount": round(float(v), 2)})
         except Exception:
             pass
+        # Yahooの分割未調整履歴を表示用データにしない。
+        adjusted = (adjusted_histories or {}).get(str(code), {})
+        canonical_history = adjusted.get("history") or {}
+        if canonical_history:
+            div_by_year = {str(y): rnd(v) for y, v in canonical_history.items() if num(v) is not None}
         d["div_hist"] = div_hist
         d["div_by_year"] = div_by_year
         # 進行中の年を除いた「確定済み」配当履歴（トレンド判定・変動計算はこちらを使う）
@@ -161,12 +183,14 @@ def fetch_one(code):
         # 返すなどの不整合があるため、確定済みの年度履歴を優先する。
         div_rate = num(info.get("dividendRate")) or num(info.get("trailingAnnualDividendRate"))
         d["dividend_raw_yahoo"] = rnd(div_rate)
+        actual_meta = adjusted.get("actual_latest") or {}
+        actual_value = num(actual_meta.get("value")) if isinstance(actual_meta, dict) else None
         conf = d.get("div_confirmed") or {}
         conf_years = sorted(conf)
-        latest_annual = num(conf[conf_years[-1]]) if conf_years else None
+        latest_annual = actual_value if actual_value is not None else (num(conf[conf_years[-1]]) if conf_years else None)
         if latest_annual is not None and latest_annual > 0:
             d["dividend"] = rnd(latest_annual)
-            d["dividend_source"] = "配当履歴（年度集計）"
+            d["dividend_source"] = "IR BANK調整履歴" if canonical_history or actual_value is not None else "配当履歴（年度集計）"
             d["yield_pct"] = rnd(latest_annual / price * 100) if price else None
         else:
             d["dividend"] = rnd(div_rate)
@@ -287,10 +311,11 @@ def fetch_vix():
 
 
 def main():
+    adjusted_histories = load_adjusted_histories()
     stocks = []
     for code, name in load_list():
         print(f"取得中: {code} {name}")
-        s = fetch_one(code)
+        s = fetch_one(code, adjusted_histories)
         s["name"] = name  # 日本語名はCSVが正。translate_names.pyでも上書きされる
         stocks.append(s)
         time.sleep(1)  # API負荷対策
