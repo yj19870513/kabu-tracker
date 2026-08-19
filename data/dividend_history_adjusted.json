@@ -187,7 +187,7 @@
       "2023": 175.0,
       "2024": 187.0,
       "2025": 280.0,
-      "2026": 280.0
+      "2026": 70.0
     },
     "method": "raw+special_adjusted+special_adjusted+special_adjusted",
     "status": "not_blue",
@@ -206,7 +206,18 @@
       }
     ],
     "confirmed_real_cuts": 1,
-    "confidence": "high"
+    "confidence": "high",
+    "actual_latest": {
+      "year": "2026",
+      "value": 70.0
+    },
+    "forecast": {
+      "year": "2027",
+      "value": 70.0
+    },
+    "history_notes": {
+      "latest": "2026年実績は合計280円・分割調整後70円。2027年予想も分割調整後70円。"
+    }
   },
   "4641": {
     "code": "4641",
@@ -228,7 +239,7 @@
       "2022": 85.0,
       "2023": 93.0,
       "2024": 93.0,
-      "2025": 108.0
+      "2025": 36.0
     },
     "method": "source_ordinary_dividend",
     "status": "not_blue",
@@ -253,7 +264,18 @@
       }
     ],
     "confirmed_real_cuts": 3,
-    "confidence": "high"
+    "confidence": "high",
+    "actual_latest": {
+      "year": "2025",
+      "value": 36.0
+    },
+    "forecast": {
+      "year": "2026",
+      "value": 36.0
+    },
+    "history_notes": {
+      "latest": "2025年実績は合計108円・分割調整後36円。2026年予想も分割調整後36円。"
+    }
   },
   "1414": {
     "code": "1414",
@@ -819,8 +841,8 @@
       "2022": 170.0,
       "2023": 210.0,
       "2024": 110.0,
-      "2025": 155.0,
-      "2026": 185.0
+      "2025": 36.25,
+      "2026": 46.25
     },
     "method": "raw",
     "status": "not_blue",
@@ -839,7 +861,19 @@
       }
     ],
     "confirmed_real_cuts": 1,
-    "confidence": "high"
+    "confidence": "high",
+    "actual_latest": {
+      "year": "2026",
+      "value": 46.25
+    },
+    "forecast": {
+      "year": "2027",
+      "value": 11.88
+    },
+    "history_notes": {
+      "latest": "2026年実績は合計185円・分割調整後46.25円。2027年予想は分割調整後11.88円。",
+      "2025": "2025年実績は合計155円のうち普通配当145円＋記念配当10円。分割調整後の通常配当は36.25円。"
+    }
   },
   "4832": {
     "code": "4832",
@@ -1498,13 +1532,24 @@
       "2023": 200.0,
       "2024": 200.0,
       "2025": 200.0,
-      "2026": 220.0
+      "2026": 44.0
     },
     "method": "raw",
     "status": "blue_ok",
     "remaining_drops": [],
     "confirmed_real_cuts": 0,
-    "confidence": "high"
+    "confidence": "high",
+    "actual_latest": {
+      "year": "2026",
+      "value": 44.0
+    },
+    "forecast": {
+      "year": "2027",
+      "value": 70.0
+    },
+    "history_notes": {
+      "latest": "2026年実績は合計220円・分割調整後44円。2027年予想は分割調整後70円。"
+    }
   },
   "9513": {
     "code": "9513",
@@ -1970,7 +2015,18 @@
     "status": "not_blue",
     "remaining_drops": [],
     "confirmed_real_cuts": 1,
-    "confidence": "medium"
+    "confidence": "medium",
+    "actual_latest": {
+      "year": "2026",
+      "value": 95.0
+    },
+    "forecast": {
+      "year": "2027",
+      "value": 180.0
+    },
+    "history_notes": {
+      "latest": "2026年実績95円。2027年予想180円。"
+    }
   },
   "6417": {
     "code": "6417",
@@ -2137,7 +2193,18 @@
     "status": "not_blue",
     "remaining_drops": [],
     "confirmed_real_cuts": 1,
-    "confidence": "medium"
+    "confidence": "medium",
+    "actual_latest": {
+      "year": "2026",
+      "value": 75.0
+    },
+    "forecast": {
+      "year": "2027",
+      "value": 110.0
+    },
+    "history_notes": {
+      "latest": "2026年実績は合計150円・分割調整後75円。2027年予想110円。"
+    }
   },
   "7447": {
     "code": "7447",
