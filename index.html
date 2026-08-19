@@ -607,10 +607,27 @@ const F8_META = {
   cash:             ["現金等", "増加傾向が理想です。現金が潤沢な会社は、不況や急な出来事が起きても配当を払い続ける体力があります。"],
 };
 function fin8(code){ const F = window.FIN8; return (F && F.stocks) ? F.stocks[code] : null; }
+function fin8DividendJudge(code){
+  const s = DATA && DATA.stocks ? DATA.stocks.find(x=>x.code===code) : null;
+  const key = s ? dividendStability(s).key : "pending";
+  if (["blue","aqua"].includes(key)) return "○";
+  if (["red","red-partial"].includes(key)) return "×";
+  return "△";
+}
+function fin8DividendDetail(code, fallback){
+  const s = DATA && DATA.stocks ? DATA.stocks.find(x=>x.code===code) : null;
+  if (!s) return fallback;
+  const st = dividendStability(s), h = st.history || [];
+  const basis = ((window.DIV_SOURCES||{})[code]||{}).exclude_special_dividends ? "記念配当・特別配当を除いた通常配当ベース" : "株式分割調整後の配当履歴";
+  if (st.key === "pending" || st.key === "short") return `${basis}で${h.length}年分を確認。${dividendStabilityReason(s,st)}。この項目は減配なしとは判定せず、追加確認まで△とします。`;
+  if (st.key === "red" || st.key === "red-partial") return `${basis}で複数回の減配を確認。安定配当の基準から外れるため×です。`;
+  if (st.key === "green" || st.key === "amber") return `${basis}で減配1回を確認。長期の安定配当としては注意が必要なため△です。`;
+  return `${basis}で減配なしを確認。${fallback||""}`;
+}
 function fin8Counts(code){
   const f = fin8(code); if (!f || !f.items) return null;
   const c = {"○":0,"△":0,"×":0,"不明":0,"対象外":0};
-  Object.keys(f.items).forEach(k=>{ const j=f.items[k].judge; if (c[j]!==undefined) c[j]++; });
+  Object.keys(f.items).forEach(k=>{ const j=k==="dividend" ? fin8DividendJudge(code) : f.items[k].judge; if (c[j]!==undefined) c[j]++; });
   return c;
 }
 function isExempt(code){ const c = fin8Counts(code); return !!c && c["対象外"] >= 8; }
@@ -1011,10 +1028,10 @@ function fin8Panel(code){
   const order = (window.FIN8 && window.FIN8.order) || Object.keys(f.items);
   const jcls = j => j==="○" ? "j-o" : j==="△" ? "j-t" : j==="×" ? "j-x" : "j-n";
   const rows = order.filter(k=>f.items[k]).map(k=>{
-    const it = f.items[k], meta = F8_META[k] || [k, ""];
+    const it = f.items[k], meta = F8_META[k] || [k, ""], judge = k==="dividend" ? fin8DividendJudge(code) : it.judge;
     return `<div class="f8row">
-      <div class="f8head"><b>${meta[0]}</b><span class="f8j ${jcls(it.judge)}">${it.judge||"-"}</span></div>
-      <div class="f8detail">${it.detail||"（根拠データなし）"}</div>
+      <div class="f8head"><b>${meta[0]}</b><span class="f8j ${jcls(judge)}">${judge||"-"}</span></div>
+      <div class="f8detail">${k==="dividend" ? fin8DividendDetail(code,it.detail) : (it.detail||"（根拠データなし）")}</div>
       ${meta[1] ? `<details class="f8crit"><summary>判定の基準を見る</summary><p>${meta[1]}</p></details>` : ""}
     </div>`;
   }).join("");
