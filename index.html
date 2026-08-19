@@ -1045,6 +1045,7 @@ function portfolioRows(){
   }).filter(r=>r.shares>0);
 }
 function simBasket(){ try{ const a=JSON.parse(LS.get("sim_basket","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function simOwnershipLabel(s){ return LS.get("holding_"+s.code)?"保有":"未保有"; }
 function saveSimBasket(a){ LS.set("sim_basket",JSON.stringify(a)); }
 function simScenarios(){ try{ const a=JSON.parse(LS.get("sim_scenarios","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function saveSimScenarios(a){ LS.set("sim_scenarios",JSON.stringify(a)); }
@@ -1133,8 +1134,8 @@ function openSimulator(){
   const simSort=LS.get("sim_sort","code");
   const simSortLabel=simSort==="kana"?"五十音順":"コード順";
   const simStocks=DATA.stocks.filter(s=>!s.error).sort((x,y)=>simSort==="kana"?String(x.name||x.code).localeCompare(String(y.name||y.code),"ja")||x.code.localeCompare(y.code):x.code.localeCompare(y.code,{numeric:true}));
-  const options=simStocks.map(s=>`<option value="${s.code}">${s.code} ${s.name}</option>`).join("");
-  const quickRows=simStocks.map(s=>`<div class="sim-quick-row" data-search="${String(s.code+" "+(s.name||"")).toLowerCase()}"><label><input class="sim-pick-check" type="checkbox" value="${s.code}" onchange="toggleSimPick('${s.code}',this.checked)"> ${s.code} ${s.name}</label><input id="simPickAmt_${s.code}" type="number" min="0" step="1000" placeholder="予算" disabled></div>`).join("");
+  const options=simStocks.map(s=>`<option value="${s.code}">${s.code} ${s.name}（${simOwnershipLabel(s)}）</option>`).join("");
+  const quickRows=simStocks.map(s=>`<div class="sim-quick-row" data-search="${String(s.code+" "+(s.name||"")).toLowerCase()}"><label><input class="sim-pick-check" type="checkbox" value="${s.code}" onchange="toggleSimPick('${s.code}',this.checked)"> ${s.code} ${s.name}（${simOwnershipLabel(s)}）</label><input id="simPickAmt_${s.code}" type="number" min="0" step="1000" placeholder="予算" disabled></div>`).join("");
   const scenarios=simScenarios();
   const scenarioOptions=scenarios.map((x,i)=>`<option value="${i}">${x.name}</option>`).join("");
   const scenarioCompare=scenarios.map(x=>{ const rows=projectedRowsForBasket(Array.isArray(x.basket)?x.basket:[]), sum=portfolioSummary(rows), budget=(Array.isArray(x.basket)?x.basket:[]).reduce((n,v)=>n+(+v.amount||0),0); return `<tr><td>${x.name}</td><td>${yen(budget)}</td><td>${yen(sum.value)}</td><td>${yen(sum.dividend)}</td><td>${fmt(sum.defensive,1)}%</td><td>${fmt(sum.stable,1)}%</td></tr>`; }).join("");
