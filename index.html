@@ -256,6 +256,20 @@
   .sim-mix-legend i { width:8px; height:8px; border-radius:2px; display:inline-block; }
   .sim-scenario-compare { margin-top:10px; padding:9px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card); }
   .sim-scenario-compare h4 { margin:0 0 5px; font-size:12px; color:var(--muted); }
+  .sim-bulk-actions { display:flex; gap:6px; flex-wrap:wrap; margin:6px 0; }
+  .sim-bulk-actions .btn { margin-top:0; padding:5px 9px; font-size:11px; }
+  .rotation-panel { margin:0 0 12px; padding:12px; border:1px solid #c9d9f1; border-radius:10px; background:linear-gradient(135deg,#f7faff,#fff); }
+  .rotation-head { display:flex; align-items:baseline; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+  .rotation-head b { color:#29466d; font-size:13px; }
+  .rotation-head span { color:var(--muted); font-size:11px; }
+  .rotation-bar { display:flex; height:18px; margin:9px 0 5px; overflow:hidden; border-radius:9px; background:#edf0f5; box-shadow:inset 0 0 0 1px rgba(40,55,80,.08); }
+  .rotation-seg { display:flex; align-items:center; justify-content:center; min-width:0; color:#fff; font-size:10px; font-weight:700; white-space:nowrap; overflow:hidden; text-shadow:0 1px 2px rgba(0,0,0,.35); }
+  .rotation-legend { display:flex; gap:10px; flex-wrap:wrap; color:var(--muted); font-size:11px; }
+  .rotation-legend span { display:inline-flex; align-items:center; gap:4px; }
+  .rotation-legend i { width:9px; height:9px; border-radius:2px; display:inline-block; }
+  .rotation-note { margin:7px 0 0; color:var(--muted); font-size:11px; line-height:1.5; }
+  .data-dates { color:var(--muted); font-size:10.5px; margin-top:5px; line-height:1.45; }
+  .data-dates b { color:#50617c; font-weight:600; }
   .storage-notice { margin:8px 0 12px; padding:9px 12px; border:1px solid #c9d9f1; border-radius:9px; background:#f1f6fd; color:#285485; font-size:12px; line-height:1.6; }
   .storage-notice b { color:#174b89; }
   .card .sub { min-height:18px; }
@@ -437,6 +451,17 @@ function currentYear(){ return DATA && DATA.updated ? DATA.updated.slice(0,4) : 
 function latestDividendCheckedAt(){
   const dates=Object.values(window.DIV_SOURCES||{}).map(x=>x&&x.checked_at).filter(Boolean).sort();
   return dates.length?dates[dates.length-1]:"未確認";
+}
+function latestFinancialCheckedAt(){
+  const f=window.FIN8||{}, dates=[];
+  Object.values(f.stocks||{}).forEach(x=>{ if(x&&x.checked_at) dates.push(String(x.checked_at)); });
+  if(f.generated_at) dates.push(String(f.generated_at));
+  dates.sort();
+  return dates.length?dates[dates.length-1]:"未確認";
+}
+function dataDateHtml(s){
+  const src=(window.DIV_SOURCES||{})[s.code], f=fin8(s.code);
+  return `<div class="data-dates"><b>株価</b> ${DATA&&DATA.updated||"未確認"}　<b>配当</b> ${src&&src.checked_at||"未確認"}　<b>財務8項目</b> ${f&&f.checked_at||((window.FIN8||{}).generated_at||"未確認")}</div>`;
 }
 function divConfirmed(s){
   // 進行中の年を除いた確定配当。旧データにdiv_confirmedが無い場合はdiv_by_yearから作る
@@ -877,8 +902,8 @@ function render(){
   const fok = list.map(s=>yieldOf(s)).filter(y=>y!=="anomaly"&&y!==null);
   const favg = fok.length?fok.reduce((a,b)=>a+b,0)/fok.length:0;
   $("fcount").textContent = `表示 ${list.length}件 ／ 平均利回り ${fmt(favg)}%`;
-  // 保有状況の正本は管理シート。ここではカード確認と購入前シミュレーションに絞る
-  $("holdArea").innerHTML = TAB==="holding" ? `<div class="hold-note"><span><b>保有管理は管理シートが正本です。</b><br>この画面では保有銘柄のカード確認と、購入前後のバランス試算ができます。</span><button class="btn" onclick="openSimulator()">🧮 購入後を試算する</button></div>` : "";
+  // 保有状況の正本は管理シート。ここでは配当ベースの偏り確認と購入前シミュレーションに絞る
+  $("holdArea").innerHTML = TAB==="holding" ? `<div class="hold-note"><span><b>保有管理は管理シートが正本です。</b><br>この画面では保有銘柄のカード確認と、購入前後のバランス試算ができます。</span><button class="btn" onclick="openSimulator()">🧮 購入後を試算する</button></div>${holdingDividendRotation()}` : "";
   // カード
   $("grid").innerHTML = list.map(card).join("") || `<div style="color:var(--muted)">該当なし</div>`;
 }
@@ -900,7 +925,7 @@ function card(s){
     <div class="card-primary"><div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>
-    <div class="sub">${e.sector||"-"}｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</div>
+    <div class="sub">${e.sector||"-"}｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</div>${dataDateHtml(s)}
     ${dividendHistoryCard(s)}</div>
     ${SUPPORT_OPEN?`<div class="card-support" onclick="event.stopPropagation()">${scoreHtml}${cardPriceGuide(s)}</div>`:""}
   </div>`;
@@ -924,6 +949,19 @@ function sectorType(target){
   const sector=target&&typeof target==="object"?target.sector:target;
   const imported=code?importedSectorType(code):"";
   return imported || SECTOR_DEFENSIVE[sector] || "neutral";
+}
+
+function holdingDividendRotation(){
+  const rows=portfolioRows();
+  if(!rows.length) return `<div class="rotation-panel"><div class="rotation-head"><b>保有配当のセクターローテーション</b><span>管理シートの保有数を取り込むと表示</span></div><p class="rotation-note">購入シミュレーターの「管理シートのデータを取り込む」から、保有数とセクター区分を取り込んでください。</p></div>`;
+  const total=rows.reduce((n,r)=>n+r.dividend,0), vals={defensive:0,cyclical:0,neutral:0};
+  rows.forEach(r=>{ const k=sectorType(r.s); vals[k]=(vals[k]||0)+r.dividend; });
+  const labels={defensive:"ディフェンシブ",cyclical:"景気敏感",neutral:"その他"}, colors={defensive:"#2c9a77",cyclical:"#d58b43",neutral:"#aeb8c8"};
+  const pct=k=>total?vals[k]/total*100:0;
+  const segments=Object.keys(labels).map(k=>`<div class="rotation-seg" style="width:${pct(k)}%;background:${colors[k]}" title="${labels[k]} ${fmt(pct(k),1)}%">${pct(k)>=10?fmt(pct(k),1)+"%":""}</div>`).join("");
+  const legend=Object.keys(labels).map(k=>`<span><i style="background:${colors[k]}"></i>${labels[k]} ${fmt(pct(k),1)}%</span>`).join("");
+  const missing=rows.filter(r=>!importedSectorType(r.s.code)).length;
+  return `<div class="rotation-panel"><div class="rotation-head"><b>保有配当のセクターローテーション</b><span>年間配当ベース・${yen(total)}</span></div><div class="rotation-bar">${segments}</div><div class="rotation-legend">${legend}</div><p class="rotation-note">金融・資本財・素材などは景気敏感側、生活必需品・ヘルスケアなどはディフェンシブ側として表示します。管理シートの区分を取り込んだ銘柄を優先し、未区分${missing}銘柄は業種からの暫定分類です。10%は平常時の分散確認の目安です。</p><button class="btn sub" style="margin-top:7px" onclick="openSimulator()">購入後の配当バランスを試算する</button></div>`;
 }
 
 /* ---------- 保有中テーブル ---------- */
@@ -1034,7 +1072,7 @@ function openModal(code){
     <span class="close" onclick="closeModal()">✕</span>
     <h2>${s.name} <span style="color:var(--muted);font-size:13px">${code}｜${e.sector||"-"}</span></h2>
     <div style="margin-top:4px"><span class="price" style="font-size:22px">${yen(e.price)}</span>
-      <span style="margin-left:10px">${e.dividend_forecast!==null?"予想利回り":"実績利回り"} <b>${y==="anomaly"?"-（異常値）":fmt(y)+"%"}</b>｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</span></div>
+      <span style="margin-left:10px">${e.dividend_forecast!==null?"予想利回り":"実績利回り"} <b>${y==="anomaly"?"-（異常値）":fmt(y)+"%"}</b>｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</span></div>${dataDateHtml(s)}
     <div class="tagbtns">
       ${["holding|保有中","watch|ウォッチ","candidate|候補"].map(x=>{const[k,l]=x.split("|");
         return `<button class="tagbtn ${LS.get(k+"_"+code)?"on":""}" onclick="toggleTag('${code}','${k}',this)">${l}</button>`;}).join("")}
@@ -1113,7 +1151,7 @@ function fin8Panel(code){
     ? `⚠️ この銘柄はIR BANKで遡れるデータが<b>${f.span}年分</b>にとどまります（${f.years}）。上場から日が浅いなどの理由で、他の銘柄の15〜20年分の判定とは重みが異なる点にご注意ください。`
     : `IR BANKの長期データ（${f.years}）にもとづく判定です。`;
   return `<h3>財務8項目 ${irbankLink}　<span style="font-weight:400;font-size:12.5px">${c["○"]}/8（○${c["○"]} △${c["△"]} ×${c["×"]}${c["不明"]?" 不明"+c["不明"]:""}）</span></h3>
-    <div class="f8note">${spanNote}　調査時点：${(window.FIN8&&window.FIN8.generated_at)||"-"}（株価と違い自動更新されません）</div>
+    <div class="f8note">${spanNote}　<b>財務8項目確認日：</b>${f.checked_at||((window.FIN8&&window.FIN8.generated_at)||"未確認")}（株価・配当とは別の調査日）</div>
     ${rows}`;
 }
 function timingRow(label, cur, avg, lowerIsCheap){
@@ -1192,6 +1230,13 @@ function saveSimScenario(){
 function loadSimScenario(i){ const x=simScenarios()[+i]; if(!x) return; saveSimBasket(Array.isArray(x.basket)?x.basket:[]); openSimulator(); }
 function deleteSimScenario(){ const sel=$("simScenario"); if(!sel||sel.value==="") return; const i=+sel.value, list=simScenarios(); if(!list[i]) return; if(!confirm(`「${list[i].name}」を削除しますか？`)) return; list.splice(i,1); saveSimScenarios(list); openSimulator(); }
 function toggleSimPick(code, checked){ const input=$("simPickAmt_"+code); if(input) input.disabled=!checked; }
+function toggleAllSimPick(checked){
+  document.querySelectorAll(".sim-quick-row").forEach(row=>{
+    if(row.style.display==="none") return;
+    const ch=row.querySelector(".sim-pick-check");
+    if(ch){ ch.checked=checked; toggleSimPick(ch.value,checked); }
+  });
+}
 function filterSimQuickList(query){
   const q=String(query||"").trim().toLowerCase();
   document.querySelectorAll(".sim-quick-row").forEach(row=>{ row.style.display=(!q||row.dataset.search.includes(q))?"grid":"none"; });
@@ -1310,7 +1355,7 @@ function openSimulator(){
     <div class="box ${crash?'danger':'info'}"><b class="ttl">${crash?'暴落時モード':'平常時モード'}</b>${crash?'銘柄3%・セクター10%目標／20%警戒の超過は事実として表示しますが、暴落中の一時的な偏りは許容し、平常時の新規買付で戻します。':'銘柄2〜3%・セクター10%以下を目標、20%超を強い警戒・ディフェンシブ50%以上を目安に、新しい買付で偏りを整えます。厳密な上限ではなく確認の目安です。'}</div>
     <div class="sim-grid">
       <div class="sim-panel"><h3>① 現在のポートフォリオ</h3><p><b>${base.length}銘柄</b>${imported?` ／ 取込 ${new Date(imported).toLocaleString('ja-JP')}`:" ／ 未取込"}</p><button class="btn sub" onclick="openPortfolioImport()">管理シートのデータを取り込む</button></div>
-      <div class="sim-panel"><h3>② 今回分だけを追加</h3><div class="sim-sort-row"><label>銘柄の並び順<select onchange="LS.set('sim_sort',this.value);openSimulator()"><option value="code" ${simSort==="code"?"selected":""}>コード順</option><option value="kana" ${simSort==="kana"?"selected":""}>五十音順</option></select></label><span class="kome">現在：${simSortLabel}</span></div><div class="sim-inputs"><label>銘柄<select id="simCode">${options}</select></label><label>今回の予算（円）<input id="simAmount" type="number" min="0" step="1000" placeholder="例：100000"></label><button class="btn" onclick="addSimItem()">追加</button></div><details class="sim-bulk"><summary>複数銘柄をまとめて追加</summary><input class="sim-quick-search" type="search" placeholder="コード・銘柄名で絞り込み" oninput="filterSimQuickList(this.value)"><div class="sim-quick-list">${quickRows}</div><button class="btn" onclick="addSimItems()">選択した銘柄を追加</button><div class="sim-bulk-file">CSV／JSONから一括取込（code,amount または 証券コード,予算）</div><input type="file" accept=".json,.csv,.tsv,.txt" onchange="handleSimBasketFile(event)"><textarea id="simBasketImportText" class="sim-bulk-text" rows="3" placeholder='[{&quot;code&quot;:&quot;8584&quot;,&quot;amount&quot;:50000}]'></textarea><div id="simBasketImportMsg"></div><button class="btn sub" onclick="applySimBasketImport()">CSV／JSONを取り込む</button></details><p class="kome">暴落時は予定総額を2〜3回に分け、この画面には今回使う分だけを入れます。</p></div>
+      <div class="sim-panel"><h3>② 今回分だけを追加</h3><div class="sim-sort-row"><label>銘柄の並び順<select onchange="LS.set('sim_sort',this.value);openSimulator()"><option value="code" ${simSort==="code"?"selected":""}>コード順</option><option value="kana" ${simSort==="kana"?"selected":""}>五十音順</option></select></label><span class="kome">現在：${simSortLabel}</span></div><div class="sim-inputs"><label>銘柄<select id="simCode">${options}</select></label><label>今回の予算（円）<input id="simAmount" type="number" min="0" step="1000" placeholder="例：100000"></label><button class="btn" onclick="addSimItem()">追加</button></div><details class="sim-bulk"><summary>複数銘柄をまとめて追加</summary><input class="sim-quick-search" type="search" placeholder="コード・銘柄名で絞り込み" oninput="filterSimQuickList(this.value)"><div class="sim-bulk-actions"><button class="btn sub" onclick="toggleAllSimPick(true)">表示中を全選択</button><button class="btn sub" onclick="toggleAllSimPick(false)">選択を解除</button></div><div class="sim-quick-list">${quickRows}</div><button class="btn" onclick="addSimItems()">選択した銘柄を追加</button><div class="sim-bulk-file">CSV／JSONから一括取込（code,amount または 証券コード,予算）</div><input type="file" accept=".json,.csv,.tsv,.txt" onchange="handleSimBasketFile(event)"><textarea id="simBasketImportText" class="sim-bulk-text" rows="3" placeholder='[{&quot;code&quot;:&quot;8584&quot;,&quot;amount&quot;:50000}]'></textarea><div id="simBasketImportMsg"></div><button class="btn sub" onclick="applySimBasketImport()">CSV／JSONを取り込む</button></details><p class="kome">暴落時は予定総額を2〜3回に分け、この画面には今回使う分だけを入れます。</p></div>
     </div>
     <h3>購入予定</h3>${basket.length?`<div class="tblwrap"><table class="sim-table"><tr><th>銘柄</th><th>予算</th><th>概算株数</th><th>概算購入額</th><th>年間配当</th><th></th></tr>${planRows}</table></div><button class="btn sub" onclick="clearSimBasket()">購入予定をすべて消す</button>`:'<p class="kome">まだ追加されていません。1回の購入で複数銘柄をまとめて比較できます。</p>'}
     <h3>③ 購入前 → 購入後</h3><div class="sim-metrics">
@@ -1323,7 +1368,7 @@ function openSimulator(){
     ${scenarios.length?`<div class="sim-scenario-compare"><h4>保存した購入案の比較</h4><div class="tblwrap"><table class="sim-table"><tr><th>案</th><th>予算</th><th>評価額</th><th>年間配当</th><th>ディフェンシブ</th><th>青＋水色</th></tr>${scenarioCompare}</table></div></div>`:""}
     <p class="kome">バランス比率は評価額ではなく、年間配当金の構成比で計算しています。ディフェンシブ比率は管理シートから取り込んだ区分を優先しています${b.sectorMissing?`。未区分：${b.sectorMissing}銘柄（旧データはセクターからの暫定判定）`:""}。安定枠比率は、長期で減配なしの青枠と、2010年以降確認できる水色枠の合計です。</p>
     ${notices.length?`<div class="box ${crash?'info':'warn'}"><b class="ttl">${crash?'一時的な偏りを確認':'分散目安を確認'}</b>${notices.join("<br>")}${crash?'<br>基準超過だけで候補を外さず、業績と配当の安全性を優先します。':''}</div>`:""}
-    <h3>セクター構成の変化（年間配当ベース）</h3>${sectors.length?`${simMixHtml("現在",mixBefore)}${simMixHtml("購入後",mixAfter)}<div class="tblwrap"><table class="sim-table"><tr><th>セクター</th><th>現在</th><th>購入後</th><th>変化</th></tr>${secRows}</table></div>`:'<p class="kome">保有データまたは購入予定を入れると表示されます。</p>'}`;
+    <h3>セクター構成の変化（年間配当ベース）</h3>${sectors.length?`${simMixHtml("現在",mixBefore)}${simMixHtml("購入後",mixAfter)}<p class="kome">この3分類では、金融・資本財・素材などを景気敏感、生活必需品・ヘルスケアなどをディフェンシブとして集計します。管理シートの区分を取り込んだ銘柄を優先します。</p><div class="tblwrap"><table class="sim-table"><tr><th>セクター</th><th>現在</th><th>購入後</th><th>変化</th></tr>${secRows}</table></div>`:'<p class="kome">保有データまたは購入予定を入れると表示されます。</p>'}`;
   $("overlay").style.display="block";
 }
 function addSimItem(){
@@ -1583,7 +1628,7 @@ async function init(){
     $("updated").innerHTML='<span class="err">data/stocks.json を読み込めませんでした。Webサーバー経由（GitHub Pages等）で開いてください。</span>';
     return;
   }
-  $("updated").innerHTML = `株価更新: ${DATA.updated}（自動取得・リアルタイムではありません）<br><span>配当確認日（登録銘柄の最新）：<b>${latestDividendCheckedAt()}</b></span>`;
+  $("updated").innerHTML = `株価更新日：<b>${DATA.updated}</b>（自動取得・リアルタイムではありません）<br><span>配当確認日：<b>${latestDividendCheckedAt()}</b>　｜　財務8項目確認日：<b>${latestFinancialCheckedAt()}</b></span>`;
   if (DATA.vix!==null) showVix(DATA.vix,"（"+(DATA.vix_updated||"")+" 時点）");
   liveVix();
   tdrView();
@@ -1732,7 +1777,7 @@ function enhanceModal(code){
     const r2=await fetch("data/financial8_verified.json?t="+t);
     window.FIN8=await r2.json();
   }catch(e){ window.FIN8=null; }
-  if(DATA) $("updated").innerHTML = `株価更新: ${DATA.updated}（自動取得・リアルタイムではありません）<br><span>配当確認日（登録銘柄の最新）：<b>${latestDividendCheckedAt()}</b></span>`;
+  if(DATA) $("updated").innerHTML = `株価更新日：<b>${DATA.updated}</b>（自動取得・リアルタイムではありません）<br><span>配当確認日：<b>${latestDividendCheckedAt()}</b>　｜　財務8項目確認日：<b>${latestFinancialCheckedAt()}</b></span>`;
   if (DATA) render();
 })();
 </script>
