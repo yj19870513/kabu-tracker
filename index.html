@@ -375,7 +375,34 @@ const yen = v => v===null||v===undefined ? "-" : "¥"+fmt(v,0);
 
 /* ---------- データ整形 ---------- */
 function manual(code){ try{ return JSON.parse(LS.get("manual_"+code,"{}")); }catch(e){ return {}; } }
-function eff(s){ return Object.assign({}, s, manual(s.code)); }
+function rawEff(s){ return Object.assign({}, s, manual(s.code)); }
+function dividendBasis(s){
+  const e=rawEff(s), m=manual(s.code);
+  if(Number.isFinite(Number(m.dividend))) return {value:Number(m.dividend),source:"手動入力"};
+  const source=(window.DIV_SOURCES||{})[s.code], adjusted=(window.DIV_ADJUSTED||{})[s.code];
+  const history=(source&&source.history)||(adjusted&&adjusted.history);
+  if(history){
+    const years=Object.keys(history).filter(y=>Number.isFinite(Number(history[y]))).sort((a,b)=>Number(a)-Number(b));
+    if(years.length) return {value:Number(history[years[years.length-1]]),source:"IR BANK調整履歴"};
+  }
+  const confirmed=e.div_confirmed||{};
+  const years=Object.keys(confirmed).filter(y=>Number.isFinite(Number(confirmed[y]))).sort((a,b)=>Number(a)-Number(b));
+  const latest=years.length?Number(confirmed[years[years.length-1]]):null;
+  if(latest!==null&&latest>0) return {value:latest,source:"配当履歴（年度集計）"};
+  if(Number.isFinite(Number(e.dividend))&&Number(e.dividend)>0) return {value:Number(e.dividend),source:"Yahoo Finance参考値",warning:"配当履歴で照合できないため、参考値です"};
+  return {value:null,source:"未確認"};
+}
+function eff(s){
+  const e=rawEff(s), d=dividendBasis(s);
+  if(d.value!==null&&d.value!==undefined){
+    e.dividend=d.value;
+    if(e.price) e.yield_pct=Math.round(d.value/e.price*10000)/100;
+  }else{
+    e.dividend=null; e.yield_pct=null;
+  }
+  e.dividend_source=d.source; e.dividend_warning=d.warning||null;
+  return e;
+}
 function yieldOf(s){
   const e = eff(s);
   const y = e.yield_pct;
