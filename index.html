@@ -488,6 +488,7 @@ function dividendStability(s){
   const source=(window.DIV_SOURCES||{})[s.code];
   const review=(window.DIV_ADJUSTED||{})[s.code];
   // 枠色は「減配回数」、確認範囲はラベルと線種で分ける。情報不足を減配なしとは扱わない。
+  if(source&&source.status==="not_applicable") return {key:"short", label:"対象外（ETF分配金）", history:history, cuts:null, coverage:"not_applicable"};
   if(!review && !source)
     return {key:"pending", label:"確認中：調整データなし", history:history, cuts:null, coverage:"unknown"};
   const firstYear=history.length ? Number(history[0].year.slice(0,4)) : null;
@@ -506,6 +507,7 @@ function dividendStability(s){
 function dividendStabilityReason(s, st){
   const source=(window.DIV_SOURCES||{})[s.code], review=(window.DIV_ADJUSTED||{})[s.code], h=st&&st.history||divHistory(s);
   const first=h.length?Number(h[0].year.slice(0,4)):null;
+  if(source&&source.status==="not_applicable") return "ETFの分配金のため、一般企業の減配判定対象外";
   if(!source&&!review) return "出典付きの調整データが未登録";
   if(h.length<2) return "比較できる配当履歴が不足";
   if(st&&st.key==="short") return `確認できる履歴が${h.length}年分で、10年未満`;
