@@ -70,8 +70,12 @@ def main():
 
         row = stock_by_code.get(code)
         if row and row.get("dividend") and history:
-            latest_year = max(history, key=lambda y: int(str(y)[:4]))
-            latest_adjusted = float(history[latest_year])
+            latest_meta = item.get("actual_latest") if isinstance(item, dict) else None
+            if isinstance(latest_meta, dict) and latest_meta.get("value") is not None:
+                latest_adjusted = float(latest_meta["value"])
+            else:
+                latest_year = max(history, key=lambda y: int(str(y)[:4]))
+                latest_adjusted = float(history[latest_year])
             raw = float(row["dividend"])
             if latest_adjusted > 0 and (raw / latest_adjusted < 0.5 or raw / latest_adjusted > 2.0):
                 warnings.append(
