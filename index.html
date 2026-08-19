@@ -66,6 +66,7 @@
   .qf { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
   .qf button { background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:16px; padding:5px 14px; cursor:pointer; font-size:13px; box-shadow:var(--shadow); }
   .qf button.on { background:var(--green); color:#fff; border-color:var(--green); }
+  .support-toggle { margin-left:auto; }
   .border-filter { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
   .border-filter > span { color:var(--muted); font-size:12px; margin-right:2px; }
   .border-filter button { background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:16px; padding:5px 12px; cursor:pointer; font-size:12.5px; box-shadow:var(--shadow); }
@@ -182,14 +183,6 @@
   .source-meta { color:var(--muted); font-size:11px; }
   .source-caution { color:#8a5b06; background:#fff8ea; border:1px solid #f2dfb4; border-radius:7px; padding:6px 8px; }
   .divtrend-reason { color:#8a5b06; font-size:10.5px; margin-top:3px; }
-  .card-decision { margin-top:7px; padding:6px 8px; border-radius:7px; background:#f7f9fc; border:1px solid #e4e8ef; display:flex; flex-direction:column; gap:1px; font-size:10.5px; }
-  .card-decision b { font-size:10.5px; }
-  .card-decision span { color:var(--muted); }
-  .card-decision.holding { background:#f0f7ff; border-color:#cbdcf3; }
-  .card-decision.holding b { color:var(--blue); }
-  .card-decision.candidate { background:#fff8ed; border-color:#f0dfbf; }
-  .card-decision.candidate b { color:#9b5b00; }
-  .card-decision.unheld b { color:#657083; }
   /* モーダル */
   .overlay { display:none; position:fixed; inset:0; background:rgba(25,32,48,.42); z-index:50; overflow-y:auto; padding:24px 12px; }
   .modal { max-width:640px; margin:0 auto; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:0 12px 40px rgba(20,30,60,.18); }
@@ -335,6 +328,7 @@
     <button data-f="hold">保有のみ</button>
     <button data-f="unhold">未保有のみ</button>
     <button data-f="low">📉安値圏のみ</button>
+    <button id="supportToggle" class="support-toggle" type="button" aria-pressed="true">補助情報を閉じる</button>
   </div>
   <div class="border-filter" id="borderFilter">
     <span>配当安定性</span>
@@ -367,7 +361,7 @@
 
 <script>
 "use strict";
-let DATA = null, TAB = "all", FIL_HOLD = null, FIL_LOW = false;
+let DATA = null, TAB = "all", FIL_HOLD = null, FIL_LOW = false, SUPPORT_OPEN = true;
 const FIL_BORDERS = new Set();
 const FIL_BUY_ZONES = new Set();
 const $ = id => document.getElementById(id);
@@ -758,17 +752,6 @@ function cardBuyGuide(s){
 function cardPriceGuide(s){
   return LS.get("holding_"+s.code)?cardBuyGuide(s):cardPosition(s);
 }
-function cardDecision(s){
-  const tag=tagOf(s.code), st=dividendStability(s), holding=tag==="holding", candidate=tag==="candidate";
-  const kind=holding?"holding":candidate?"candidate":"unheld";
-  const title=holding?"保有中：継続確認":candidate?"新規購入候補：購入前確認":"未保有：候補外または未設定";
-  const points=[];
-  if(holding) points.push("売却は減配・業績・重大な変化を確認");
-  else if(candidate) points.push("52週安値は補助。配当・財務・分散を優先");
-  else points.push("候補タグを付けると購入前の確認対象になります");
-  if(st.key==="pending"||st.key==="short") points.push(dividendStabilityReason(s,st));
-  return `<div class="card-decision ${kind}"><b>${title}</b><span>確認ポイント：${points.join("／")}</span></div>`;
-}
 function render(){
   const list = filtered();
   refreshTabs();
@@ -807,8 +790,8 @@ function card(s){
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>
     <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円</div>
-    ${dividendHistoryCard(s)}${cardDecision(s)}</div>
-    <details class="card-support" open onclick="event.stopPropagation()"><summary>補助情報 <span>財務・買い増し・52週（タップで開閉）</span></summary>${scoreHtml}${cardPriceGuide(s)}</details>
+    ${dividendHistoryCard(s)}</div>
+    <details class="card-support"${SUPPORT_OPEN?" open":""} onclick="event.stopPropagation()"><summary>補助情報 <span>財務・買い増し・52週</span></summary>${scoreHtml}${cardPriceGuide(s)}</details>
   </div>`;
 }
 /* ---------- ディフェンシブ／景気敏感 分類 ----------
@@ -1435,6 +1418,12 @@ function renderOperationMode(){
   $("modeSteps").innerHTML=steps.map(x=>`<div class="mode-step">${x}</div>`).join("");
   updateSignalSummary();
 }
+function setSupportOpen(open){
+  SUPPORT_OPEN=!!open;
+  document.querySelectorAll(".card-support").forEach(d=>{ d.open=SUPPORT_OPEN; });
+  const b=$("supportToggle");
+  if(b){ b.textContent=SUPPORT_OPEN?"補助情報を閉じる":"補助情報を開く"; b.setAttribute("aria-pressed",String(SUPPORT_OPEN)); }
+}
 function updateSignalSummary(){
   const vix=Number.isFinite(CURRENT_VIX)&&CURRENT_VIX>=40;
   const panic=LS.get("signal_panic")==="1", circuit=LS.get("signal_circuit")==="1";
@@ -1475,6 +1464,7 @@ async function init(){
   $("secSel").innerHTML += secs.map(s=>`<option>${s}</option>`).join("");
   ["sort","secSel","scoreSel"].forEach(id=>$(id).addEventListener("change",render));
   $("q").addEventListener("input",render);
+  $("supportToggle").addEventListener("click",()=>setSupportOpen(!SUPPORT_OPEN));
   $("qf").addEventListener("click",e=>{
     const f=e.target.dataset.f; if(!f) return;
     if (f==="hold") FIL_HOLD = FIL_HOLD===true ? null : true;
