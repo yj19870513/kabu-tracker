@@ -632,6 +632,22 @@ const F8_META = {
   cash:             ["現金等", "増加傾向が理想です。現金が潤沢な会社は、不況や急な出来事が起きても配当を払い続ける体力があります。"],
 };
 function fin8(code){ const F = window.FIN8; return (F && F.stocks) ? F.stocks[code] : null; }
+/* IR BANK決算ページは証券コードではなくEDINETコードで開く。
+   未確認の銘柄を推測で結び付けないため、登録済みの対応表だけを使う。 */
+const IRBANK_EDINET_CODES = {
+  "1414":"E00329", "2127":"E05629", "2379":"E05368", "2659":"E03352",
+  "3844":"E05678", "3901":"E31023", "4109":"E00805", "4290":"E05205",
+  "4528":"E00945", "4540":"E01018", "4687":"E04997", "4719":"E05029",
+  "5388":"E01195", "6929":"E01988", "7820":"E00640", "8130":"E03071",
+  "8593":"E04788", "9989":"E03226"
+};
+function irbankResultsLink(code){
+  const edinet = IRBANK_EDINET_CODES[String(code)];
+  if (edinet){
+    return `<a class="f8-source-link" href="https://irbank.net/${edinet}/results" target="_blank" rel="noopener">IR BANK決算ページ ↗</a>`;
+  }
+  return `<a class="f8-source-link f8-source-link--unverified" href="https://irbank.net/${code}" target="_blank" rel="noopener">IR BANK企業ページ（決算ページ未登録） ↗</a>`;
+}
 function fin8DividendJudge(code){
   const s = DATA && DATA.stocks ? DATA.stocks.find(x=>x.code===code) : null;
   const key = s ? dividendStability(s).key : "pending";
@@ -1038,7 +1054,7 @@ function openModal(code){
 /* 財務8項目パネル（判定・根拠・基準をまとめて表示） */
 function fin8Panel(code){
   const f = fin8(code);
-  const irbankLink=`<a class="f8-source-link" href="https://irbank.net/${code}" target="_blank" rel="noopener">IR BANKの決算・財務ページ ↗</a>`;
+  const irbankLink=irbankResultsLink(code);
   if (!f || !f.items){
     // 調査データが無い銘柄は、従来どおりの自動判定を明示したうえで表示する
     const s = DATA.stocks.find(x=>x.code===code);
