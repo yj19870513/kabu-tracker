@@ -1045,7 +1045,7 @@ function portfolioRows(){
   }).filter(r=>r.shares>0);
 }
 function simBasket(){ try{ const a=JSON.parse(LS.get("sim_basket","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
-function simOwnershipLabel(s){ return LS.get("holding_"+s.code)?"保有":"未保有"; }
+function simOwnershipLabel(s){ return LS.get("holding_"+s.code)?"":"（未）"; }
 function saveSimBasket(a){ LS.set("sim_basket",JSON.stringify(a)); }
 function simScenarios(){ try{ const a=JSON.parse(LS.get("sim_scenarios","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function saveSimScenarios(a){ LS.set("sim_scenarios",JSON.stringify(a)); }
