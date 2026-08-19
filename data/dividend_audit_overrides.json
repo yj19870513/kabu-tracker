@@ -7,6 +7,7 @@
       "confidence": "high",
       "actual_latest": {"year": "2025", "value": 22.0},
       "forecast": {"year": "2026", "value": 27.0},
+      "confirmed_real_cuts": 1,
       "note": "IR BANKの分割調整欄と分割注記（2012年1:2、2014年1:2、2015年1:3）を確認。2009〜2025年の履歴を調整後の1株配当で比較し、2014年3.33円から2015年1.67円への減少を1回確認。青枠にはせず、長期の減配1回として扱う。",
       "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/3649/dividend", "period": "2009〜2026年"}, {"kind": "ir", "label": "ファインデックス IR", "url": "https://www.findex.co.jp/ir/", "period": "株式分割・配当資料"}]
     },
