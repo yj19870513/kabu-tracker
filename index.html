@@ -159,6 +159,8 @@
   .badge-low { background:#e5f5f7; color:#087886; border-color:#b8e0e5; }
   .source-badge { cursor:pointer; background:#f7f7f7; color:#4b5563; border-color:#b9c0cb; }
   .source-badge:hover { background:#e9edf2; color:var(--blue); }
+  .buffett-badge { background:#eef5ff; color:#285b9c; border-color:#b8cce9; text-decoration:none; }
+  .buffett-badge:hover { background:#dfeeff; color:#174b89; }
   .scorebar { position:relative; height:16px; background:#eceff5; border-radius:8px; margin-top:8px; overflow:hidden; }
   .scorebar i { display:block; height:100%; background:linear-gradient(90deg,#4d9ce8,#2fae6d); }
   .scorebar span { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#1f2430; text-shadow:0 0 3px #fff,0 0 3px #fff; }
@@ -878,13 +880,14 @@ function card(s){
   const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">前日比 ${chg>=0?"+":""}${fmt(chg)}%</span>`;
   const tagB = t?`<span class="badge badge-${t}">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
   const sourceB = `<button class="badge source-badge" onclick="event.stopPropagation();openModal('${s.code}')" title="配当・分割の根拠を確認">根拠</button>`;
+  const buffettB = `<a class="badge buffett-badge" href="https://www.buffett-code.com/company/${s.code}/" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="バフェット・コードの株価・指標ページを開く">BC株価 ↗</a>`;
   const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
   const t30 = top30Score(s);
   const scoreHtml=isExempt(s.code)
     ? `<div class="scorebar"><span>財務評価は対象外</span></div>`
     : `<div class="scorebar"><i style="width:${sc/8*100}%;background:${scoreColor(sc)}"></i><span>${sc}/8</span></div>`;
   return `<div class="card ${borderClass(s)}" onclick="openModal('${s.code}')">
-    <div class="badges">${tagB}${lowB}${sourceB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
+    <div class="badges">${tagB}${lowB}${sourceB}${buffettB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
     <div class="card-primary"><div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>
@@ -1048,6 +1051,7 @@ function openModal(code){
     <label style="display:block;margin-top:8px">メモ<textarea id="memoBox" rows="3">${LS.get("memo_"+code,"")}</textarea></label>
     <button class="btn" onclick="saveManual('${code}')">保存</button>
     <button class="btn sub" onclick="clearManual('${code}')">上書きをリセット</button>
+    <h3><a href="https://www.buffett-code.com/company/${code}/" target="_blank" rel="noopener">バフェット・コードで3年推移を確認 →</a></h3>
     <h3><a href="https://finance.yahoo.co.jp/quote/${code}.T" target="_blank" rel="noopener">Yahoo!ファイナンスで見る →</a></h3>`;
   $("overlay").style.display = "block";
 }
