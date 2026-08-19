@@ -378,19 +378,25 @@ function manual(code){ try{ return JSON.parse(LS.get("manual_"+code,"{}")); }cat
 function rawEff(s){ return Object.assign({}, s, manual(s.code)); }
 function dividendBasis(s){
   const e=rawEff(s), m=manual(s.code);
-  if(Number.isFinite(Number(m.dividend))) return {value:Number(m.dividend),source:"手動入力"};
+  if(Number.isFinite(Number(m.dividend))) return {actual:Number(m.dividend),forecast:null,value:Number(m.dividend),source:"手動入力"};
   const source=(window.DIV_SOURCES||{})[s.code], adjusted=(window.DIV_ADJUSTED||{})[s.code];
+  const metadata=(adjusted&&adjusted.actual_latest)||(source&&source.actual_latest);
+  const forecast=(adjusted&&adjusted.forecast)||(source&&source.forecast);
+  if(metadata&&Number.isFinite(Number(metadata.value))){
+    const actual=Number(metadata.value), next=forecast&&Number.isFinite(Number(forecast.value))?Number(forecast.value):null;
+    return {actual,forecast:next,value:next??actual,actualYear:String(metadata.year||""),forecastYear:forecast?String(forecast.year||""):"",source:"IR BANK調整履歴"};
+  }
   const history=(source&&source.history)||(adjusted&&adjusted.history);
   if(history){
-    const years=Object.keys(history).filter(y=>Number.isFinite(Number(history[y]))).sort((a,b)=>Number(a)-Number(b));
-    if(years.length) return {value:Number(history[years[years.length-1]]),source:"IR BANK調整履歴"};
+    const cy=Number(currentYear());
+    const years=Object.keys(history).filter(y=>Number(y)<cy&&Number.isFinite(Number(history[y]))).sort((a,b)=>Number(a)-Number(b));
+    if(years.length) return {actual:Number(history[years[years.length-1]]),forecast:null,value:Number(history[years[years.length-1]]),actualYear:years[years.length-1],source:"IR BANK調整履歴"};
   }
   const confirmed=e.div_confirmed||{};
   const years=Object.keys(confirmed).filter(y=>Number.isFinite(Number(confirmed[y]))).sort((a,b)=>Number(a)-Number(b));
   const latest=years.length?Number(confirmed[years[years.length-1]]):null;
-  if(latest!==null&&latest>0) return {value:latest,source:"配当履歴（年度集計）"};
-  if(Number.isFinite(Number(e.dividend))&&Number(e.dividend)>0) return {value:Number(e.dividend),source:"Yahoo Finance参考値",warning:"配当履歴で照合できないため、参考値です"};
-  return {value:null,source:"未確認"};
+  if(latest!==null&&latest>0) return {actual:latest,forecast:null,value:latest,actualYear:years[years.length-1],source:"配当履歴（年度集計）"};
+  return {actual:null,forecast:null,value:null,source:"未確認",warning:"IR BANK等で配当履歴を確認できていません"};
 }
 function eff(s){
   const e=rawEff(s), d=dividendBasis(s);
@@ -400,6 +406,8 @@ function eff(s){
   }else{
     e.dividend=null; e.yield_pct=null;
   }
+  e.dividend_actual=d.actual??null; e.dividend_forecast=d.forecast??null;
+  e.dividend_actual_year=d.actualYear||""; e.dividend_forecast_year=d.forecastYear||"";
   e.dividend_source=d.source; e.dividend_warning=d.warning||null;
   return e;
 }
@@ -433,16 +441,20 @@ function divHistory(s){
   const source = (window.DIV_SOURCES||{})[s.code];
   if (source && source.history) {
     const cy = Number(currentYear());
-    return Object.keys(source.history).map(y=>({year:String(y),value:Number(source.history[y])}))
+    const out=Object.keys(source.history).map(y=>({year:String(y),value:Number(source.history[y])}))
       .filter(x=>Number(x.year)<cy && Number.isFinite(x.value))
-      .sort((a,b)=>a.year.localeCompare(b.year)).slice(-20);
+      .sort((a,b)=>a.year.localeCompare(b.year));
+    if(source.actual_latest&&Number(source.actual_latest.year)>=cy) out.push({year:String(source.actual_latest.year),value:Number(source.actual_latest.value)});
+    return out.slice(-20);
   }
   const adjusted = (window.DIV_ADJUSTED||{})[s.code];
   if (adjusted && adjusted.history) {
     const cy = Number(currentYear());
-    return Object.keys(adjusted.history).map(y=>({year:String(y),value:Number(adjusted.history[y])}))
+    const out=Object.keys(adjusted.history).map(y=>({year:String(y),value:Number(adjusted.history[y])}))
       .filter(x=>Number(x.year)<cy && Number.isFinite(x.value))
-      .sort((a,b)=>a.year.localeCompare(b.year)).slice(-20);
+      .sort((a,b)=>a.year.localeCompare(b.year));
+    if(adjusted.actual_latest&&Number(adjusted.actual_latest.year)>=cy) out.push({year:String(adjusted.actual_latest.year),value:Number(adjusted.actual_latest.value)});
+    return out.slice(-20);
   }
   const e = eff(s);
   let by = e.div_confirmed || e.div_by_year || {};
@@ -816,7 +828,7 @@ function card(s){
     <div class="card-primary"><div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>
-    <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円</div>
+    <div class="sub">${e.sector||"-"}｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</div>
     ${dividendHistoryCard(s)}</div>
     ${SUPPORT_OPEN?`<div class="card-support" onclick="event.stopPropagation()">${scoreHtml}${cardPriceGuide(s)}</div>`:""}
   </div>`;
@@ -932,7 +944,7 @@ function openModal(code){
     <span class="close" onclick="closeModal()">✕</span>
     <h2>${s.name} <span style="color:var(--muted);font-size:13px">${code}｜${e.sector||"-"}</span></h2>
     <div style="margin-top:4px"><span class="price" style="font-size:22px">${yen(e.price)}</span>
-      <span style="margin-left:10px">利回り <b>${y==="anomaly"?"-（異常値）":fmt(y)+"%"}</b>｜年間配当 ${e.dividend??"-"}円</span></div>
+      <span style="margin-left:10px">${e.dividend_forecast!==null?"予想利回り":"実績利回り"} <b>${y==="anomaly"?"-（異常値）":fmt(y)+"%"}</b>｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</span></div>
     <div class="tagbtns">
       ${["holding|保有中","watch|ウォッチ","candidate|候補"].map(x=>{const[k,l]=x.split("|");
         return `<button class="tagbtn ${LS.get(k+"_"+code)?"on":""}" onclick="toggleTag('${code}','${k}',this)">${l}</button>`;}).join("")}
@@ -1585,10 +1597,12 @@ function enhanceModal(code){
   const st=dividendStability(s), h=st.history;
   if(st.key==="pending"||st.key==="short") html+=`<div class="box warn"><b class="ttl">配当判定が保留中</b>${dividendStabilityReason(s,st)}。この理由だけで減配なしとは判定していません。</div>`;
   if (h.length){
-    const rows=h.map(x=>`<tr><td>${x.year}年</td><td style=\"text-align:right\">${fmt(x.value,0)}円</td></tr>`).join("");
+    const adjusted=(window.DIV_ADJUSTED||{})[code], notes=(adjusted&&adjusted.history_notes)||{};
+    const rows=h.map(x=>`<tr><td>${x.year}年</td><td style=\"text-align:right\">${fmt(x.value,2)}円</td></tr>`).join("");
     const color={blue:"#0b3d91",aqua:"#007f9e",green:"#2f8f3e",amber:"#b86b00",red:"#c6283d","red-partial":"#c6283d",pending:"#687384",short:"#9aa3b2"}[st.key]||"#9aa3b2";
     const basisNote=src&&src.exclude_special_dividends?"記念配当・特別配当を除いた通常配当ベースです。":"株式分割の影響を含むデータです。";
-    html+=`<h3>配当推移（${h[0].year.slice(0,4)}〜${h[h.length-1].year.slice(0,4)}年）</h3><div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${st.label}</span><span>${src&&src.exclude_special_dividends?"通常配当ベース・":""}${h.length}年分</span></div>${dividendSparkline(h,color)}</div><div class=\"tblwrap\"><table class=\"divtable\"><thead><tr><th>年度</th><th style=\"text-align:right\">${src&&src.exclude_special_dividends?"通常配当（1株）":"確定配当（1株）"}</th></tr></thead><tbody>${rows}</tbody></table></div><p class=\"kome\">${basisNote} 配当の増減は、必要に応じて下の調査メモも確認してください。</p>`;
+    const notesHtml=Object.entries(notes).map(([y,n])=>`<li>${y}年：${n}</li>`).join("");
+    html+=`<h3>配当推移（${h[0].year.slice(0,4)}〜${h[h.length-1].year.slice(0,4)}年）</h3><div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${st.label}</span><span>${src&&src.exclude_special_dividends?"通常配当ベース・":""}${h.length}年分</span></div>${dividendSparkline(h,color)}</div><div class=\"tblwrap\"><table class=\"divtable\"><thead><tr><th>年度</th><th style=\"text-align:right\">${src&&src.exclude_special_dividends?"通常配当（1株）":"確定配当（1株）"}</th></tr></thead><tbody>${rows}</tbody></table></div><p class=\"kome\">${basisNote} 配当の増減は、必要に応じて下の調査メモも確認してください。</p>${notesHtml?`<ul class=\"kome\">${notesHtml}</ul>`:""}`;
   }
   if (html) $("modal").insertAdjacentHTML("beforeend", html);
 }
