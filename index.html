@@ -273,6 +273,15 @@
   @media(max-width:700px){ .sim-grid{grid-template-columns:1fr}.sim-inputs{grid-template-columns:1fr 1fr}.sim-inputs .btn{grid-column:1/-1}.sim-metrics{grid-template-columns:1fr}.sim-quick-row{grid-template-columns:minmax(0,1fr) 90px}.sim-scenarios{align-items:stretch}.sim-scenarios select{flex:1;min-width:180px}.storage-notice{font-size:11.5px}.card{padding:12px 11px}.card .name{font-size:16px}.card .market-price .price{font-size:21px}.card .divtrend-foot,.card .card-buy-meta,.card .card-buy-52w-foot{font-size:10px}.mode-steps{grid-template-columns:1fr 1fr} }
   /* 財務8項目テーブル */
   .f8note { font-size:11.5px; color:var(--muted); margin:2px 0 8px; }
+  .bc-review { margin:12px 0 14px; padding:12px; border:1px solid #c9d9f1; border-radius:10px; background:#f6f9fe; }
+  .bc-review h4 { margin:0 0 3px; color:#174b89; font-size:13px; }
+  .bc-review p { margin:0 0 8px; color:var(--muted); font-size:11px; }
+  .bc-review-checks { display:flex; gap:10px; flex-wrap:wrap; margin:7px 0; }
+  .bc-review-checks label { display:inline-flex; align-items:center; gap:4px; font-size:12px; }
+  .bc-review-meta { display:grid; grid-template-columns:150px 1fr; gap:8px; margin-top:8px; }
+  .bc-review-meta input, .bc-review-meta textarea { width:100%; border:1px solid var(--line); border-radius:6px; padding:5px 7px; background:#fff; font:inherit; font-size:12px; }
+  .bc-review-meta textarea { min-height:38px; resize:vertical; }
+  @media(max-width:700px){ .bc-review-meta{grid-template-columns:1fr} }
   .f8-source-link { font-size:11px; font-weight:600; color:var(--blue); white-space:nowrap; }
   .f8row { border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin-bottom:7px; background:var(--field); }
   .f8head { display:flex; align-items:center; gap:8px; }
@@ -994,6 +1003,22 @@ function holdTable(list){
     <div class="lbl" style="color:var(--muted);font-size:12px">セクター割合（${useAmt?"金額ベース":"件数ベース"}）／ ディフェンシブ比率 ${useAmt?fmt(defPct,0)+"%":"-"}（参考表示）</div>
     <div class="secbar">${bar}</div>`;
 }
+function bcReview(code){
+  try{return JSON.parse(LS.get("bc_review_"+code,"{}"));}catch(e){return {};}
+}
+function saveBcReview(code){
+  const checks=["yield","per","pbr"].filter(k=>$("bc_"+k+"_"+code)?.checked);
+  LS.set("bc_review_"+code,JSON.stringify({checks,date:$("bc_date_"+code)?.value||"",note:$("bc_note_"+code)?.value||""}));
+  openModal(code);
+}
+function bcReviewPanel(code){
+  const r=bcReview(code), checks=r.checks||[];
+  return `<div class="bc-review"><h4>バフェット・コード確認記録</h4><p>株価ページの3年推移を見て、確認した項目だけチェックしてください。数値は自動判定しません。</p><div class="bc-review-checks">
+    <label><input id="bc_yield_${code}" type="checkbox" ${checks.includes("yield")?"checked":""}>配当利回り</label>
+    <label><input id="bc_per_${code}" type="checkbox" ${checks.includes("per")?"checked":""}>PER</label>
+    <label><input id="bc_pbr_${code}" type="checkbox" ${checks.includes("pbr")?"checked":""}>PBR</label>
+  </div><div class="bc-review-meta"><label>確認日<input id="bc_date_${code}" type="date" value="${r.date||""}"></label><label>メモ<textarea id="bc_note_${code}" placeholder="例：利回りは過去3年の高め、PERは中間、PBRは低め">${r.note||""}</textarea></label></div><button class="btn sub" style="margin-top:8px" onclick="saveBcReview('${code}')">確認記録を保存</button></div>`;
+}
 /* ---------- モーダル ---------- */
 function openModal(code){
   const s = DATA.stocks.find(x=>x.code===code); if(!s) return;
@@ -1052,6 +1077,7 @@ function openModal(code){
     <button class="btn" onclick="saveManual('${code}')">保存</button>
     <button class="btn sub" onclick="clearManual('${code}')">上書きをリセット</button>
     <h3><a href="https://www.buffett-code.com/company/${code}/stockprice" target="_blank" rel="noopener">バフェット・コードで3年推移を確認 →</a></h3>
+    ${bcReviewPanel(code)}
     <h3><a href="https://finance.yahoo.co.jp/quote/${code}.T" target="_blank" rel="noopener">Yahoo!ファイナンスで見る →</a></h3>`;
   $("overlay").style.display = "block";
 }
