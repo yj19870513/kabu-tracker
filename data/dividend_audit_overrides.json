@@ -1,5 +1,13 @@
 {
   "sources": {
+    "1343": {
+      "status": "not_applicable",
+      "checked_at": "2026-08-19",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "note": "ETFの分配金であり、一般企業の普通配当・減配判定とは性質が異なるため、財務8項目の配当安定性判定対象外。分配金履歴は参考表示のみとする。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移（ETF分配金）", "url": "https://irbank.net/1343/dividend", "period": "分配金履歴"}]
+    },
     "3649": {
       "status": "reviewed",
       "checked_at": "2026-08-19",
@@ -30,6 +38,16 @@
       "forecast": {"year": "2027", "value": 66.0},
       "note": "IR BANKの分割調整欄と注記を再確認。2024年は普通配当40円＋特別配当10円のため通常配当14円（調整後）、2026年は普通配当135円＋170円、創業100周年記念配当を除き調整後61円。通常配当ベースでは2024年に16円から14円への減少があるため、減配なしとは判定しない。",
       "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/6648/dividend", "period": "2010〜2026年"}, {"kind": "ir", "label": "かわでん IR・配当資料", "url": "https://www.kawaden.co.jp/ir/", "period": "特別配当・分割注記"}]
+    },
+    "7374": {
+      "status": "reviewed",
+      "checked_at": "2026-08-19",
+      "exclude_special_dividends": true,
+      "confidence": "medium",
+      "actual_latest": {"year": "2026", "value": 75.0},
+      "forecast": {"year": "2027", "value": 85.0},
+      "note": "IR BANKで合併前の前身企業（2019年・2021年無配）と、2022年以降の現会社の履歴が分かれていることを確認。合併前後を同一会社の長期連続履歴とは扱わず、現会社として確認できる2022年以降のみを表示する。確認期間不足のため青枠にはしない。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/7374/dividend", "period": "現会社2022〜2026年"}, {"kind": "ir", "label": "コンフィデンス・インターワークス IR", "url": "https://confidence-web.co.jp/ir/", "period": "合併・配当履歴"}]
     }
   },
   "adjusted": {
