@@ -184,6 +184,8 @@
   .source-meta { color:var(--muted); font-size:11px; }
   .source-caution { color:#8a5b06; background:#fff8ea; border:1px solid #f2dfb4; border-radius:7px; padding:6px 8px; }
   .divtrend-reason { color:#8a5b06; font-size:10.5px; margin-top:3px; }
+  .divtrend-verify { color:var(--muted); font-size:10px; margin-top:2px; }
+  .divtrend-gap { color:#8a5b06; font-size:10px; margin-top:2px; }
   /* モーダル */
   .overlay { display:none; position:fixed; inset:0; background:rgba(25,32,48,.42); z-index:50; overflow-y:auto; padding:24px 12px; }
   .modal { max-width:640px; margin:0 auto; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:0 12px 40px rgba(20,30,60,.18); }
@@ -517,6 +519,28 @@ function dividendStabilityReason(s, st){
   if(review&&review.status&&review.status!=="blue_ok"&&(!source||source.status!=="reviewed")) return "分割・特別配当の調整確認が未完了";
   return "調整後の減配判定を再確認中";
 }
+function dividendVerificationLabel(s, st){
+  const source=(window.DIV_SOURCES||{})[s.code];
+  if(String(s.code)==="1343" || (source&&source.status==="not_applicable")) return "ETF分配金・対象外";
+  if(st&&st.key==="pending") return "調整確認保留";
+  if(st&&st.key==="short"){
+    const h=st.history||[];
+    return h.length ? `確認期間限定（${h[0].year.slice(0,4)}年以降）` : "確認期間不足";
+  }
+  if(st&&st.key==="aqua") return "通常配当・分割確認済み（2010年以降）";
+  if(st&&st.key==="blue") return "通常配当・分割・長期確認済み";
+  if(st&&(st.key==="green"||st.key==="amber"||st.key==="red"||st.key==="red-partial")) return "減配履歴・調整根拠確認済み";
+  return source ? "個別確認済み" : "確認用リンク";
+}
+function dividendGaps(history){
+  if(!history||history.length<2) return [];
+  const gaps=[];
+  for(let i=1;i<history.length;i++){
+    const a=Number(history[i-1].year), b=Number(history[i].year);
+    if(Number.isFinite(a)&&Number.isFinite(b)&&b-a>1) gaps.push(`${a+1}〜${b-1}年`);
+  }
+  return gaps;
+}
 const DIVIDEND_FILTER_LABELS={
   blue:"青｜長期・減配なし", aqua:"水色｜減配なし・2010年以降", green:"緑｜減配1回・長期", amber:"黄｜減配1回・期間不足",
   red:"赤｜複数減配・長期", "red-partial":"赤点線｜複数減配・期間不足", pending:"枠なし｜確認中", short:"枠なし｜短期"
@@ -565,7 +589,9 @@ function dividendHistoryCard(s){
   if(!h.length) return `<div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label\">配当推移</span><span>確認不足</span></div></div>`;
   const mark={blue:"◆",aqua:"◇",green:"●",amber:"▲",red:"■","red-partial":"■",pending:"□",short:"□"}[st.key]||"□";
   const reason=(st.key==="pending"||st.key==="short")?`<div class=\"divtrend-reason\">理由：${dividendStabilityReason(s,st)}</div>`:"";
-  return `<div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${mark} ${st.label}</span><span>${basisLabel}${h.length}年分</span></div>${dividendSparkline(h,color)}<div class=\"divtrend-foot\"><span>${h[0].year.slice(0,4)}年 ${divFmt(h[0].value)}円</span><span>${h[h.length-1].year.slice(0,4)}年 ${divFmt(h[h.length-1].value)}円</span></div>${reason}</div>`;
+  const gaps=dividendGaps(h);
+  const gapHtml=gaps.length?`<div class=\"divtrend-gap\">⚠ 欠落年：${gaps.join("、")}</div>`:"";
+  return `<div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${mark} ${st.label}</span><span>${basisLabel}${h.length}年分</span></div><div class=\"divtrend-verify\">${dividendVerificationLabel(s,st)}</div>${dividendSparkline(h,color)}<div class=\"divtrend-foot\"><span>${h[0].year.slice(0,4)}年 ${divFmt(h[0].value)}円</span><span>${h[h.length-1].year.slice(0,4)}年 ${divFmt(h[h.length-1].value)}円</span></div>${gapHtml}${reason}</div>`;
 }
 function isGrowingDividend(s){
   // 過去10年で概ね増配基調か（成長企業は過去平均が低いので「割安」に見えてしまうため区別する）
@@ -835,7 +861,8 @@ function render(){
 }
 function card(s){
   const e=eff(s), y=yieldOf(s), sc=qualityScore(s), t=tagOf(s.code), p=pos52(s);
-  const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `利回り <b>${fmt(y)}%</b>`;
+  const yieldLabel=e.dividend_forecast!==null?"予想利回り":"実績利回り";
+  const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `${yieldLabel} <b>${fmt(y)}%</b>`;
   const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">前日比 ${chg>=0?"+":""}${fmt(chg)}%</span>`;
   const tagB = t?`<span class="badge badge-${t}">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
   const sourceB = `<button class="badge source-badge" onclick="event.stopPropagation();openModal('${s.code}')" title="配当・分割の根拠を確認">根拠</button>`;
@@ -911,7 +938,8 @@ function holdTable(list){
   rows.forEach(({s,inv})=>{ const k=eff(s).sector||"その他"; bySec[k]=(bySec[k]||0)+(useAmt?inv:1); });
   const secTotal=Object.values(bySec).reduce((a,b)=>a+b,0)||1;
   const colors=["#2f7ed8","#1f9a63","#d1810f","#d24358","#7b62cc","#1f97ad","#a8891a"];
-  const secOver = Object.entries(bySec).filter(([k,v])=>v/secTotal*100>10).map(([k,v])=>`${k}(${fmt(v/secTotal*100,0)}%)`);
+  const secOver10 = Object.entries(bySec).filter(([k,v])=>v/secTotal*100>10 && v/secTotal*100<=20).map(([k,v])=>`${k}(${fmt(v/secTotal*100,0)}%)`);
+  const secOver20 = Object.entries(bySec).filter(([k,v])=>v/secTotal*100>20).map(([k,v])=>`${k}(${fmt(v/secTotal*100,0)}%)`);
   const bar = Object.entries(bySec).map(([k,v],i)=>
     `<div style="width:${v/secTotal*100}%;background:${colors[i%colors.length]}" title="${k}">${k} ${fmt(v/secTotal*100,0)}%</div>`).join("");
 
@@ -939,7 +967,8 @@ function holdTable(list){
   }).filter(Boolean);
 
   let warnings = "";
-  if (secOver.length) warnings += `<div class="box warn"><b class="ttl">⚠️ セクター10%目安超</b>${secOver.join("、")}。平常時の新規買付では、別セクターを優先する目安です。</div>`;
+  if (secOver10.length) warnings += `<div class="box warn"><b class="ttl">⚠️ セクター10%目標超</b>${secOver10.join("、")}。平常時の新規買付では、別セクターを優先する目安です。</div>`;
+  if (secOver20.length) warnings += `<div class="box danger"><b class="ttl">🚨 セクター20%警戒ライン超</b>${secOver20.join("、")}。特定セクターへの集中が大きいため、購入案を見直してください。</div>`;
   if (defPct<50) warnings += `<div class="box warn"><b class="ttl">⚠️ ディフェンシブ比率50%未満</b>${fmt(defPct,1)}%。景気敏感株に偏っていないか、購入後の構成を確認してください。</div>`;
   if (divOver.length) warnings += `<div class="box warn"><b class="ttl">⚠️ 配当集中3%超</b>${divOver.join("、")}。この銘柄が減配すると家計への影響が大きくなります。</div>`;
   if (nanpinRows.length) warnings += `<div class="box info"><b class="ttl">📉 20%基準到達・要確認</b>${nanpinRows.join("<br>")}</div>`;
@@ -1223,18 +1252,20 @@ function openSimulator(){
   const imported=LS.get("portfolio_imported_at","");
   const mode=operationMode(), crash=mode==="crash";
   const stockOver=after.filter(r=>a.dividend&&r.dividend/a.dividend*100>3).sort((x,y)=>y.dividend-x.dividend).slice(0,8);
-  const sectorOver=sectors.filter(k=>a.dividend&&(sectorAfter[k]||0)/a.dividend*100>10).map(k=>`${k} ${fmt((sectorAfter[k]||0)/a.dividend*100,1)}%`);
+  const sectorOver10=sectors.filter(k=>a.dividend&&(sectorAfter[k]||0)/a.dividend*100>10&&(sectorAfter[k]||0)/a.dividend*100<=20).map(k=>`${k} ${fmt((sectorAfter[k]||0)/a.dividend*100,1)}%`);
+  const sectorOver20=sectors.filter(k=>a.dividend&&(sectorAfter[k]||0)/a.dividend*100>20).map(k=>`${k} ${fmt((sectorAfter[k]||0)/a.dividend*100,1)}%`);
   const concentration=after.filter(r=>a.dividend&&r.dividend/a.dividend*100>3).sort((x,y)=>y.dividend-x.dividend).slice(0,6);
   const notices=[];
   if(!base.length) notices.push("管理シートの保有数を取り込むと、現在との比較ができます。");
   if(stockOver.length) notices.push("購入後に年間配当の銘柄比率3%を超える: "+stockOver.map(r=>`${r.s.name} ${fmt(r.dividend/a.dividend*100,1)}%`).join("、"));
-  if(sectorOver.length) notices.push("購入後にセクター10%を超える: "+sectorOver.join("、"));
+  if(sectorOver10.length) notices.push("購入後にセクター10%目標を超える: "+sectorOver10.join("、"));
+  if(sectorOver20.length) notices.push("購入後にセクター20%警戒ラインを超える: "+sectorOver20.join("、"));
   if(a.defensive<50) notices.push("購入後のディフェンシブ比率が50%未満: "+fmt(a.defensive,1)+"%");
   if(concentration.length) notices.push("購入後に年間配当の銘柄比率3%を超える: "+concentration.map(r=>`${r.s.name} ${fmt(r.dividend/a.dividend*100,1)}%`).join("、"));
   $("modal").innerHTML=`
     <span class="close" onclick="closeModal()">✕</span><h2>🧮 購入シミュレーター</h2>
     <p class="kome">実際の注文は行いません。表示時点の株価・年間配当で、購入後の偏りを試算します。保有数などはこのブラウザ内だけに保存されます。</p>
-    <div class="box ${crash?'danger':'info'}"><b class="ttl">${crash?'暴落時モード':'平常時モード'}</b>${crash?'銘柄3%・セクター10%の超過は事実として表示しますが、暴落中の一時的な偏りは許容し、平常時の新規買付で戻します。':'銘柄2〜3%・セクター10%・ディフェンシブ50%以上を目安に、新しい買付で偏りを整えます。厳密な上限ではなく確認の目安です。'}</div>
+    <div class="box ${crash?'danger':'info'}"><b class="ttl">${crash?'暴落時モード':'平常時モード'}</b>${crash?'銘柄3%・セクター10%目標／20%警戒の超過は事実として表示しますが、暴落中の一時的な偏りは許容し、平常時の新規買付で戻します。':'銘柄2〜3%・セクター10%以下を目標、20%超を強い警戒・ディフェンシブ50%以上を目安に、新しい買付で偏りを整えます。厳密な上限ではなく確認の目安です。'}</div>
     <div class="sim-grid">
       <div class="sim-panel"><h3>① 現在のポートフォリオ</h3><p><b>${base.length}銘柄</b>${imported?` ／ 取込 ${new Date(imported).toLocaleString('ja-JP')}`:" ／ 未取込"}</p><button class="btn sub" onclick="openPortfolioImport()">管理シートのデータを取り込む</button></div>
       <div class="sim-panel"><h3>② 今回分だけを追加</h3><div class="sim-sort-row"><label>銘柄の並び順<select onchange="LS.set('sim_sort',this.value);openSimulator()"><option value="code" ${simSort==="code"?"selected":""}>コード順</option><option value="kana" ${simSort==="kana"?"selected":""}>五十音順</option></select></label><span class="kome">現在：${simSortLabel}</span></div><div class="sim-inputs"><label>銘柄<select id="simCode">${options}</select></label><label>今回の予算（円）<input id="simAmount" type="number" min="0" step="1000" placeholder="例：100000"></label><button class="btn" onclick="addSimItem()">追加</button></div><details class="sim-bulk"><summary>複数銘柄をまとめて追加</summary><input class="sim-quick-search" type="search" placeholder="コード・銘柄名で絞り込み" oninput="filterSimQuickList(this.value)"><div class="sim-quick-list">${quickRows}</div><button class="btn" onclick="addSimItems()">選択した銘柄を追加</button><div class="sim-bulk-file">CSV／JSONから一括取込（code,amount または 証券コード,予算）</div><input type="file" accept=".json,.csv,.tsv,.txt" onchange="handleSimBasketFile(event)"><textarea id="simBasketImportText" class="sim-bulk-text" rows="3" placeholder='[{&quot;code&quot;:&quot;8584&quot;,&quot;amount&quot;:50000}]'></textarea><div id="simBasketImportMsg"></div><button class="btn sub" onclick="applySimBasketImport()">CSV／JSONを取り込む</button></details><p class="kome">暴落時は予定総額を2〜3回に分け、この画面には今回使う分だけを入れます。</p></div>
@@ -1613,7 +1644,7 @@ function enhanceModal(code){
       return `<li><a href="${x.url}" target="_blank" rel="noopener">${x.label}</a>${x.period?`<span class="source-meta">（${x.period}）</span>`:""}</li>`;
     }).join("") : `<li><a href="https://irbank.net/${code}/dividend" target="_blank" rel="noopener">IR BANKの配当推移を開く</a><span class="source-meta">（確認用リンク）</span></li>`;
     const note=src&&src.note ? `<p>${src.note}</p>` : `<p class="source-caution">この銘柄は調査メモと確認用リンクを表示しています。個別の分割・記念配当まで確認済みの銘柄には、今後この欄へ一次資料を追加します。</p>`;
-    html+=`<h3>配当・分割の出典</h3><div class="source-panel"><p><b>${src?"個別確認済み":"確認用リンク"}</b><span class="source-meta">${src&&src.checked_at?`　確認日：${src.checked_at}`:""}</span></p><ul class="source-list">${links}</ul>${note}</div>`;
+    html+=`<h3>配当・分割の出典</h3><div class="source-panel"><p><b>${dividendVerificationLabel(s,dividendStability(s))}</b><span class="source-meta">${src&&src.checked_at?`　確認日：${src.checked_at}`:""}</span></p><ul class="source-list">${links}</ul>${note}</div>`;
   }
   const st=dividendStability(s), h=st.history;
   if(st.key==="pending"||st.key==="short") html+=`<div class="box warn"><b class="ttl">配当判定が保留中</b>${dividendStabilityReason(s,st)}。この理由だけで減配なしとは判定していません。</div>`;
@@ -1623,6 +1654,9 @@ function enhanceModal(code){
     const color={blue:"#0b3d91",aqua:"#007f9e",green:"#2f8f3e",amber:"#b86b00",red:"#c6283d","red-partial":"#c6283d",pending:"#687384",short:"#9aa3b2"}[st.key]||"#9aa3b2";
     const basisNote=src&&src.exclude_special_dividends?"記念配当・特別配当を除いた通常配当ベースです。":"株式分割の影響を含むデータです。";
     const notesHtml=Object.entries(notes).map(([y,n])=>`<li>${y}年：${n}</li>`).join("");
+    const gaps=dividendGaps(h);
+    const gapHtml=gaps.length?`<div class="divtrend-gap">⚠ 欠落年：${gaps.join("、")}</div>`:"";
+    if(gapHtml) html+=gapHtml;
     html+=`<h3>配当推移（${h[0].year.slice(0,4)}〜${h[h.length-1].year.slice(0,4)}年）</h3><div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${st.label}</span><span>${src&&src.exclude_special_dividends?"通常配当ベース・":""}${h.length}年分</span></div>${dividendSparkline(h,color)}</div><div class=\"tblwrap\"><table class=\"divtable\"><thead><tr><th>年度</th><th style=\"text-align:right\">${src&&src.exclude_special_dividends?"通常配当（1株）":"確定配当（1株）"}</th></tr></thead><tbody>${rows}</tbody></table></div><p class=\"kome\">${basisNote} 配当の増減は、必要に応じて下の調査メモも確認してください。</p>${notesHtml?`<ul class=\"kome\">${notesHtml}</ul>`:""}`;
   }
   if (html) $("modal").insertAdjacentHTML("beforeend", html);
