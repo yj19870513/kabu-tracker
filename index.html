@@ -791,7 +791,7 @@ function card(s){
     <div class="yield">${ydisp}</div>
     <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円</div>
     ${dividendHistoryCard(s)}</div>
-    <details class="card-support"${SUPPORT_OPEN?" open":""} onclick="event.stopPropagation()"><summary>補助情報 <span>財務・買い増し・52週</span></summary>${scoreHtml}${cardPriceGuide(s)}</details>
+    ${SUPPORT_OPEN?`<details class="card-support" open onclick="event.stopPropagation()"><summary>補助情報 <span>財務・買い増し・52週</span></summary>${scoreHtml}${cardPriceGuide(s)}</details>`:""}
   </div>`;
 }
 /* ---------- ディフェンシブ／景気敏感 分類 ----------
@@ -1420,9 +1420,9 @@ function renderOperationMode(){
 }
 function setSupportOpen(open){
   SUPPORT_OPEN=!!open;
-  document.querySelectorAll(".card-support").forEach(d=>{ d.open=SUPPORT_OPEN; });
   const b=$("supportToggle");
   if(b){ b.textContent=SUPPORT_OPEN?"補助情報を閉じる":"補助情報を開く"; b.setAttribute("aria-pressed",String(SUPPORT_OPEN)); }
+  render();
 }
 function updateSignalSummary(){
   const vix=Number.isFinite(CURRENT_VIX)&&CURRENT_VIX>=40;
