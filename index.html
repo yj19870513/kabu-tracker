@@ -791,7 +791,7 @@ function card(s){
     <div class="yield">${ydisp}</div>
     <div class="sub">${e.sector||"-"}｜年間配当 ${e.dividend??"-"}円</div>
     ${dividendHistoryCard(s)}</div>
-    ${SUPPORT_OPEN?`<details class="card-support" open onclick="event.stopPropagation()"><summary>補助情報 <span>財務・買い増し・52週</span></summary>${scoreHtml}${cardPriceGuide(s)}</details>`:""}
+    ${SUPPORT_OPEN?`<div class="card-support" onclick="event.stopPropagation()">${scoreHtml}${cardPriceGuide(s)}</div>`:""}
   </div>`;
 }
 /* ---------- ディフェンシブ／景気敏感 分類 ----------
