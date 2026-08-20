@@ -498,7 +498,8 @@ function divHistory(s){
     const out=Object.keys(canonical.history).map(y=>({year:String(y),value:Number(canonical.history[y])}))
       .filter(x=>Number(x.year)<cy && Number.isFinite(x.value))
       .sort((a,b)=>a.year.localeCompare(b.year));
-    if(canonical.actual_latest&&Number(canonical.actual_latest.year)>=cy) out.push({year:String(canonical.actual_latest.year),value:Number(canonical.actual_latest.value)});
+    // 当年度の実績・分割後参考値は年度途中の比較になり得るため、
+    // 過年度の減配判定へ混ぜない。最新値はカード上部で別表示する。
     return out.slice(-20);
   }
   const e = eff(s);
