@@ -92,6 +92,7 @@
   /* 枠は「評価の強さ」を、外側へ薄くなる光と上辺の反射で見せる */
   .card.b-red { border:3px solid var(--red); box-shadow:0 0 0 1px rgba(217,45,67,.18), 0 5px 16px rgba(217,45,67,.16), inset 0 1px 0 rgba(255,255,255,.85); }
   .card.b-red-partial { border:3px dashed var(--red); box-shadow:0 0 0 1px rgba(217,45,67,.12), 0 4px 13px rgba(217,45,67,.11), inset 0 1px 0 rgba(255,255,255,.85); }
+  .card.b-pause { border:4px dashed var(--red); box-shadow:0 0 0 1px rgba(217,45,67,.18), 0 5px 16px rgba(217,45,67,.14), inset 0 1px 0 rgba(255,255,255,.85); }
   .card.b-amber { border:3px dashed #c07800; box-shadow:0 0 0 1px rgba(192,120,0,.14), 0 4px 13px rgba(192,120,0,.12), inset 0 1px 0 rgba(255,255,255,.85); }
   .card.b-blue { border:4px solid var(--blue); box-shadow:0 0 0 1px rgba(11,61,145,.24), 0 6px 18px rgba(11,61,145,.20), inset 0 1px 0 rgba(255,255,255,.92); }
   .card.b-aqua { border:4px double var(--aqua); box-shadow:0 0 0 1px rgba(0,127,158,.22), 0 5px 16px rgba(0,127,158,.17), inset 0 1px 0 rgba(255,255,255,.92); }
@@ -113,6 +114,7 @@
   .divtrend-label.b-amber { color:#a66500; }
   .divtrend-label.b-red { color:var(--red); }
   .divtrend-label.b-red-partial { color:var(--red); }
+  .divtrend-label.b-pause { color:var(--red); }
   .divtrend-label.b-pending, .divtrend-label.b-short { color:#7b8492; }
   .divspark { display:block; width:100%; height:34px; margin-top:3px; overflow:visible; }
   .divtrend-foot { display:flex; justify-content:space-between; color:var(--muted); font-size:10px; }
@@ -149,7 +151,7 @@
   .stability-chip.aqua { color:var(--aqua); border-color:#79b8c5; border-style:double; }
   .stability-chip.green { color:var(--green); border-color:#8bc596; }
   .stability-chip.amber { color:var(--orange); border-color:#d8b36f; }
-  .stability-chip.red, .stability-chip.red-partial { color:var(--red); border-color:#e18b98; }
+  .stability-chip.red, .stability-chip.red-partial, .stability-chip.pause { color:var(--red); border-color:#e18b98; }
   .stability-chip.pending, .stability-chip.short { color:#687384; border-color:#aeb6c4; }
   .badges { position:absolute; top:10px; right:12px; display:flex; gap:4px; }
   .badge { font-size:10px; border-radius:5px; padding:2px 6px; background:#f2f4f7; color:#536070; border:1px solid #d8dee7; font-weight:600; }
@@ -371,6 +373,7 @@
     <button data-border="amber">黄｜減配1回・期間不足</button>
     <button data-border="red">赤｜複数減配・長期</button>
     <button data-border="red-partial">赤点線｜複数減配・期間不足</button>
+    <button data-border="pause">赤破線｜無配期間あり・要注意</button>
     <button data-border="pending">枠なし｜確認中</button>
     <button data-border="short">枠なし｜短期</button>
   </div>
@@ -548,6 +551,8 @@ function dividendStability(s){
   const midCoverage=history.length>=DIV_MIN_YEARS && firstYear>2009;
   const audit=dividendHistoryAudit(s,history);
   if(!audit.ok) return {key:"pending", label:"配当履歴不一致・確認保留", history:history, cuts:null, coverage:"conflict", audit:audit};
+  const pause=source&&source.dividend_pause;
+  if(pause&&Number(pause.years)>=2) return {key:"pause", label:"無配期間あり・要注意", history:history, cuts:audit.cuts, coverage:longCoverage?"long":"partial", pause};
   const cuts=dividendCutCount(s,history);
   if(cuts>=2) return {key:longCoverage?"red":"red-partial", label:longCoverage?"複数回減配・要注意":"複数回減配（期間不足）・要注意", history:history, cuts:cuts, coverage:longCoverage?"long":"partial"};
   if(cuts===1) return {key:longCoverage?"green":"amber", label:longCoverage?"減配1回":"減配1回（期間不足）", history:history, cuts:cuts, coverage:longCoverage?"long":"partial"};
@@ -563,6 +568,7 @@ function dividendStabilityReason(s, st){
   const first=h.length?Number(h[0].year.slice(0,4)):null;
   if(String(s.code)==="1343" || (source&&source.status==="not_applicable")) return "ETFの分配金のため、一般企業の減配判定対象外";
   if(!source&&!review) return "出典付きの調整データが未登録";
+  if(st&&st.key==="pause"&&st.pause) return `${st.pause.from}〜${st.pause.to}年の${st.pause.years}年間が無配。減配回数とは別に配当中断として要注意`;
   if(st&&st.key==="pending"&&st.coverage==="conflict") return `グラフの減少回数（${st.audit.computed}回）と調査メモ（${st.audit.declared}回）が不一致。確認が終わるまで判定保留`;
   if(h.length<2) return "比較できる配当履歴が不足";
   if(st&&st.key==="short") return `確認できる履歴が${h.length}年分で、10年未満`;
@@ -582,7 +588,7 @@ function dividendVerificationLabel(s, st){
   }
   if(st&&st.key==="aqua") return "通常配当・分割確認済み（2010年以降）";
   if(st&&st.key==="blue") return "通常配当・分割・長期確認済み";
-  if(st&&(st.key==="green"||st.key==="amber"||st.key==="red"||st.key==="red-partial")) return "減配履歴・調整根拠確認済み";
+  if(st&&(st.key==="green"||st.key==="amber"||st.key==="red"||st.key==="red-partial"||st.key==="pause")) return "減配・配当中断履歴確認済み";
   return source ? "個別確認済み" : "確認用リンク";
 }
 function dividendGaps(history){
@@ -596,7 +602,7 @@ function dividendGaps(history){
 }
 const DIVIDEND_FILTER_LABELS={
   blue:"青｜長期・減配なし", aqua:"水色｜減配なし・2010年以降", green:"緑｜減配1回・長期", amber:"黄｜減配1回・期間不足",
-  red:"赤｜複数減配・長期", "red-partial":"赤点線｜複数減配・期間不足", pending:"枠なし｜確認中", short:"枠なし｜短期"
+  red:"赤｜複数減配・長期", "red-partial":"赤点線｜複数減配・期間不足", pause:"赤破線｜無配期間あり・要注意", pending:"枠なし｜確認中", short:"枠なし｜短期"
 };
 function refreshDividendFilterCounts(){
   if(!DATA) return;
@@ -635,13 +641,13 @@ function dividendSparkline(history, color){
   return `<svg class=\"divspark\" viewBox=\"0 0 ${w} ${h}\" preserveAspectRatio=\"none\" role=\"img\" aria-label=\"${history[0].year}年から${history[history.length-1].year}年までの配当推移\"><path d=\"${path}\" fill=\"none\" stroke=\"${color}\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>${dots}</svg>`;
 }
 function dividendHistoryCard(s){
-  const st=dividendStability(s), color={blue:"#0b3d91",aqua:"#007f9e",green:"#2f8f3e",amber:"#b86b00",red:"#c6283d","red-partial":"#c6283d",pending:"#687384",short:"#9aa3b2"}[st.key]||"#9aa3b2";
+  const st=dividendStability(s), color={blue:"#0b3d91",aqua:"#007f9e",green:"#2f8f3e",amber:"#b86b00",red:"#c6283d","red-partial":"#c6283d",pause:"#c6283d",pending:"#687384",short:"#9aa3b2"}[st.key]||"#9aa3b2";
   const h=st.history;
   const source=(window.DIV_SOURCES||{})[s.code];
   const basisLabel=source&&source.exclude_special_dividends?"通常配当ベース・":"";
   if(!h.length) return `<div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label\">配当推移</span><span>確認不足</span></div></div>`;
-  const mark={blue:"◆",aqua:"◇",green:"●",amber:"▲",red:"■","red-partial":"■",pending:"□",short:"□"}[st.key]||"□";
-  const reason=(st.key==="pending"||st.key==="short")?`<div class=\"divtrend-reason\">理由：${dividendStabilityReason(s,st)}</div>`:"";
+  const mark={blue:"◆",aqua:"◇",green:"●",amber:"▲",red:"■","red-partial":"■",pause:"■",pending:"□",short:"□"}[st.key]||"□";
+  const reason=(st.key==="pending"||st.key==="short"||st.key==="pause")?`<div class=\"divtrend-reason\">理由：${dividendStabilityReason(s,st)}</div>`:"";
   const gaps=dividendGaps(h);
   const gapHtml=gaps.length?`<div class=\"divtrend-gap\">⚠ 欠落年：${gaps.join("、")}</div>`:"";
   return `<div class=\"divtrend\"><div class=\"divtrend-head\"><span class=\"divtrend-label b-${st.key}\">${mark} ${st.label}</span><span>${basisLabel}${h.length}年分</span></div><div class=\"divtrend-verify\">${dividendVerificationLabel(s,st)}</div>${dividendSparkline(h,color)}<div class=\"divtrend-foot\"><span>${h[0].year.slice(0,4)}年 ${divFmt(h[0].value)}円</span><span>${h[h.length-1].year.slice(0,4)}年 ${divFmt(h[h.length-1].value)}円</span></div>${gapHtml}${reason}</div>`;
@@ -821,7 +827,7 @@ function fin8DividendJudge(code){
   const s = DATA && DATA.stocks ? DATA.stocks.find(x=>x.code===code) : null;
   const key = s ? dividendStability(s).key : "pending";
   if (["blue","aqua"].includes(key)) return "○";
-  if (["red","red-partial"].includes(key)) return "×";
+  if (["red","red-partial","pause"].includes(key)) return "×";
   return "△";
 }
 function fin8DividendDetail(code, fallback){
@@ -830,6 +836,7 @@ function fin8DividendDetail(code, fallback){
   const st = dividendStability(s), h = st.history || [];
   const basis = ((window.DIV_SOURCES||{})[code]||{}).exclude_special_dividends ? "記念配当・特別配当を除いた通常配当ベース" : "株式分割調整後の配当履歴";
   if (st.key === "pending" || st.key === "short") return `${basis}で${h.length}年分を確認。${dividendStabilityReason(s,st)}。この項目は減配なしとは判定せず、追加確認まで△とします。`;
+  if (st.key === "pause") return `${basis}で${dividendStabilityReason(s,st)}。配当中断があるため、安定配当の基準から外れ×です。`;
   if (st.key === "red" || st.key === "red-partial") return `${basis}で複数回の減配を確認。安定配当の基準から外れるため×です。`;
   if (st.key === "green" || st.key === "amber") return `${basis}で減配1回を確認。長期の安定配当としては注意が必要なため△です。`;
   return `${basis}で減配なしを確認。${fallback||""}`;
@@ -961,7 +968,7 @@ function filtered(){
 }
 function borderClass(s){
   const key=dividendStability(s).key;
-  return key==="blue"?"b-blue":key==="aqua"?"b-aqua":key==="green"?"b-green":key==="amber"?"b-amber":key==="red"?"b-red":key==="red-partial"?"b-red-partial":"";
+  return key==="blue"?"b-blue":key==="aqua"?"b-aqua":key==="green"?"b-green":key==="amber"?"b-amber":key==="red"?"b-red":key==="red-partial"?"b-red-partial":key==="pause"?"b-pause":"";
 }
 function stabilityChip(s){
   const st=dividendStability(s);
@@ -1875,7 +1882,7 @@ function enhanceModal(code){
   if (h.length){
     const adjusted=(window.DIV_ADJUSTED||{})[code], notes=(adjusted&&adjusted.history_notes)||{};
     const rows=h.map(x=>`<tr><td>${x.year}年</td><td style=\"text-align:right\">${fmt(x.value,2)}円</td></tr>`).join("");
-    const color={blue:"#0b3d91",aqua:"#007f9e",green:"#2f8f3e",amber:"#b86b00",red:"#c6283d","red-partial":"#c6283d",pending:"#687384",short:"#9aa3b2"}[st.key]||"#9aa3b2";
+    const color={blue:"#0b3d91",aqua:"#007f9e",green:"#2f8f3e",amber:"#b86b00",red:"#c6283d","red-partial":"#c6283d",pause:"#c6283d",pending:"#687384",short:"#9aa3b2"}[st.key]||"#9aa3b2";
     const basisNote=src&&src.exclude_special_dividends?"記念配当・特別配当を除いた通常配当ベースです。":"株式分割の影響を含むデータです。";
     const notesHtml=Object.entries(notes).map(([y,n])=>`<li>${y}年：${n}</li>`).join("");
     const gaps=dividendGaps(h);
