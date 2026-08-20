@@ -1470,6 +1470,8 @@
       "2025": 43.88,
       "2026": 45.75
     },
+    "actual_latest": {"year": "2025", "value": 43.88},
+    "forecast": {"year": "2026", "value": 45.75},
     "confirmed_real_cuts": 0,
     "confidence": "high",
     "note": "2019年7月1日と2026年1月1日の株式分割を反映した調整値を使用。2008年の記念・特別配当、2010〜2012年の特別配当を通常配当の減配判定から除外。2008年以降の通常配当ベースで実質減配なし。2026年は分割後の参考値。",
@@ -3204,5 +3206,20 @@
       }
     ],
     "confirmed_real_cuts": 1
+  },
+  "1343": {
+    "status": "pending",
+    "checked_at": null,
+    "exclude_special_dividends": true,
+    "confidence": "unknown",
+    "note": "IR BANKの確認用リンクを登録。分配金は一般株式の配当履歴と性質が異なるため、連続配当の判定対象外。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "IR BANK 配当推移（確認用）",
+        "url": "https://irbank.net/1343/dividend",
+        "period": "確認待ち"
+      }
+    ]
   }
 }
