@@ -69,8 +69,9 @@ def main():
         if len(years) < 2:
             warnings.append(f"{code}: グラフ比較用の履歴が2年未満です")
         years.sort()
+        source_item_for_gap = sources.get(str(code)) if isinstance(sources, dict) else None
         gaps = [f"{a}〜{b}" for a, b in zip(years, years[1:]) if b - a > 1]
-        if gaps:
+        if gaps and not (isinstance(source_item_for_gap, dict) and source_item_for_gap.get("history")):
             warnings.append(f"{code}: 年度の空白があります（{', '.join(gaps)}）")
         drops = item.get("remaining_drops", [])
         if item.get("status") in ("blue_ok", "reviewed") and drops:
