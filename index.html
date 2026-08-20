@@ -414,13 +414,14 @@ function dividendBasis(s){
   const e=rawEff(s), m=manual(s.code);
   if(Number.isFinite(Number(m.dividend))) return {actual:Number(m.dividend),forecast:null,value:Number(m.dividend),source:"手動入力"};
   const source=(window.DIV_SOURCES||{})[s.code], adjusted=(window.DIV_ADJUSTED||{})[s.code];
-  const metadata=(adjusted&&adjusted.actual_latest)||(source&&source.actual_latest);
-  const forecast=(adjusted&&adjusted.forecast)||(source&&source.forecast);
+  // 出典付きの履歴・最新値を正本にする。調整履歴は、出典確認前の互換用データ。
+  const metadata=(source&&source.actual_latest)||(adjusted&&adjusted.actual_latest);
+  const forecast=(source&&source.forecast)||(adjusted&&adjusted.forecast);
   if(metadata&&Number.isFinite(Number(metadata.value))){
     const actual=Number(metadata.value), next=forecast&&Number.isFinite(Number(forecast.value))?Number(forecast.value):null;
     return {actual,forecast:next,value:next??actual,actualYear:String(metadata.year||""),forecastYear:forecast?String(forecast.year||""):"",source:"IR BANK調整履歴"};
   }
-  const history=adjusted&&adjusted.history;
+  const history=(source&&source.history)||(adjusted&&adjusted.history);
   if(history){
     const cy=Number(currentYear());
     const years=Object.keys(history).filter(y=>Number(y)<cy&&Number.isFinite(Number(history[y]))).sort((a,b)=>Number(a)-Number(b));
@@ -487,14 +488,17 @@ function divTrend(s){
 const DIV_START_YEAR = 2008;
 const DIV_MIN_YEARS = 10;
 function divHistory(s){
-  // 数値履歴の正本は dividend_history_adjusted.json のみ。出典ファイルは根拠情報専用。
+  // 正本の優先順位：出典確認済み履歴 → 調整履歴（未確認分の互換用）。
+  // 表示グラフと減配判定が別履歴を参照すると、1414のような誤判定が起きる。
+  const source=(window.DIV_SOURCES||{})[s.code];
   const adjusted = (window.DIV_ADJUSTED||{})[s.code];
-  if (adjusted && adjusted.history) {
+  const canonical=source&&source.history ? source : adjusted;
+  if (canonical && canonical.history) {
     const cy = Number(currentYear());
-    const out=Object.keys(adjusted.history).map(y=>({year:String(y),value:Number(adjusted.history[y])}))
+    const out=Object.keys(canonical.history).map(y=>({year:String(y),value:Number(canonical.history[y])}))
       .filter(x=>Number(x.year)<cy && Number.isFinite(x.value))
       .sort((a,b)=>a.year.localeCompare(b.year));
-    if(adjusted.actual_latest&&Number(adjusted.actual_latest.year)>=cy) out.push({year:String(adjusted.actual_latest.year),value:Number(adjusted.actual_latest.value)});
+    if(canonical.actual_latest&&Number(canonical.actual_latest.year)>=cy) out.push({year:String(canonical.actual_latest.year),value:Number(canonical.actual_latest.value)});
     return out.slice(-20);
   }
   const e = eff(s);
@@ -511,16 +515,24 @@ function divHistory(s){
     .filter(x=>x.year.slice(0,4).length===4 && Number.isInteger(Number(x.year.slice(0,4))) && Number(x.year.slice(0,4))>=DIV_START_YEAR && Number.isFinite(x.value))
     .sort((a,b)=>a.year.localeCompare(b.year)).slice(-20);
 }
+function dividendHistoryAudit(s, history){
+  const source=(window.DIV_SOURCES||{})[s.code]||{};
+  const review=(window.DIV_ADJUSTED||{})[s.code]||{};
+  const computed=history.reduce((n,x,i)=>i&&x.value<history[i-1].value-0.01?n+1:n,0);
+  // 出典側に履歴がある場合は、その履歴と計算値だけで判定する。
+  if(source.history) return {ok:true, cuts:computed, basis:"source_history"};
+  // 数値履歴がない銘柄は、旧調整履歴と確認メモの回数が一致する場合だけ使う。
+  // 一致しなければ、どちらかを推測で優先せず、確定判定を止める。
+  const declared=Number.isFinite(Number(source.confirmed_real_cuts))
+    ? Number(source.confirmed_real_cuts)
+    : (Number.isFinite(Number(review.confirmed_real_cuts)) ? Number(review.confirmed_real_cuts) : null);
+  if(declared!==null && declared!==computed) return {ok:false, cuts:null, basis:"conflict", declared, computed};
+  return {ok:true, cuts:computed, basis:"adjusted_history"};
+}
 function dividendCutCount(s, history){
-  const source = (window.DIV_SOURCES||{})[s.code];
-  if(source && Number.isFinite(Number(source.confirmed_real_cuts))) return Number(source.confirmed_real_cuts);
-  const review=(window.DIV_ADJUSTED||{})[s.code];
-  if(review && Number.isFinite(Number(review.confirmed_real_cuts))) return Number(review.confirmed_real_cuts);
-  const dv = divVerified(s.code);
-  if (dv && Array.isArray(dv.cuts)) return dv.cuts.length;
-  let cuts=0;
-  for(let i=1;i<history.length;i++) if(history[i].value < history[i-1].value) cuts++;
-  return cuts;
+  const audit=dividendHistoryAudit(s,history);
+  if(audit.ok) return audit.cuts;
+  return null;
 }
 function dividendStability(s){
   const history=divHistory(s);
@@ -533,6 +545,8 @@ function dividendStability(s){
   const firstYear=history.length ? Number(history[0].year.slice(0,4)) : null;
   const longCoverage=history.length>=DIV_MIN_YEARS && firstYear<=2009;
   const midCoverage=history.length>=DIV_MIN_YEARS && firstYear>2009;
+  const audit=dividendHistoryAudit(s,history);
+  if(!audit.ok) return {key:"pending", label:"配当履歴不一致・確認保留", history:history, cuts:null, coverage:"conflict", audit:audit};
   const cuts=dividendCutCount(s,history);
   if(cuts>=2) return {key:longCoverage?"red":"red-partial", label:longCoverage?"複数回減配・要注意":"複数回減配（期間不足）・要注意", history:history, cuts:cuts, coverage:longCoverage?"long":"partial"};
   if(cuts===1) return {key:longCoverage?"green":"amber", label:longCoverage?"減配1回":"減配1回（期間不足）", history:history, cuts:cuts, coverage:longCoverage?"long":"partial"};
@@ -548,6 +562,7 @@ function dividendStabilityReason(s, st){
   const first=h.length?Number(h[0].year.slice(0,4)):null;
   if(String(s.code)==="1343" || (source&&source.status==="not_applicable")) return "ETFの分配金のため、一般企業の減配判定対象外";
   if(!source&&!review) return "出典付きの調整データが未登録";
+  if(st&&st.key==="pending"&&st.coverage==="conflict") return `グラフの減少回数（${st.audit.computed}回）と調査メモ（${st.audit.declared}回）が不一致。確認が終わるまで判定保留`;
   if(h.length<2) return "比較できる配当履歴が不足";
   if(st&&st.key==="short") return `確認できる履歴が${h.length}年分で、10年未満`;
   if(first!==null&&first>2009) return `確認開始が${first}年で、2008〜2009年が未確認`;
