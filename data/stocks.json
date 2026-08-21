@@ -1,7 +1,7 @@
 {
- "updated": "2026-08-21 16:30",
- "vix": 15.82,
- "vix_updated": "2026-08-21 16:30",
+ "updated": "2026-08-21 18:36",
+ "vix": 15.73,
+ "vix_updated": "2026-08-21 18:36",
  "stocks": [
   {
    "code": "1343",
@@ -9187,7 +9187,7 @@
    "name_en": "AIT CORPORATION",
    "sector": "資本財",
    "market_cap": 55656321024.0,
-   "per": 17.46,
+   "per": 17.52,
    "pbr": 2.76,
    "op_margin": 7.42,
    "payout": 73.98,
@@ -23477,9 +23477,9 @@
    "market_cap": 9539732480.0,
    "per": 11.87,
    "pbr": 1.51,
-   "op_margin": 11.39,
+   "op_margin": 7.94,
    "payout": 58.36,
-   "roe": 13.21,
+   "roe": 11.91,
    "equity_ratio": 81.05,
    "equity_hist": [
     {
