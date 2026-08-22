@@ -17,6 +17,7 @@ CSV_PATH = os.path.join(BASE, "data", "stocks_list.csv")
 OUT_PATH = os.path.join(BASE, "data", "stocks.json")
 ADJUSTED_PATH = os.path.join(BASE, "data", "dividend_history_adjusted.json")
 OVERRIDES_PATH = os.path.join(BASE, "data", "dividend_audit_overrides.json")
+SECTOR_MASTER_PATH = os.path.join(BASE, "data", "sector_classification.json")
 
 
 def load_adjusted_histories():
@@ -44,6 +45,15 @@ def load_list():
             name = r[1].strip() if len(r) > 1 else code
             rows.append((code, name))
     return rows
+
+
+def load_sector_master():
+    """東証33業種の正本。Yahoo Financeの大分類は採用しない。"""
+    try:
+        with open(SECTOR_MASTER_PATH, encoding="utf-8") as f:
+            return json.load(f).get("sectors", {})
+    except (OSError, json.JSONDecodeError):
+        return {}
 
 
 def num(v):
@@ -129,7 +139,7 @@ def compute_historical_averages(ticker, div_by_year, eps_hist, equity_hist, shar
     return out
 
 
-def fetch_one(code, adjusted_histories=None):
+def fetch_one(code, adjusted_histories=None, sector_master=None):
     d = {"code": code, "error": False}
     try:
         t = yf.Ticker(f"{code}.T")
@@ -206,7 +216,10 @@ def fetch_one(code, adjusted_histories=None):
 
         # --- 基本情報 ---
         d["name_en"] = info.get("shortName") or info.get("longName") or code
-        d["sector"] = info.get("sector") or ""
+        # YahooのsectorはGICS系の大分類であり、東証33業種とは別物。
+        # 公式マスターにない場合は空欄にして、アプリ側で推測させない。
+        d["sector"] = (sector_master or {}).get(str(code), "")
+        d["sector_yahoo_reference"] = info.get("sector") or ""
         d["market_cap"] = num(info.get("marketCap"))
 
         # --- バリュー ---
@@ -312,10 +325,11 @@ def fetch_vix():
 
 def main():
     adjusted_histories = load_adjusted_histories()
+    sector_master = load_sector_master()
     stocks = []
     for code, name in load_list():
         print(f"取得中: {code} {name}")
-        s = fetch_one(code, adjusted_histories)
+        s = fetch_one(code, adjusted_histories, sector_master)
         s["name"] = name  # 日本語名はCSVが正。translate_names.pyでも上書きされる
         stocks.append(s)
         time.sleep(1)  # API負荷対策
