@@ -165,6 +165,7 @@
   .badge-holding { background:#e7f6ed; color:#087a43; border-color:#a7ddbe; }
   .badge-watch { background:#f1eafe; color:#6b45a6; border-color:#d8c6f4; }
   .badge-candidate { background:#fff1dc; color:#a65c00; border-color:#f0cf9b; }
+  .badge-crashbuy { background:#f1edff; color:#4f3b96; border-color:#b9a9ed; }
   .badge-low { background:#e5f5f7; color:#087886; border-color:#b8e0e5; }
   .source-badge { cursor:pointer; background:#f7f7f7; color:#4b5563; border-color:#b9c0cb; }
   .source-badge:hover { background:#e9edf2; color:var(--blue); }
@@ -970,6 +971,7 @@ function tagOf(code){
   if (LS.get("candidate_"+code)) return "candidate";
   return null;
 }
+function crashBuyTagged(code){ return !!LS.get("crashbuy_"+code); }
 
 /* ---------- フィルター＆描画 ---------- */
 const TABS = [["all","全銘柄"],["y4","4%以上"],["y37","3.7%以上"],["holding","保有中"],["watch","ウォッチ"],["candidate","候補"],["top30","トップ30"],["error","エラー"]];
@@ -1165,7 +1167,8 @@ function card(s){
   const yieldLabel=e.dividend_forecast!==null?"予想利回り":"実績利回り";
   const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `${yieldLabel} <b>${fmt(y)}%</b>`;
   const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">前日比 ${chg>=0?"+":""}${fmt(chg)}%</span>`;
-  const tagB = t?`<span class="badge badge-${t}">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
+  const tagB = (t?`<span class="badge badge-${t}">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"")+
+    (crashBuyTagged(s.code)?`<span class="badge badge-crashbuy" title="暴落時の購入候補として登録">暴落時買い</span>`:"");
   const buffettB = `<a class="card-bc-link" href="https://www.buffett-code.com/company/${s.code}/stockprice" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="バフェット・コードの株価・指標ページを開く">バフェット・コードで株価指標を見る ↗</a>`;
   const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
   const t30 = top30Score(s);
@@ -1345,7 +1348,7 @@ function openModal(code){
     <div style="margin-top:4px"><span class="price" style="font-size:22px">${yen(e.price)}</span>
       <span style="margin-left:10px">${e.dividend_forecast!==null?"予想利回り":"実績利回り"} <b>${y==="anomaly"?"-（異常値）":fmt(y)+"%"}</b>｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</span></div>${dataDateHtml(s)}
     <div class="tagbtns">
-      ${["holding|保有中","watch|ウォッチ","candidate|候補"].map(x=>{const[k,l]=x.split("|");
+      ${["holding|保有中","watch|ウォッチ","candidate|候補","crashbuy|暴落時買い"].map(x=>{const[k,l]=x.split("|");
         return `<button class="tagbtn ${LS.get(k+"_"+code)?"on":""}" onclick="toggleTag('${code}','${k}',this)">${l}</button>`;}).join("")}
     </div>
     <div class="sim-quick-add" onclick="event.stopPropagation()"><b>購入シミュレーターに追加</b><button onclick="quickAddSim('${code}',10000)">¥10,000</button><button onclick="quickAddSim('${code}',20000)">¥20,000</button><button onclick="quickAddSim('${code}',30000)">¥30,000</button><button onclick="quickAddSimCustom('${code}')">金額入力</button></div>
@@ -1843,7 +1846,7 @@ function applyLastPurchasePrices(){
 
 /* ---------- データのバックアップ・復元 ---------- */
 // 個人データに加え、管理シート由来の業種・ディフェンシブ区分もバックアップ対象にする。
-const BACKUP_PREFIXES = ["holding_","watch_","candidate_","invest_","buyprice_","lastbuyprice_","lastbuydate_","buy_yield_","manual_","memo_","shares_","sim_","portfolio_sector_","portfolio_sector_type_"];
+const BACKUP_PREFIXES = ["holding_","watch_","candidate_","crashbuy_","invest_","buyprice_","lastbuyprice_","lastbuydate_","buy_yield_","manual_","memo_","shares_","sim_","portfolio_sector_","portfolio_sector_type_"];
 const BACKUP_EXACT_KEYS = ["tdr_value","portfolio_imported_at","operation_mode","signal_panic","signal_circuit"];
 function isBackupKey(k){ return BACKUP_PREFIXES.some(p=>k.startsWith(p)) || BACKUP_EXACT_KEYS.includes(k); }
 function collectBackupData(){
@@ -2137,3 +2140,4 @@ function enhanceModal(code){
 </script>
 </body>
 </html>
+
