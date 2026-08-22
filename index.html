@@ -111,6 +111,9 @@
   .card .price { font-size:19px; font-weight:700; }
   .card .chg { font-size:12.5px; margin-left:6px; }
   .card .yield { font-size:15px; margin-top:2px; }
+  .card-valuation { display:flex; gap:10px; align-items:baseline; margin-top:3px; color:var(--muted); font-size:11.5px; }
+  .card-valuation span { white-space:nowrap; }
+  .card-valuation b { color:var(--text); font-weight:650; }
   .card .sub { color:var(--muted); font-size:11.5px; margin-top:4px; }
   .divtrend { margin-top:8px; padding-top:7px; border-top:1px solid #eef1f6; }
   .divtrend-head { display:flex; align-items:center; justify-content:space-between; gap:8px; color:var(--muted); font-size:10.5px; }
@@ -1180,6 +1183,7 @@ function card(s){
     <div class="card-primary"><div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>${buffettB}
+    <div class="card-valuation"><span>PER <b>${e.per===null?"—":fmt(e.per)+"倍"}</b></span><span>PBR <b>${e.pbr===null?"—":fmt(e.pbr)+"倍"}</b></span></div>
     <div class="sub">${authoritativeSector(s)}｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</div>
     ${dividendHistoryCard(s)}</div>
     ${SUPPORT_OPEN?`<div class="card-support" onclick="event.stopPropagation()">${scoreHtml}${cardPriceGuide(s)}</div>`:""}
