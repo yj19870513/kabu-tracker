@@ -422,7 +422,11 @@ const LS = {
   del:k=>localStorage.removeItem(k)
 };
 const fmt = (v,n=2)=> (v===null||v===undefined||isNaN(v)) ? "-" : Number(v).toLocaleString("ja-JP",{maximumFractionDigits:n});
-const pct1 = v => (v===null||v===undefined||isNaN(v)) ? "-" : Number(v).toFixed(1);
+const pct1 = v => {
+  if(v===null||v===undefined||isNaN(v)) return "-";
+  const n=Number(v);
+  return n===0 ? "0" : n.toFixed(1);
+};
 const yen = v => v===null||v===undefined ? "-" : "¥"+fmt(v,0);
 const divFmt = v => fmt(v, Number.isInteger(Number(v)) ? 0 : 2);
 
