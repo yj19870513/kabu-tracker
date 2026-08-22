@@ -1383,7 +1383,9 @@ const TSE33_COLORS = ["#2f6fba","#4b8bca","#62a0d5","#2f9b8b","#4cae72","#79b85b
 const EXTRA_PORTFOLIO_SECTORS = ["ETF・他","米国ETF","米国個別株"];
 const PORTFOLIO_SECTORS = TSE33_SECTORS.concat(EXTRA_PORTFOLIO_SECTORS);
 // 36カテゴリを同じ色の繰り返しにせず、円グラフ上で見分けられる色相にする。
-const portfolioSectorColor = (i,strong=false) => `hsl(${(i*137.508)%360} ${strong?60:32}% ${strong?(i%2?46:40):(i%2?84:78)}%)`;
+// 淡い赤・橙・黄・緑・水色・青・紫を順に巡るパステル配色。
+// セクター数が増えても色相を循環させ、10％以上だけ濃色版にする。
+const portfolioSectorColor = (i,strong=false) => `hsl(${(i*10)%360} ${strong?62:55}% ${strong?52:76}%)`;
 const UNKNOWN_TSE_SECTOR = "未分類（業種未取込）";
 function importedPortfolioSector(code){ return String(LS.get("portfolio_sector_"+code,"")).trim(); }
 function normalizePortfolioSector(v){
