@@ -256,6 +256,14 @@
   .sim-table { width:100%; border-collapse:collapse; margin-top:8px; font-size:12.5px; }
   .sim-table th,.sim-table td { border-bottom:1px solid var(--line); padding:7px 6px; text-align:left; }
   .sim-table th { color:var(--muted); font-size:11.5px; }
+  .sim-table .sim-stock-link { color:var(--text); text-decoration:underline; text-decoration-color:#9dbbe1; text-underline-offset:2px; font-weight:600; cursor:pointer; }
+  .sim-owner { display:inline-block; margin-left:6px; padding:2px 5px; border-radius:5px; font-size:10px; line-height:1.2; vertical-align:middle; white-space:nowrap; }
+  .sim-owner.held { color:#13744f; background:#e7f7ef; border:1px solid #a7dfc5; }
+  .sim-owner.unheld { color:#53657d; background:#f0f3f7; border:1px solid #cbd5e3; }
+  .sim-budget-summary { display:flex; flex-wrap:wrap; gap:8px 18px; align-items:baseline; margin:8px 0 4px; padding:9px 11px; border:1px solid #c9d9ee; border-radius:8px; background:#f6f9fd; }
+  .sim-budget-summary span { color:var(--muted); font-size:11.5px; }
+  .sim-budget-summary b { color:var(--text); font-size:16px; }
+  .sim-budget-summary .sim-budget-secondary { color:var(--muted); font-size:11px; }
   .sim-delta.up { color:var(--red); } .sim-delta.down { color:var(--blue); }
   .sim-bulk { margin-top:10px; border-top:1px solid var(--line); padding-top:8px; }
   .sim-bulk summary { cursor:pointer; color:var(--blue); font-weight:600; font-size:12.5px; }
@@ -1532,7 +1540,7 @@ function portfolioRows(){
   }).filter(r=>r.shares>0);
 }
 function simBasket(){ try{ const a=JSON.parse(LS.get("sim_basket","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
-function simOwnershipLabel(s){ return LS.get("holding_"+s.code)?"":"（未）"; }
+function simOwnershipLabel(s){ return LS.get("holding_"+s.code)?"":"（未保有）"; }
 function simSectorLabel(s){ return authoritativeSector(s); }
 function simSectorTypeLabel(s){ const k=sectorType(s); return {defensive:"ディフェンシブ",cyclical:"景気敏感",neutral:"その他",unknown:"未確認"}[k]||"未確認"; }
 function simSharesForBudget(amount, price){
@@ -1670,8 +1678,11 @@ function openSimulator(){
   const planRows=basket.map((x,i)=>{
     const s=DATA.stocks.find(v=>v.code===x.code); if(!s) return "";
     const e=eff(s), shares=simSharesForBudget(+x.amount||0,e.price), cost=shares*(e.price||0), div=shares*(e.dividend||0), diff=cost-(+x.amount||0), diffLabel=diff>0?` <span class="kome c-orange">（予算+${yen(diff)}）</span>`:"";
-    return `<tr><td>${s.name}<br><span class="kome">${s.code}</span></td><td>${simSectorLabel(s)}<br><span class="kome">${simSectorTypeLabel(s)}</span></td><td><input type="number" min="0" step="1000" value="${+x.amount||0}" onchange="updateSimAmount(${i},this.value)" style="width:110px"> 円</td><td>${shares}株</td><td>${yen(cost)}${diffLabel}</td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
+    const owned=Boolean(LS.get("holding_"+s.code)), ownerLabel=owned?`<span class="sim-owner held">保有</span>`:`<span class="sim-owner unheld">未保有</span>`;
+    return `<tr><td><a href="#" class="sim-stock-link" onclick="openModal('${s.code}');return false">${s.name}</a>${ownerLabel}<br><span class="kome">${s.code}</span></td><td>${simSectorLabel(s)}<br><span class="kome">${simSectorTypeLabel(s)}</span></td><td><input type="number" min="0" step="1000" value="${+x.amount||0}" onchange="updateSimAmount(${i},this.value)" style="width:110px"> 円</td><td>${shares}株</td><td>${yen(cost)}${diffLabel}</td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
   }).join("");
+  const inputBudgetTotal=basket.reduce((n,x)=>n+(+x.amount||0),0);
+  const estimatedCostTotal=basket.reduce((n,x)=>{const s=DATA.stocks.find(v=>v.code===x.code);if(!s)return n;const e=eff(s);return n+simSharesForBudget(+x.amount||0,e.price)*(e.price||0);},0);
   const sectorBefore=sectorDividendMap(base),sectorAfter=sectorDividendMap(after);
   // 管理シートの東証33業種を母集団にし、現在・購入後が0%の業種も必ず表示する。
   const sectors=PORTFOLIO_SECTORS.concat((sectorBefore[UNKNOWN_TSE_SECTOR]||sectorAfter[UNKNOWN_TSE_SECTOR])?[UNKNOWN_TSE_SECTOR]:[]).sort((x,y)=>(sectorAfter[y]||0)-(sectorAfter[x]||0)||x.localeCompare(y,"ja"));
@@ -1685,14 +1696,12 @@ function openSimulator(){
   const stockOver=after.filter(r=>a.dividend&&r.dividend/a.dividend*100>3).sort((x,y)=>y.dividend-x.dividend).slice(0,8);
   const sectorOver10=sectors.filter(k=>a.dividend&&(sectorAfter[k]||0)/a.dividend*100>10&&(sectorAfter[k]||0)/a.dividend*100<=20).map(k=>`${k} ${pct1((sectorAfter[k]||0)/a.dividend*100)}%`);
   const sectorOver20=sectors.filter(k=>a.dividend&&(sectorAfter[k]||0)/a.dividend*100>20).map(k=>`${k} ${pct1((sectorAfter[k]||0)/a.dividend*100)}%`);
-  const concentration=after.filter(r=>a.dividend&&r.dividend/a.dividend*100>3).sort((x,y)=>y.dividend-x.dividend).slice(0,6);
   const notices=[];
   if(!base.length) notices.push("管理シートの保有数を取り込むと、現在との比較ができます。");
   if(stockOver.length) notices.push("購入後に年間配当の銘柄比率3%を超える: "+stockOver.map(r=>`${r.s.name} ${pct1(r.dividend/a.dividend*100)}%`).join("、"));
   if(sectorOver10.length) notices.push("購入後にセクター10%目標を超える: "+sectorOver10.join("、"));
   if(sectorOver20.length) notices.push("購入後にセクター20%警戒ラインを超える: "+sectorOver20.join("、"));
   if(a.defensive<50) notices.push("購入後のディフェンシブ比率が50%未満: "+pct1(a.defensive)+"%");
-  if(concentration.length) notices.push("購入後に年間配当の銘柄比率3%を超える: "+concentration.map(r=>`${r.s.name} ${fmt(r.dividend/a.dividend*100,1)}%`).join("、"));
   $("modal").innerHTML=`
     <span class="close" onclick="closeModal()">✕</span><h2>🧮 購入シミュレーター</h2>
     <p class="kome">実際の注文は行いません。表示時点の株価・年間配当で、購入後の偏りを試算します。保有数などはこのブラウザ内だけに保存されます。</p>
@@ -1701,7 +1710,7 @@ function openSimulator(){
       <div class="sim-panel"><h3>① 現在のポートフォリオ</h3><p><b>${base.length}銘柄</b>${imported?` ／ 取込 ${new Date(imported).toLocaleString('ja-JP')}`:" ／ 未取込"}</p><button class="btn sub" onclick="openPortfolioImport()">管理シートのデータを取り込む</button></div>
       <div class="sim-panel"><h3>② 今回分だけを追加</h3><div class="sim-sort-row"><label>銘柄の並び順<select onchange="LS.set('sim_sort',this.value);openSimulator()"><option value="code" ${simSort==="code"?"selected":""}>コード順</option><option value="kana" ${simSort==="kana"?"selected":""}>五十音順</option></select></label><span class="kome">現在：${simSortLabel}</span></div><div class="sim-inputs"><label>銘柄<select id="simCode">${options}</select></label><label>今回の予算（円）<input id="simAmount" type="number" min="0" step="1000" placeholder="例：100000"></label><button class="btn" onclick="addSimItem()">追加</button></div><details class="sim-bulk"><summary>複数銘柄をまとめて追加</summary><input class="sim-quick-search" type="search" placeholder="コード・銘柄名で絞り込み" oninput="filterSimQuickList(this.value)"><div class="sim-bulk-actions"><button class="btn sub" onclick="toggleAllSimPick(true)">表示中を全選択</button><button class="btn sub" onclick="toggleAllSimPick(false)">選択を解除</button></div><div class="sim-quick-list">${quickRows}</div><button class="btn" onclick="addSimItems()">選択した銘柄を追加</button><div class="sim-bulk-file">CSV／JSONから一括取込（code,amount または 証券コード,予算）</div><input type="file" accept=".json,.csv,.tsv,.txt" onchange="handleSimBasketFile(event)"><textarea id="simBasketImportText" class="sim-bulk-text" rows="3" placeholder='[{&quot;code&quot;:&quot;8584&quot;,&quot;amount&quot;:50000}]'></textarea><div id="simBasketImportMsg"></div><button class="btn sub" onclick="applySimBasketImport()">CSV／JSONを取り込む</button></details><p class="kome">暴落時は予定総額を2〜3回に分け、この画面には今回使う分だけを入れます。</p></div>
     </div>
-    <h3>購入予定</h3>${basket.length?`<div class="tblwrap"><table class="sim-table"><tr><th>銘柄</th><th>業種／区分</th><th>予算</th><th>概算株数</th><th>概算購入額</th><th>年間配当</th><th></th></tr>${planRows}</table></div><button class="btn sub" onclick="clearSimBasket()">購入予定をすべて消す</button>`:'<p class="kome">まだ追加されていません。1回の購入で複数銘柄をまとめて比較できます。</p>'}
+    <h3>購入予定</h3>${basket.length?`<div class="sim-budget-summary"><span>入力予算合計 <b>${yen(inputBudgetTotal)}</b></span><span class="sim-budget-secondary">概算購入額合計 ${yen(estimatedCostTotal)}（株数を四捨五入）</span></div><div class="tblwrap"><table class="sim-table"><tr><th>銘柄</th><th>業種／区分</th><th>予算</th><th>概算株数</th><th>概算購入額</th><th>年間配当</th><th></th></tr>${planRows}</table></div><button class="btn sub" onclick="clearSimBasket()">購入予定をすべて消す</button>`:'<p class="kome">まだ追加されていません。1回の購入で複数銘柄をまとめて比較できます。</p>'}
     <h3>③ 購入前 → 購入後</h3><div class="sim-metrics">
       ${metricHtml("時価評価額",yen(b.value),yen(a.value))}
       ${metricHtml("予想年間配当",yen(b.dividend),yen(a.dividend))}
@@ -2154,4 +2163,3 @@ function enhanceModal(code){
 </script>
 </body>
 </html>
-
