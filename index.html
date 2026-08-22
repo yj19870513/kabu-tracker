@@ -73,6 +73,7 @@
   .qf button { background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:16px; padding:5px 14px; cursor:pointer; font-size:13px; box-shadow:var(--shadow); }
   .qf button.on { background:var(--green); color:#fff; border-color:var(--green); }
   .qf button.on.sector-filter { background:#6b4fb3; border-color:#6b4fb3; }
+  .qf button.bulk-danger { margin-left:auto; color:#a23a48; border-color:#e1a3ad; background:#fff8f9; }
   .support-toggle { margin-left:auto; }
   .border-filter { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
   .border-filter > span { color:var(--muted); font-size:12px; margin-right:2px; }
@@ -396,6 +397,7 @@
     <button data-f="unhold">未保有のみ</button>
     <button data-f="unheldSector" class="sector-filter">未保有セクターのみ</button>
     <button data-f="low">📉安値圏のみ</button>
+    <button class="bulk-danger" type="button" onclick="bulkClearCandidate()">候補タグを全解除</button>
     <button id="supportToggle" class="support-toggle" type="button" aria-pressed="true">補助情報を閉じる</button>
   </div>
   <div class="border-filter" id="borderFilter">
@@ -1204,6 +1206,13 @@ function bulkHold(){
 function bulkClearHold(){
   if (!confirm("すべての「保有中」タグを外します。投資額・購入単価は残ります。よろしいですか？")) return;
   DATA.stocks.forEach(s=>LS.del("holding_"+s.code));
+  render();
+}
+function bulkClearCandidate(){
+  const count=DATA.stocks.filter(s=>LS.get("candidate_"+s.code)).length;
+  if (!count) { alert("候補タグは付いていません。"); return; }
+  if (!confirm(`このブラウザの候補タグ ${count}件をすべて外します。保有・配当データは残ります。よろしいですか？`)) return;
+  DATA.stocks.forEach(s=>LS.del("candidate_"+s.code));
   render();
 }
 function holdTable(list){
