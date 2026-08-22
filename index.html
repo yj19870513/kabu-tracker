@@ -269,6 +269,8 @@
   .sim-pie-rank i { width:9px; height:9px; flex:none; border-radius:2px; }
   .sim-pie-rank span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .sim-pie-rank b { margin-left:auto; white-space:nowrap; font-size:11px; }
+  .sim-pie-rank.hot { border-left:3px solid #526b93; padding-left:5px; font-weight:700; }
+  .sim-pie-rank.hot b { color:#304e7a; }
   .sim-pie-note { color:var(--muted); font-size:10.5px; line-height:1.45; }
   @media (max-width:700px){ .sim-pie-compare{grid-template-columns:1fr;} .sim-pie-card{grid-template-columns:180px minmax(0,1fr);gap:10px;padding:10px;} .sim-pie{width:180px;height:180px;flex-basis:180px;} .sim-pie::after{inset:43px;} }
   .sim-scenario-compare { margin-top:10px; padding:9px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card); }
@@ -1381,7 +1383,7 @@ const TSE33_COLORS = ["#2f6fba","#4b8bca","#62a0d5","#2f9b8b","#4cae72","#79b85b
 const EXTRA_PORTFOLIO_SECTORS = ["ETF・他","米国ETF","米国個別株"];
 const PORTFOLIO_SECTORS = TSE33_SECTORS.concat(EXTRA_PORTFOLIO_SECTORS);
 // 36カテゴリを同じ色の繰り返しにせず、円グラフ上で見分けられる色相にする。
-const portfolioSectorColor = i => `hsl(${(i*137.508)%360} 58% ${i%2?58:45}%)`;
+const portfolioSectorColor = (i,strong=false) => `hsl(${(i*137.508)%360} ${strong?48:38}% ${strong?(i%2?52:46):(i%2?76:70)}%)`;
 const UNKNOWN_TSE_SECTOR = "未分類（業種未取込）";
 function importedPortfolioSector(code){ return String(LS.get("portfolio_sector_"+code,"")).trim(); }
 function normalizePortfolioSector(v){
@@ -1484,12 +1486,12 @@ function sectorPieHtml(label,rows){
   if(!total) return `<div class="sim-pie-card"><div class="sim-pie-label">${label}</div><div class="sim-pie-note">保有データまたは購入予定を入れると表示されます。</div></div>`;
   let cursor=0;
   const stops=[];
-  const colorFor=k=>{ const i=PORTFOLIO_SECTORS.indexOf(k); return i>=0?portfolioSectorColor(i):"#aeb8c8"; };
-  PORTFOLIO_SECTORS.forEach((k,i)=>{ const pct=map[k]/total*100; if(pct>0){ stops.push(`${colorFor(k)} ${cursor}% ${cursor+pct}%`); cursor+=pct; } });
+  const colorFor=(k,strong=false)=>{ const i=PORTFOLIO_SECTORS.indexOf(k); return i>=0?portfolioSectorColor(i,strong):"#c5ccd6"; };
+  PORTFOLIO_SECTORS.forEach((k,i)=>{ const pct=map[k]/total*100; if(pct>0){ stops.push(`${colorFor(k,pct>=10)} ${cursor}% ${cursor+pct}%`); cursor+=pct; } });
   const other=map[UNKNOWN_TSE_SECTOR]||0;
-  if(other){ const pct=other/total*100; stops.push(`#aeb8c8 ${cursor}% ${cursor+pct}%`); cursor+=pct; }
+  if(other){ const pct=other/total*100; stops.push(`${colorFor(UNKNOWN_TSE_SECTOR,pct>=10)} ${cursor}% ${cursor+pct}%`); cursor+=pct; }
   const active=PORTFOLIO_SECTORS.filter(k=>map[k]>0).length+(other?1:0);
-  const ranking=Object.entries(map).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>`<div class="sim-pie-rank"><i style="background:${colorFor(k)}"></i><span>${k}</span><b>${pct1(v/total*100)}%</b></div>`).join("");
+  const ranking=Object.entries(map).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>{const pct=v/total*100,hot=pct>=10;return `<div class="sim-pie-rank${hot?" hot":""}"><i style="background:${colorFor(k,hot)}"></i><span>${k}</span><b>${pct1(pct)}%</b></div>`;}).join("");
   return `<div class="sim-pie-card"><div><div class="sim-pie-label">${label}</div><div class="sim-pie" style="background:conic-gradient(${stops.join(",")})" role="img" aria-label="${label}のセクター構成"><div class="sim-pie-center"><b>${active}</b><span>業種</span></div></div></div><div class="sim-pie-ranking"><div class="sim-pie-ranking-title">配当構成 上位5業種</div>${ranking}</div></div>`;
 }
 function portfolioSummary(rows){
@@ -1537,7 +1539,7 @@ function openSimulator(){
   const sectors=PORTFOLIO_SECTORS.concat((sectorBefore[UNKNOWN_TSE_SECTOR]||sectorAfter[UNKNOWN_TSE_SECTOR])?[UNKNOWN_TSE_SECTOR]:[]).sort((x,y)=>(sectorAfter[y]||0)-(sectorAfter[x]||0)||x.localeCompare(y,"ja"));
   const secRows=sectors.map(k=>{
     const bp=b.dividend?(sectorBefore[k]||0)/b.dividend*100:0, ap=a.dividend?(sectorAfter[k]||0)/a.dividend*100:0, d=ap-bp;
-    return `<tr><td>${k}${bp===0?"（未保有・補完候補）":""}</td><td>${pct1(bp)}%</td><td>${pct1(ap)}%</td><td class="sim-delta ${d>0.05?'up':d<-.05?'down':''}">${d>=0?'+':''}${pct1(d)}pt</td></tr>`;
+    return `<tr><td>${k}${bp===0?"（未保有）":""}</td><td>${pct1(bp)}%</td><td>${pct1(ap)}%</td><td class="sim-delta ${d>0.05?'up':d<-.05?'down':''}">${d>=0?'+':''}${pct1(d)}pt</td></tr>`;
   }).join("");
   const mixBefore=simMix(base), mixAfter=simMix(after);
   const imported=LS.get("portfolio_imported_at","");
