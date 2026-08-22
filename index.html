@@ -1205,7 +1205,9 @@ const SECTOR_TYPE_MASTER = {
 };
 function sectorType(target){
   const code=target&&typeof target==="object"?String(target.code||""):"";
-  const sector=target&&typeof target==="object"?target.sector:target;
+  // 未保有の購入予定は管理シートに無く、DATA側のsectorが空の場合がある。
+  // その場合もコード別の業種マスターから33業種を解決して区分する。
+  const sector=target&&typeof target==="object"?(target.sector||authoritativeSector(target)):target;
   const imported=code?importedSectorType(code):"";
   return SECTOR_TYPE_MASTER[String(sector||"")] || imported || "unknown";
 }
