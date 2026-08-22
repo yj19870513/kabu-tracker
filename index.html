@@ -170,6 +170,8 @@
   .source-badge:hover { background:#e9edf2; color:var(--blue); }
   .buffett-badge { background:#eef5ff; color:#285b9c; border-color:#b8cce9; text-decoration:none; }
   .buffett-badge:hover { background:#dfeeff; color:#174b89; }
+  .card-bc-link { display:inline-block; margin-top:5px; color:#285b9c; font-size:10.5px; text-decoration:underline; text-underline-offset:2px; }
+  .card-bc-link:hover { color:#174b89; }
   .scorebar { position:relative; height:16px; background:#eceff5; border-radius:8px; margin-top:8px; overflow:hidden; }
   .scorebar i { display:block; height:100%; background:linear-gradient(90deg,#4d9ce8,#2fae6d); }
   .scorebar span { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#1f2430; text-shadow:0 0 3px #fff,0 0 3px #fff; }
@@ -1144,17 +1146,17 @@ function card(s){
   const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `${yieldLabel} <b>${fmt(y)}%</b>`;
   const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">前日比 ${chg>=0?"+":""}${fmt(chg)}%</span>`;
   const tagB = t?`<span class="badge badge-${t}">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
-  const buffettB = `<a class="badge buffett-badge" href="https://www.buffett-code.com/company/${s.code}/stockprice" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="バフェット・コードの株価・指標ページを開く">BC株価 ↗</a>`;
+  const buffettB = `<a class="card-bc-link" href="https://www.buffett-code.com/company/${s.code}/stockprice" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="バフェット・コードの株価・指標ページを開く">バフェット・コードで株価指標を見る ↗</a>`;
   const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
   const t30 = top30Score(s);
   const scoreHtml=isExempt(s.code)
     ? `<div class="scorebar"><span>財務評価は対象外</span></div>`
     : `<div class="scorebar"><i style="width:${sc/8*100}%;background:${scoreColor(sc)}"></i><span>${sc}/8</span></div>`;
   return `<div class="card ${borderClass(s)}" onclick="openModal('${s.code}')">
-    <div class="badges">${tagB}${lowB}${buffettB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
+    <div class="badges">${tagB}${lowB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
     <div class="card-primary"><div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
-    <div class="yield">${ydisp}</div>
+    <div class="yield">${ydisp}</div>${buffettB}
     <div class="sub">${normalizePortfolioSector(importedPortfolioSector(s.code))||e.sector||"-"}｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</div>
     ${dividendHistoryCard(s)}</div>
     ${SUPPORT_OPEN?`<div class="card-support" onclick="event.stopPropagation()">${scoreHtml}${cardPriceGuide(s)}</div>`:""}
