@@ -1383,9 +1383,13 @@ const TSE33_COLORS = ["#2f6fba","#4b8bca","#62a0d5","#2f9b8b","#4cae72","#79b85b
 const EXTRA_PORTFOLIO_SECTORS = ["ETF・他","米国ETF","米国個別株"];
 const PORTFOLIO_SECTORS = TSE33_SECTORS.concat(EXTRA_PORTFOLIO_SECTORS);
 // 36カテゴリを同じ色の繰り返しにせず、円グラフ上で見分けられる色相にする。
-// 淡い赤・橙・黄・緑・水色・青・紫を順に巡るパステル配色。
-// セクター数が増えても色相を循環させ、10％以上だけ濃色版にする。
-const portfolioSectorColor = (i,strong=false) => `hsl(${(i*10)%360} ${strong?62:55}% ${strong?52:76}%)`;
+// パステル感を保ちながら、隣り合う色が似ないよう反対色を交互に配置する。
+// セクター数が増えても色相を少しずつずらし、10％以上だけ濃色版にする。
+const PASTEL_HUE_ORDER = [0,180,30,210,60,240,90,270,120,300,150,330];
+const portfolioSectorColor = (i,strong=false) => {
+  const hue=(PASTEL_HUE_ORDER[i%PASTEL_HUE_ORDER.length]+Math.floor(i/PASTEL_HUE_ORDER.length)*10)%360;
+  return `hsl(${hue} ${strong?62:55}% ${strong?52:76}%)`;
+};
 const UNKNOWN_TSE_SECTOR = "未分類（業種未取込）";
 function importedPortfolioSector(code){ return String(LS.get("portfolio_sector_"+code,"")).trim(); }
 function normalizePortfolioSector(v){
