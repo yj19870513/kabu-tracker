@@ -269,7 +269,7 @@
   .sim-pie-rank i { width:9px; height:9px; flex:none; border-radius:2px; }
   .sim-pie-rank span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .sim-pie-rank b { margin-left:auto; white-space:nowrap; font-size:11px; }
-  .sim-pie-rank.hot { border-left:3px solid #526b93; padding-left:5px; font-weight:700; }
+  .sim-pie-rank.hot { font-weight:700; }
   .sim-pie-rank.hot b { color:#304e7a; }
   .sim-pie-note { color:var(--muted); font-size:10.5px; line-height:1.45; }
   @media (max-width:700px){ .sim-pie-compare{grid-template-columns:1fr;} .sim-pie-card{grid-template-columns:180px minmax(0,1fr);gap:10px;padding:10px;} .sim-pie{width:180px;height:180px;flex-basis:180px;} .sim-pie::after{inset:43px;} }
@@ -1383,7 +1383,7 @@ const TSE33_COLORS = ["#2f6fba","#4b8bca","#62a0d5","#2f9b8b","#4cae72","#79b85b
 const EXTRA_PORTFOLIO_SECTORS = ["ETF・他","米国ETF","米国個別株"];
 const PORTFOLIO_SECTORS = TSE33_SECTORS.concat(EXTRA_PORTFOLIO_SECTORS);
 // 36カテゴリを同じ色の繰り返しにせず、円グラフ上で見分けられる色相にする。
-const portfolioSectorColor = (i,strong=false) => `hsl(${(i*137.508)%360} ${strong?48:38}% ${strong?(i%2?52:46):(i%2?76:70)}%)`;
+const portfolioSectorColor = (i,strong=false) => `hsl(${(i*137.508)%360} ${strong?64:38}% ${strong?(i%2?44:38):(i%2?76:70)}%)`;
 const UNKNOWN_TSE_SECTOR = "未分類（業種未取込）";
 function importedPortfolioSector(code){ return String(LS.get("portfolio_sector_"+code,"")).trim(); }
 function normalizePortfolioSector(v){
