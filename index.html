@@ -1490,7 +1490,7 @@ function sectorPieHtml(label,rows){
   if(other){ const pct=other/total*100; stops.push(`#aeb8c8 ${cursor}% ${cursor+pct}%`); cursor+=pct; }
   const active=PORTFOLIO_SECTORS.filter(k=>map[k]>0).length+(other?1:0);
   const ranking=Object.entries(map).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>`<div class="sim-pie-rank"><i style="background:${colorFor(k)}"></i><span>${k}</span><b>${pct1(v/total*100)}%</b></div>`).join("");
-  return `<div class="sim-pie-card"><div><div class="sim-pie-label">${label}</div><div class="sim-pie" style="background:conic-gradient(${stops.join(",")})" role="img" aria-label="${label}のセクター構成"><div class="sim-pie-center"><b>${active}</b><span>業種</span></div></div></div></div><div class="sim-pie-ranking"><div class="sim-pie-ranking-title">配当構成 上位5業種</div>${ranking}</div></div>`;
+  return `<div class="sim-pie-card"><div><div class="sim-pie-label">${label}</div><div class="sim-pie" style="background:conic-gradient(${stops.join(",")})" role="img" aria-label="${label}のセクター構成"><div class="sim-pie-center"><b>${active}</b><span>業種</span></div></div></div><div class="sim-pie-ranking"><div class="sim-pie-ranking-title">配当構成 上位5業種</div>${ranking}</div></div>`;
 }
 function portfolioSummary(rows){
   const value=rows.reduce((n,r)=>n+r.value,0), dividend=rows.reduce((n,r)=>n+r.dividend,0);
