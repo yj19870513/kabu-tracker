@@ -114,6 +114,10 @@
   .card-valuation { display:flex; gap:10px; align-items:baseline; margin-top:3px; color:var(--muted); font-size:11.5px; }
   .card-valuation span { white-space:nowrap; }
   .card-valuation b { color:var(--text); font-weight:650; }
+  .card-valuation b.v-blue { color:var(--blue); }
+  .card-valuation b.v-green { color:var(--green); }
+  .card-valuation b.v-red { color:var(--red); }
+  .card-valuation b.v-unknown { color:var(--muted); }
   .card .sub { color:var(--muted); font-size:11.5px; margin-top:4px; }
   .divtrend { margin-top:8px; padding-top:7px; border-top:1px solid #eef1f6; }
   .divtrend-head { display:flex; align-items:center; justify-content:space-between; gap:8px; color:var(--muted); font-size:10.5px; }
@@ -505,6 +509,12 @@ function yieldOf(s){
   if (y===null||y===undefined) return null;
   if (y>=20) return "anomaly"; // 利回り20%以上はデータ異常
   return y;
+}
+function valuationTone(value,kind){
+  const v=Number(value);
+  if(!Number.isFinite(v)||v<=0) return "v-unknown";
+  if(kind==="per") return v<=15?"v-blue":v>=25?"v-red":"v-green";
+  return v<=1.2?"v-blue":v>=2?"v-red":"v-green";
 }
 function currentYear(){ return DATA && DATA.updated ? DATA.updated.slice(0,4) : String(new Date().getFullYear()); }
 function latestDividendCheckedAt(){
@@ -1183,7 +1193,7 @@ function card(s){
     <div class="card-primary"><div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>${buffettB}
-    <div class="card-valuation"><span>PER <b>${e.per===null?"—":fmt(e.per)+"倍"}</b></span><span>PBR <b>${e.pbr===null?"—":fmt(e.pbr)+"倍"}</b></span></div>
+    <div class="card-valuation" title="青=買い時候補、緑=中間、赤=割高注意。業種差があるため簡易目安です"><span>PER <b class="${valuationTone(e.per,"per")}">${e.per===null?"—":fmt(e.per)+"倍"}</b></span><span>PBR <b class="${valuationTone(e.pbr,"pbr")}">${e.pbr===null?"—":fmt(e.pbr)+"倍"}</b></span></div>
     <div class="sub">${authoritativeSector(s)}｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</div>
     ${dividendHistoryCard(s)}</div>
     ${SUPPORT_OPEN?`<div class="card-support" onclick="event.stopPropagation()">${scoreHtml}${cardPriceGuide(s)}</div>`:""}
