@@ -1518,6 +1518,11 @@ function simBasket(){ try{ const a=JSON.parse(LS.get("sim_basket","[]")); return
 function simOwnershipLabel(s){ return LS.get("holding_"+s.code)?"":"（未）"; }
 function simSectorLabel(s){ return authoritativeSector(s); }
 function simSectorTypeLabel(s){ const k=sectorType(s); return {defensive:"ディフェンシブ",cyclical:"景気敏感",neutral:"その他",unknown:"未確認"}[k]||"未確認"; }
+function simSharesForBudget(amount, price){
+  const budget=+amount||0, p=+price||0;
+  if(budget<=0||p<=0) return 0;
+  return Math.max(1,Math.round(budget/p));
+}
 function saveSimBasket(a){ LS.set("sim_basket",JSON.stringify(a)); }
 function simScenarios(){ try{ const a=JSON.parse(LS.get("sim_scenarios","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function saveSimScenarios(a){ LS.set("sim_scenarios",JSON.stringify(a)); }
@@ -1622,7 +1627,7 @@ function projectedRowsForBasket(basket){
   portfolioRows().forEach(r=>byCode[r.s.code]=Object.assign({},r));
   basket.forEach(x=>{
     const s=DATA.stocks.find(v=>v.code===x.code), amount=+x.amount||0; if(!s) return;
-    const e=eff(s), add=e.price?Math.floor(amount/e.price):0;
+    const e=eff(s), add=simSharesForBudget(amount,e.price);
     if(!byCode[s.code]) byCode[s.code]={s,shares:0,value:0,dividend:0};
     byCode[s.code].shares+=add;
     byCode[s.code].value+=add*(e.price||0);
@@ -1647,8 +1652,8 @@ function openSimulator(){
   const scenarioCompare=scenarios.map(x=>{ const rows=projectedRowsForBasket(Array.isArray(x.basket)?x.basket:[]), sum=portfolioSummary(rows), budget=(Array.isArray(x.basket)?x.basket:[]).reduce((n,v)=>n+(+v.amount||0),0); return `<tr><td>${x.name}</td><td>${yen(budget)}</td><td>${yen(sum.value)}</td><td>${yen(sum.dividend)}</td><td>${pct1(sum.defensive)}%</td><td>${pct1(sum.stable)}%</td></tr>`; }).join("");
   const planRows=basket.map((x,i)=>{
     const s=DATA.stocks.find(v=>v.code===x.code); if(!s) return "";
-    const e=eff(s), shares=e.price?Math.floor((+x.amount||0)/e.price):0, cost=shares*(e.price||0), div=shares*(e.dividend||0);
-    return `<tr><td>${s.name}<br><span class="kome">${s.code}</span></td><td>${simSectorLabel(s)}<br><span class="kome">${simSectorTypeLabel(s)}</span></td><td><input type="number" min="0" step="1000" value="${+x.amount||0}" onchange="updateSimAmount(${i},this.value)" style="width:110px"> 円</td><td>${shares}株</td><td>${yen(cost)}</td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
+    const e=eff(s), shares=simSharesForBudget(+x.amount||0,e.price), cost=shares*(e.price||0), div=shares*(e.dividend||0), diff=cost-(+x.amount||0), diffLabel=diff>0?` <span class="kome c-orange">（予算+${yen(diff)}）</span>`:"";
+    return `<tr><td>${s.name}<br><span class="kome">${s.code}</span></td><td>${simSectorLabel(s)}<br><span class="kome">${simSectorTypeLabel(s)}</span></td><td><input type="number" min="0" step="1000" value="${+x.amount||0}" onchange="updateSimAmount(${i},this.value)" style="width:110px"> 円</td><td>${shares}株</td><td>${yen(cost)}${diffLabel}</td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
   }).join("");
   const sectorBefore=sectorDividendMap(base),sectorAfter=sectorDividendMap(after);
   // 管理シートの東証33業種を母集団にし、現在・購入後が0%の業種も必ず表示する。
