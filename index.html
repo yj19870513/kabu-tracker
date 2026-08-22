@@ -510,6 +510,11 @@ function latestFinancialCheckedAt(){
   dates.sort();
   return dates.length?dates[dates.length-1]:"未確認";
 }
+function sectorAuditSummary(){
+  const master=(window.SECTOR_MASTER||{}).sectors||{};
+  const missing=(DATA&&DATA.stocks||[]).filter(s=>!normalizePortfolioSector(importedPortfolioSector(s.code))&&!normalizePortfolioSector(master[String(s.code)]||"")).length;
+  return {date:(window.SECTOR_MASTER||{}).checked_at||"未確認",missing};
+}
 function dataDateHtml(s){
   const src=(window.DIV_SOURCES||{})[s.code], f=fin8(s.code);
   return `<div class="data-dates"><b>株価</b> ${DATA&&DATA.updated||"未確認"}　<b>配当</b> ${src&&src.checked_at||"未確認"}　<b>財務8項目</b> ${f&&f.checked_at||((window.FIN8||{}).generated_at||"未確認")}</div>`;
@@ -969,7 +974,18 @@ function buyChange(s){
   const last=+LS.get("lastbuyprice_"+s.code,0)||0, current=eff(s).price;
   return last>0&&Number.isFinite(+current) ? (+current/last-1)*100 : null;
 }
-function cardSectorName(s){ return normalizePortfolioSector(importedPortfolioSector(s.code)) || eff(s).sector || UNKNOWN_TSE_SECTOR; }
+function authoritativeSector(s){
+  const imported=normalizePortfolioSector(importedPortfolioSector(s.code));
+  if(imported) return imported;
+  const master=(window.SECTOR_MASTER||{}).sectors||{};
+  return normalizePortfolioSector(master[String(s.code)]||"") || UNKNOWN_TSE_SECTOR;
+}
+function sectorSourceLabel(s){
+  if(normalizePortfolioSector(importedPortfolioSector(s.code))) return "管理シート";
+  if(((window.SECTOR_MASTER||{}).sectors||{})[String(s.code)]) return "JPX業種マスター";
+  return "未確認";
+}
+function cardSectorName(s){ return authoritativeSector(s); }
 function heldSectorSet(){
   return new Set(DATA.stocks.filter(s=>!s.error&&LS.get("holding_"+s.code)).map(cardSectorName));
 }
@@ -1157,16 +1173,13 @@ function card(s){
     <div class="card-primary"><div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>${buffettB}
-    <div class="sub">${normalizePortfolioSector(importedPortfolioSector(s.code))||e.sector||"-"}｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</div>
+    <div class="sub">${authoritativeSector(s)}｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</div>
     ${dividendHistoryCard(s)}</div>
     ${SUPPORT_OPEN?`<div class="card-support" onclick="event.stopPropagation()">${scoreHtml}${cardPriceGuide(s)}</div>`:""}
   </div>`;
 }
 /* ---------- ディフェンシブ／景気敏感 分類 ----------
-   東証33業種の厳密な区分ではなく、Yahoo Financeの広いセクター区分による近似。
-   ズレを感じる銘柄があれば、この対応表を見直してください。 */
-const SECTOR_DEFENSIVE = {"生活必需品":"defensive","ヘルスケア":"defensive","公益事業":"defensive","通信サービス":"defensive",
-  "資本財":"cyclical","一般消費財":"cyclical","素材":"cyclical","エネルギー":"cyclical","金融":"cyclical"};
+   業種名からの推測はしない。管理シートの明示区分が正本で、未取込は「その他」として扱う。 */
 function normalizeSectorType(v){
   const x=String(v??"").trim().toLowerCase();
   if(!x) return "";
@@ -1180,7 +1193,7 @@ function sectorType(target){
   const code=target&&typeof target==="object"?String(target.code||""):"";
   const sector=target&&typeof target==="object"?target.sector:target;
   const imported=code?importedSectorType(code):"";
-  return imported || SECTOR_DEFENSIVE[sector] || "neutral";
+  return imported || "neutral";
 }
 
 function holdingDividendRotation(){
@@ -1196,7 +1209,7 @@ function holdingDividendRotation(){
   const missing=rows.filter(r=>!importedSectorType(r.s.code)).length;
   const allSectors=PORTFOLIO_SECTORS.concat(Object.keys(bySector).filter(k=>!PORTFOLIO_SECTORS.includes(k))).sort((a,b)=>(bySector[b]||0)-(bySector[a]||0)||a.localeCompare(b,"ja"));
   const sectorChips=allSectors.map(k=>{ const value=bySector[k]||0, share=total?value/total*100:0; return `<span class="rotation-sector ${share===0?"zero":""}"><span>${k}</span><b>${fmt(share,1)}%${share===0?" 未保有":""}</b></span>`; }).join("");
-  return `<div class="rotation-panel"><div class="rotation-head"><b>保有配当のセクターローテーション</b><span>年間配当ベース・${yen(total)}</span></div><div class="rotation-bar">${segments}</div><div class="rotation-legend">${legend}</div><div class="rotation-sectors">${sectorChips}</div><p class="rotation-note">金融・資本財・素材などは景気敏感側、生活必需品・ヘルスケアなどはディフェンシブ側として表示します。青色の「0.0% 未保有」は、購入候補を探すときの補完候補です。管理シートの区分を取り込んだ銘柄を優先し、未区分${missing}銘柄は業種からの暫定分類です。10%は平常時の分散確認の目安です。</p><button class="btn sub" style="margin-top:7px" onclick="openSimulator()">購入後の配当バランスを試算する</button></div>`;
+  return `<div class="rotation-panel"><div class="rotation-head"><b>保有配当のセクターローテーション</b><span>年間配当ベース・${yen(total)}</span></div><div class="rotation-bar">${segments}</div><div class="rotation-legend">${legend}</div><div class="rotation-sectors">${sectorChips}</div><p class="rotation-note">ディフェンシブ／景気敏感の区分は管理シートの明示値だけを使います。未取込${missing}銘柄は推測せず「その他」に計上しています。青色の「0.0% 未保有」は購入候補を探すときの補完候補です。10%は平常時の分散確認の目安です。</p><button class="btn sub" style="margin-top:7px" onclick="openSimulator()">購入後の配当バランスを試算する</button></div>`;
 }
 
 /* ---------- 保有中テーブル ---------- */
@@ -1230,7 +1243,7 @@ function holdTable(list){
     const pct = total>0? inv/total*100 : 100/rows.length;
     const buyP = +LS.get("buyprice_"+s.code,0)||0;
     return `<tr><td><a href="#" onclick="openModal('${s.code}');return false" style="color:var(--text)">${s.name}</a><br><span style="color:var(--muted);font-size:11px">${s.code}</span></td>
-      <td>${eff(s).sector||"-"}</td>
+      <td>${authoritativeSector(s)}</td>
       <td><input type="number" value="${inv||""}" placeholder="円" onchange="LS.set('invest_${s.code}',this.value);render()"></td>
       <td>${fmt(pct,1)}%</td>
       <td><input type="number" value="${buyP||""}" placeholder="購入単価" onchange="LS.set('buyprice_${s.code}',this.value);render()"></td></tr>`;
@@ -1239,7 +1252,7 @@ function holdTable(list){
 
   // ① セクター10%目安チェック（平常時の基本ルール）
   const bySec={};
-  rows.forEach(({s,inv})=>{ const k=eff(s).sector||"その他"; bySec[k]=(bySec[k]||0)+(useAmt?inv:1); });
+  rows.forEach(({s,inv})=>{ const k=authoritativeSector(s); bySec[k]=(bySec[k]||0)+(useAmt?inv:1); });
   const secTotal=Object.values(bySec).reduce((a,b)=>a+b,0)||1;
   const colors=["#2f7ed8","#1f9a63","#d1810f","#d24358","#7b62cc","#1f97ad","#a8891a"];
   const secOver10 = Object.entries(bySec).filter(([k,v])=>v/secTotal*100>10 && v/secTotal*100<=20).map(([k,v])=>`${k}(${fmt(v/secTotal*100,0)}%)`);
@@ -1312,7 +1325,7 @@ function openModal(code){
   const m = manual(code);
   $("modal").innerHTML = `
     <span class="close" onclick="closeModal()">✕</span>
-    <h2>${s.name} <span style="color:var(--muted);font-size:13px">${code}｜${e.sector||"-"}</span> <a class="badge buffett-badge" href="https://www.buffett-code.com/company/${code}/stockprice" target="_blank" rel="noopener" title="バフェット・コードの株価・指標ページを開く">BC株価 ↗</a></h2>
+    <h2>${s.name} <span style="color:var(--muted);font-size:13px">${code}｜${authoritativeSector(s)}</span> <a class="badge buffett-badge" href="https://www.buffett-code.com/company/${code}/stockprice" target="_blank" rel="noopener" title="バフェット・コードの株価・指標ページを開く">BC株価 ↗</a></h2>
     <div style="margin-top:4px"><span class="price" style="font-size:22px">${yen(e.price)}</span>
       <span style="margin-left:10px">${e.dividend_forecast!==null?"予想利回り":"実績利回り"} <b>${y==="anomaly"?"-（異常値）":fmt(y)+"%"}</b>｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</span></div>${dataDateHtml(s)}
     <div class="tagbtns">
@@ -1477,7 +1490,7 @@ function normalizePortfolioSector(v){
   if(x==="ETF"||x==="上場投資信託") return "ETF・他";
   return "";
 }
-function portfolioSectorName(s){ const imported=normalizePortfolioSector(importedPortfolioSector(s.code)); return imported || UNKNOWN_TSE_SECTOR; }
+function portfolioSectorName(s){ return authoritativeSector(s); }
 function portfolioRows(){
   return DATA.stocks.map(s=>{
     const shares=+LS.get("shares_"+s.code,0)||0, e=eff(s);
@@ -1486,7 +1499,7 @@ function portfolioRows(){
 }
 function simBasket(){ try{ const a=JSON.parse(LS.get("sim_basket","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function simOwnershipLabel(s){ return LS.get("holding_"+s.code)?"":"（未）"; }
-function simSectorLabel(s){ return normalizePortfolioSector(importedPortfolioSector(s.code)) || eff(s).sector || "業種未確認"; }
+function simSectorLabel(s){ return authoritativeSector(s); }
 function simSectorTypeLabel(s){ const k=sectorType(s); return {defensive:"ディフェンシブ",cyclical:"景気敏感",neutral:"その他"}[k]||"その他"; }
 function saveSimBasket(a){ LS.set("sim_basket",JSON.stringify(a)); }
 function simScenarios(){ try{ const a=JSON.parse(LS.get("sim_scenarios","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
@@ -1922,7 +1935,8 @@ async function init(){
     $("updated").innerHTML='<span class="err">data/stocks.json を読み込めませんでした。Webサーバー経由（GitHub Pages等）で開いてください。</span>';
     return;
   }
-  $("updated").innerHTML = `株価更新日：<b>${DATA.updated}</b>（自動取得・リアルタイムではありません）<br><span>配当確認日：<b>${latestDividendCheckedAt()}</b>　｜　財務8項目確認日：<b>${latestFinancialCheckedAt()}</b></span>`;
+  const sectorAudit=sectorAuditSummary();
+  $("updated").innerHTML = `株価更新日：<b>${DATA.updated}</b>（自動取得・リアルタイムではありません）<br><span>配当確認日：<b>${latestDividendCheckedAt()}</b>　｜　財務8項目確認日：<b>${latestFinancialCheckedAt()}</b>　｜　業種確認日：<b>${sectorAudit.date}</b>${sectorAudit.missing?`　｜　業種未確認：<b class="c-red">${sectorAudit.missing}銘柄</b>`:""}</span>`;
   if (DATA.vix!==null) showVix(DATA.vix,"（"+(DATA.vix_updated||"")+" 時点）");
   liveVix();
   tdrView();
@@ -1940,7 +1954,7 @@ async function init(){
     document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.k===k));
     render();
   });
-  const secs=[...new Set(PORTFOLIO_SECTORS.concat(DATA.stocks.map(s=>s.sector).filter(Boolean)))];
+  const secs=[...new Set(PORTFOLIO_SECTORS.concat(DATA.stocks.map(authoritativeSector)))];
   if(DATA.stocks.some(s=>cardSectorName(s)===UNKNOWN_TSE_SECTOR)) secs.push(UNKNOWN_TSE_SECTOR);
   secs.sort((a,b)=>a.localeCompare(b,"ja"));
   $("secSel").innerHTML += secs.map(s=>`<option>${s}</option>`).join("");
@@ -2057,6 +2071,10 @@ function enhanceModal(code){
 (async function(){
   const t = Date.now();
   try{
+    const sm=await fetch("data/sector_classification.json?t="+t);
+    window.SECTOR_MASTER=await sm.json();
+  }catch(e){ window.SECTOR_MASTER={sectors:{}}; }
+  try{
     const rs=await fetch("data/dividend_sources.json?t="+t);
     window.DIV_SOURCES=await rs.json();
   }catch(e){ window.DIV_SOURCES={}; }
@@ -2078,7 +2096,7 @@ function enhanceModal(code){
     const r2=await fetch("data/financial8_verified.json?t="+t);
     window.FIN8=await r2.json();
   }catch(e){ window.FIN8=null; }
-  if(DATA) $("updated").innerHTML = `株価更新日：<b>${DATA.updated}</b>（自動取得・リアルタイムではありません）<br><span>配当確認日：<b>${latestDividendCheckedAt()}</b>　｜　財務8項目確認日：<b>${latestFinancialCheckedAt()}</b></span>`;
+  if(DATA) { const sectorAudit=sectorAuditSummary(); $("updated").innerHTML = `株価更新日：<b>${DATA.updated}</b>（自動取得・リアルタイムではありません）<br><span>配当確認日：<b>${latestDividendCheckedAt()}</b>　｜　財務8項目確認日：<b>${latestFinancialCheckedAt()}</b>　｜　業種確認日：<b>${sectorAudit.date}</b>${sectorAudit.missing?`　｜　業種未確認：<b class="c-red">${sectorAudit.missing}銘柄</b>`:""}</span>`; }
   if (DATA) render();
 })();
 </script>
