@@ -1053,7 +1053,6 @@ function card(s){
   const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `${yieldLabel} <b>${fmt(y)}%</b>`;
   const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">前日比 ${chg>=0?"+":""}${fmt(chg)}%</span>`;
   const tagB = t?`<span class="badge badge-${t}">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"";
-  const sourceB = `<button class="badge source-badge" onclick="event.stopPropagation();openModal('${s.code}')" title="配当・分割の根拠を確認">根拠</button>`;
   const buffettB = `<a class="badge buffett-badge" href="https://www.buffett-code.com/company/${s.code}/stockprice" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="バフェット・コードの株価・指標ページを開く">BC株価 ↗</a>`;
   const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
   const t30 = top30Score(s);
@@ -1061,7 +1060,7 @@ function card(s){
     ? `<div class="scorebar"><span>財務評価は対象外</span></div>`
     : `<div class="scorebar"><i style="width:${sc/8*100}%;background:${scoreColor(sc)}"></i><span>${sc}/8</span></div>`;
   return `<div class="card ${borderClass(s)}" onclick="openModal('${s.code}')">
-    <div class="badges">${tagB}${lowB}${sourceB}${buffettB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
+    <div class="badges">${tagB}${lowB}${buffettB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
     <div class="card-primary"><div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>
