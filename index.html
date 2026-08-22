@@ -513,8 +513,8 @@ function yieldOf(s){
 function valuationTone(value,kind){
   const v=Number(value);
   if(!Number.isFinite(v)||v<=0) return "v-unknown";
-  if(kind==="per") return v<=15?"v-blue":v>=25?"v-red":"v-green";
-  return v<=1.2?"v-blue":v>=2?"v-red":"v-green";
+  if(kind==="per") return v<=10?"v-blue":v>=15?"v-red":"v-green";
+  return v<=1.0?"v-blue":v>=1.2?"v-red":"v-green";
 }
 function currentYear(){ return DATA && DATA.updated ? DATA.updated.slice(0,4) : String(new Date().getFullYear()); }
 function latestDividendCheckedAt(){
