@@ -256,7 +256,7 @@
   .sim-mix-legend { display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; color:var(--muted); font-size:10.5px; }
   .sim-mix-legend span { display:inline-flex; align-items:center; gap:3px; }
   .sim-mix-legend i { width:8px; height:8px; border-radius:2px; display:inline-block; }
-  .sim-pie-compare { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:10px 0 12px; }
+  .sim-pie-compare { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; margin:10px 0 12px; }
   .sim-pie-card { display:grid; grid-template-columns:220px minmax(0,1fr); align-items:center; gap:18px; min-width:0; padding:14px; border:1px solid var(--line); border-radius:10px; background:var(--field); }
   .sim-pie { position:relative; margin:0 auto; flex:0 0 220px; width:220px; height:220px; border-radius:50%; background:#e9edf3; box-shadow:inset 0 0 0 1px rgba(40,55,80,.08); }
   .sim-pie::after { content:""; position:absolute; inset:52px; border-radius:50%; background:var(--field); box-shadow:0 0 0 1px rgba(40,55,80,.06); }
@@ -422,6 +422,7 @@ const LS = {
   del:k=>localStorage.removeItem(k)
 };
 const fmt = (v,n=2)=> (v===null||v===undefined||isNaN(v)) ? "-" : Number(v).toLocaleString("ja-JP",{maximumFractionDigits:n});
+const pct1 = v => (v===null||v===undefined||isNaN(v)) ? "-" : Number(v).toFixed(1);
 const yen = v => v===null||v===undefined ? "-" : "¥"+fmt(v,0);
 const divFmt = v => fmt(v, Number.isInteger(Number(v)) ? 0 : 2);
 
@@ -1375,7 +1376,8 @@ const TSE33_COLORS = ["#2f6fba","#4b8bca","#62a0d5","#2f9b8b","#4cae72","#79b85b
 // 東証33業種に属さない管理シート上の分類（ETF・米国商品）も、未分類に落とさず表示する。
 const EXTRA_PORTFOLIO_SECTORS = ["ETF・他","米国ETF","米国個別株"];
 const PORTFOLIO_SECTORS = TSE33_SECTORS.concat(EXTRA_PORTFOLIO_SECTORS);
-const PORTFOLIO_SECTOR_COLORS = ["#2f6fba","#4b8bca","#62a0d5","#2f9b8b","#4cae72","#79b85b","#a0bf4f","#c5b84d","#d69c45","#d47a45","#ca5b52","#b56bba","#7b78c8","#8c9aaa"];
+// 36カテゴリを同じ色の繰り返しにせず、円グラフ上で見分けられる色相にする。
+const portfolioSectorColor = i => `hsl(${(i*137.508)%360} 58% ${i%2?58:45}%)`;
 const UNKNOWN_TSE_SECTOR = "未分類（業種未取込）";
 function importedPortfolioSector(code){ return String(LS.get("portfolio_sector_"+code,"")).trim(); }
 function normalizePortfolioSector(v){
@@ -1478,12 +1480,12 @@ function sectorPieHtml(label,rows){
   if(!total) return `<div class="sim-pie-card"><div class="sim-pie-label">${label}</div><div class="sim-pie-note">保有データまたは購入予定を入れると表示されます。</div></div>`;
   let cursor=0;
   const stops=[];
-  const colorFor=k=>{ const i=PORTFOLIO_SECTORS.indexOf(k); return i>=0?PORTFOLIO_SECTOR_COLORS[i%PORTFOLIO_SECTOR_COLORS.length]:"#aeb8c8"; };
+  const colorFor=k=>{ const i=PORTFOLIO_SECTORS.indexOf(k); return i>=0?portfolioSectorColor(i):"#aeb8c8"; };
   PORTFOLIO_SECTORS.forEach((k,i)=>{ const pct=map[k]/total*100; if(pct>0){ stops.push(`${colorFor(k)} ${cursor}% ${cursor+pct}%`); cursor+=pct; } });
   const other=map[UNKNOWN_TSE_SECTOR]||0;
   if(other){ const pct=other/total*100; stops.push(`#aeb8c8 ${cursor}% ${cursor+pct}%`); cursor+=pct; }
   const active=PORTFOLIO_SECTORS.filter(k=>map[k]>0).length+(other?1:0);
-  const ranking=Object.entries(map).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>`<div class="sim-pie-rank"><i style="background:${colorFor(k)}"></i><span>${k}</span><b>${fmt(v/total*100,1)}%</b></div>`).join("");
+  const ranking=Object.entries(map).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>`<div class="sim-pie-rank"><i style="background:${colorFor(k)}"></i><span>${k}</span><b>${pct1(v/total*100)}%</b></div>`).join("");
   return `<div class="sim-pie-card"><div><div class="sim-pie-label">${label}</div><div class="sim-pie" style="background:conic-gradient(${stops.join(",")})" role="img" aria-label="${label}のセクター構成"><div class="sim-pie-center"><b>${active}</b><span>業種</span></div></div></div></div><div class="sim-pie-ranking"><div class="sim-pie-ranking-title">配当構成 上位5業種</div>${ranking}</div></div>`;
 }
 function portfolioSummary(rows){
