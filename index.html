@@ -244,6 +244,7 @@
   .sim-quick-list { max-height:190px; overflow:auto; border:1px solid var(--line); border-radius:8px; background:var(--card); padding:5px; }
   .sim-quick-row { display:grid; grid-template-columns:minmax(0,1fr) 100px; gap:6px; align-items:center; padding:4px 5px; font-size:11.5px; border-bottom:1px solid #edf0f5; }
   .sim-quick-row label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .sim-quick-row label small { display:block; margin-left:20px; color:var(--muted); font-size:10px; line-height:1.35; overflow:hidden; text-overflow:ellipsis; }
   .sim-quick-row input[type="checkbox"] { accent-color:var(--blue); }
   .sim-quick-row input[type="number"] { margin:0; }
   .sim-scenarios { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; padding:9px 10px; border:1px solid var(--line); border-radius:8px; background:var(--field); font-size:12px; }
@@ -1408,6 +1409,8 @@ function portfolioRows(){
 }
 function simBasket(){ try{ const a=JSON.parse(LS.get("sim_basket","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function simOwnershipLabel(s){ return LS.get("holding_"+s.code)?"":"（未）"; }
+function simSectorLabel(s){ return normalizePortfolioSector(importedPortfolioSector(s.code)) || eff(s).sector || "業種未確認"; }
+function simSectorTypeLabel(s){ const k=sectorType(s); return {defensive:"ディフェンシブ",cyclical:"景気敏感",neutral:"その他"}[k]||"その他"; }
 function saveSimBasket(a){ LS.set("sim_basket",JSON.stringify(a)); }
 function simScenarios(){ try{ const a=JSON.parse(LS.get("sim_scenarios","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function saveSimScenarios(a){ LS.set("sim_scenarios",JSON.stringify(a)); }
@@ -1530,15 +1533,15 @@ function openSimulator(){
   const simSort=LS.get("sim_sort","code");
   const simSortLabel=simSort==="kana"?"五十音順":"コード順";
   const simStocks=DATA.stocks.filter(s=>!s.error).sort((x,y)=>simSort==="kana"?String(x.name||x.code).localeCompare(String(y.name||y.code),"ja")||x.code.localeCompare(y.code):x.code.localeCompare(y.code,{numeric:true}));
-  const options=simStocks.map(s=>`<option value="${s.code}">${s.code} ${s.name}${simOwnershipLabel(s)}</option>`).join("");
-  const quickRows=simStocks.map(s=>`<div class="sim-quick-row" data-search="${String(s.code+" "+(s.name||"")).toLowerCase()}"><label><input class="sim-pick-check" type="checkbox" value="${s.code}" onchange="toggleSimPick('${s.code}',this.checked)"> ${s.code} ${s.name}${simOwnershipLabel(s)}</label><input id="simPickAmt_${s.code}" type="number" min="0" step="1000" placeholder="予算" disabled></div>`).join("");
+  const options=simStocks.map(s=>`<option value="${s.code}">${s.code} ${s.name}｜${simSectorLabel(s)}・${simSectorTypeLabel(s)}${simOwnershipLabel(s)}</option>`).join("");
+  const quickRows=simStocks.map(s=>`<div class="sim-quick-row" data-search="${String(s.code+" "+(s.name||"")+" "+simSectorLabel(s)).toLowerCase()}"><label><input class="sim-pick-check" type="checkbox" value="${s.code}" onchange="toggleSimPick('${s.code}',this.checked)"> ${s.code} ${s.name}${simOwnershipLabel(s)}<small>${simSectorLabel(s)}｜${simSectorTypeLabel(s)}</small></label><input id="simPickAmt_${s.code}" type="number" min="0" step="1000" placeholder="予算" disabled></div>`).join("");
   const scenarios=simScenarios();
   const scenarioOptions=scenarios.map((x,i)=>`<option value="${i}">${x.name}</option>`).join("");
   const scenarioCompare=scenarios.map(x=>{ const rows=projectedRowsForBasket(Array.isArray(x.basket)?x.basket:[]), sum=portfolioSummary(rows), budget=(Array.isArray(x.basket)?x.basket:[]).reduce((n,v)=>n+(+v.amount||0),0); return `<tr><td>${x.name}</td><td>${yen(budget)}</td><td>${yen(sum.value)}</td><td>${yen(sum.dividend)}</td><td>${pct1(sum.defensive)}%</td><td>${pct1(sum.stable)}%</td></tr>`; }).join("");
   const planRows=basket.map((x,i)=>{
     const s=DATA.stocks.find(v=>v.code===x.code); if(!s) return "";
     const e=eff(s), shares=e.price?Math.floor((+x.amount||0)/e.price):0, cost=shares*(e.price||0), div=shares*(e.dividend||0);
-    return `<tr><td>${s.name}<br><span class="kome">${s.code}</span></td><td><input type="number" min="0" step="1000" value="${+x.amount||0}" onchange="updateSimAmount(${i},this.value)" style="width:110px"> 円</td><td>${shares}株</td><td>${yen(cost)}</td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
+    return `<tr><td>${s.name}<br><span class="kome">${s.code}</span></td><td>${simSectorLabel(s)}<br><span class="kome">${simSectorTypeLabel(s)}</span></td><td><input type="number" min="0" step="1000" value="${+x.amount||0}" onchange="updateSimAmount(${i},this.value)" style="width:110px"> 円</td><td>${shares}株</td><td>${yen(cost)}</td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
   }).join("");
   const sectorBefore=sectorDividendMap(base),sectorAfter=sectorDividendMap(after);
   // 管理シートの東証33業種を母集団にし、現在・購入後が0%の業種も必ず表示する。
@@ -1569,7 +1572,7 @@ function openSimulator(){
       <div class="sim-panel"><h3>① 現在のポートフォリオ</h3><p><b>${base.length}銘柄</b>${imported?` ／ 取込 ${new Date(imported).toLocaleString('ja-JP')}`:" ／ 未取込"}</p><button class="btn sub" onclick="openPortfolioImport()">管理シートのデータを取り込む</button></div>
       <div class="sim-panel"><h3>② 今回分だけを追加</h3><div class="sim-sort-row"><label>銘柄の並び順<select onchange="LS.set('sim_sort',this.value);openSimulator()"><option value="code" ${simSort==="code"?"selected":""}>コード順</option><option value="kana" ${simSort==="kana"?"selected":""}>五十音順</option></select></label><span class="kome">現在：${simSortLabel}</span></div><div class="sim-inputs"><label>銘柄<select id="simCode">${options}</select></label><label>今回の予算（円）<input id="simAmount" type="number" min="0" step="1000" placeholder="例：100000"></label><button class="btn" onclick="addSimItem()">追加</button></div><details class="sim-bulk"><summary>複数銘柄をまとめて追加</summary><input class="sim-quick-search" type="search" placeholder="コード・銘柄名で絞り込み" oninput="filterSimQuickList(this.value)"><div class="sim-bulk-actions"><button class="btn sub" onclick="toggleAllSimPick(true)">表示中を全選択</button><button class="btn sub" onclick="toggleAllSimPick(false)">選択を解除</button></div><div class="sim-quick-list">${quickRows}</div><button class="btn" onclick="addSimItems()">選択した銘柄を追加</button><div class="sim-bulk-file">CSV／JSONから一括取込（code,amount または 証券コード,予算）</div><input type="file" accept=".json,.csv,.tsv,.txt" onchange="handleSimBasketFile(event)"><textarea id="simBasketImportText" class="sim-bulk-text" rows="3" placeholder='[{&quot;code&quot;:&quot;8584&quot;,&quot;amount&quot;:50000}]'></textarea><div id="simBasketImportMsg"></div><button class="btn sub" onclick="applySimBasketImport()">CSV／JSONを取り込む</button></details><p class="kome">暴落時は予定総額を2〜3回に分け、この画面には今回使う分だけを入れます。</p></div>
     </div>
-    <h3>購入予定</h3>${basket.length?`<div class="tblwrap"><table class="sim-table"><tr><th>銘柄</th><th>予算</th><th>概算株数</th><th>概算購入額</th><th>年間配当</th><th></th></tr>${planRows}</table></div><button class="btn sub" onclick="clearSimBasket()">購入予定をすべて消す</button>`:'<p class="kome">まだ追加されていません。1回の購入で複数銘柄をまとめて比較できます。</p>'}
+    <h3>購入予定</h3>${basket.length?`<div class="tblwrap"><table class="sim-table"><tr><th>銘柄</th><th>業種／区分</th><th>予算</th><th>概算株数</th><th>概算購入額</th><th>年間配当</th><th></th></tr>${planRows}</table></div><button class="btn sub" onclick="clearSimBasket()">購入予定をすべて消す</button>`:'<p class="kome">まだ追加されていません。1回の購入で複数銘柄をまとめて比較できます。</p>'}
     <h3>③ 購入前 → 購入後</h3><div class="sim-metrics">
       ${metricHtml("時価評価額",yen(b.value),yen(a.value))}
       ${metricHtml("予想年間配当",yen(b.dividend),yen(a.dividend))}
