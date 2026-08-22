@@ -72,6 +72,7 @@
   .qf { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
   .qf button { background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:16px; padding:5px 14px; cursor:pointer; font-size:13px; box-shadow:var(--shadow); }
   .qf button.on { background:var(--green); color:#fff; border-color:var(--green); }
+  .qf button.on.sector-filter { background:#6b4fb3; border-color:#6b4fb3; }
   .support-toggle { margin-left:auto; }
   .border-filter { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
   .border-filter > span { color:var(--muted); font-size:12px; margin-right:2px; }
@@ -393,6 +394,7 @@
   <div class="qf" id="qf">
     <button data-f="hold">保有のみ</button>
     <button data-f="unhold">未保有のみ</button>
+    <button data-f="unheldSector" class="sector-filter">未保有セクターのみ</button>
     <button data-f="low">📉安値圏のみ</button>
     <button id="supportToggle" class="support-toggle" type="button" aria-pressed="true">補助情報を閉じる</button>
   </div>
@@ -428,7 +430,7 @@
 
 <script>
 "use strict";
-let DATA = null, TAB = "all", FIL_HOLD = null, FIL_LOW = false, SUPPORT_OPEN = true;
+let DATA = null, TAB = "all", FIL_HOLD = null, FIL_LOW = false, FIL_UNHELD_SECTOR = false, SUPPORT_OPEN = true;
 const FIL_BORDERS = new Set();
 const FIL_BUY_ZONES = new Set();
 const $ = id => document.getElementById(id);
@@ -963,6 +965,10 @@ function buyChange(s){
   const last=+LS.get("lastbuyprice_"+s.code,0)||0, current=eff(s).price;
   return last>0&&Number.isFinite(+current) ? (+current/last-1)*100 : null;
 }
+function cardSectorName(s){ return normalizePortfolioSector(importedPortfolioSector(s.code)) || eff(s).sector || UNKNOWN_TSE_SECTOR; }
+function heldSectorSet(){
+  return new Set(DATA.stocks.filter(s=>!s.error&&LS.get("holding_"+s.code)).map(cardSectorName));
+}
 const SORT_OPTIONS = [
   ["yield","配当利回り（高い順）"], ["stability","配当安定性（良い順）"], ["score","財務8項目（高い順）"],
   ["low52","52週位置（安い順）"], ["buy","前回購入比（下落順）"], ["per","PER（低い順）"],
@@ -1027,11 +1033,12 @@ function filtered(){
     if (["holding","watch","candidate"].includes(TAB)) list = list.filter(s=>LS.get(TAB+"_"+s.code));
     if (TAB==="top30") list = list.filter(s=>top30Score(s)!==null).sort((a,b)=>top30Score(b)-top30Score(a)).slice(0,30);
   }
-  if (sec) list = list.filter(s=>eff(s).sector===sec);
+  if (sec) list = list.filter(s=>cardSectorName(s)===sec);
   if (smin) list = list.filter(s=>qualityScore(s)>=smin);
   if (q) list = list.filter(s=>(s.name||"").toLowerCase().includes(q)||s.code.includes(q));
   if (FIL_HOLD===true) list = list.filter(s=>LS.get("holding_"+s.code));
   if (FIL_HOLD===false) list = list.filter(s=>!LS.get("holding_"+s.code));
+  if (FIL_UNHELD_SECTOR) { const held=heldSectorSet(); list = list.filter(s=>!held.has(cardSectorName(s))); }
   if (FIL_LOW) list = list.filter(s=>{ const p=pos52(s); return p!==null&&p<=33; });
   if (FIL_BUY_ZONES.size) list = list.filter(s=>{
     const chg=buyChange(s);
@@ -1922,7 +1929,9 @@ async function init(){
     document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.k===k));
     render();
   });
-  const secs=[...new Set(DATA.stocks.map(s=>s.sector).filter(Boolean))];
+  const secs=[...new Set(PORTFOLIO_SECTORS.concat(DATA.stocks.map(s=>s.sector).filter(Boolean)))];
+  if(DATA.stocks.some(s=>cardSectorName(s)===UNKNOWN_TSE_SECTOR)) secs.push(UNKNOWN_TSE_SECTOR);
+  secs.sort((a,b)=>a.localeCompare(b,"ja"));
   $("secSel").innerHTML += secs.map(s=>`<option>${s}</option>`).join("");
   setupSortControls();
   $("sortPreset").addEventListener("change",e=>{ LS.set("sort_preset",e.target.value); applySortPreset(e.target.value); });
@@ -1934,9 +1943,11 @@ async function init(){
     const f=e.target.dataset.f; if(!f) return;
     if (f==="hold") FIL_HOLD = FIL_HOLD===true ? null : true;
     if (f==="unhold") FIL_HOLD = FIL_HOLD===false ? null : false;
+    if (f==="unheldSector") FIL_UNHELD_SECTOR = !FIL_UNHELD_SECTOR;
     if (f==="low") FIL_LOW = !FIL_LOW;
     document.querySelector('.qf button[data-f="hold"]').classList.toggle("on", FIL_HOLD===true);
     document.querySelector('.qf button[data-f="unhold"]').classList.toggle("on", FIL_HOLD===false);
+    document.querySelector('.qf button[data-f="unheldSector"]').classList.toggle("on", FIL_UNHELD_SECTOR);
     document.querySelector('.qf button[data-f="low"]').classList.toggle("on", FIL_LOW);
     render();
   });
