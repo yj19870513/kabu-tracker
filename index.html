@@ -1717,8 +1717,8 @@ function applyLastPurchasePrices(){
 }
 
 /* ---------- データのバックアップ・復元 ---------- */
-// タグ・投資額・取得単価・メモなど、このアプリが使うlocalStorageキーだけを対象にする
-const BACKUP_PREFIXES = ["holding_","watch_","candidate_","invest_","buyprice_","lastbuyprice_","lastbuydate_","buy_yield_","manual_","memo_","shares_","sim_"];
+// 個人データに加え、管理シート由来の業種・ディフェンシブ区分もバックアップ対象にする。
+const BACKUP_PREFIXES = ["holding_","watch_","candidate_","invest_","buyprice_","lastbuyprice_","lastbuydate_","buy_yield_","manual_","memo_","shares_","sim_","portfolio_sector_","portfolio_sector_type_"];
 const BACKUP_EXACT_KEYS = ["tdr_value","portfolio_imported_at","operation_mode","signal_panic","signal_circuit"];
 function isBackupKey(k){ return BACKUP_PREFIXES.some(p=>k.startsWith(p)) || BACKUP_EXACT_KEYS.includes(k); }
 function collectBackupData(){
@@ -1728,7 +1728,7 @@ function collectBackupData(){
 }
 function downloadBackup(){
   const data = collectBackupData();
-  const json = JSON.stringify({app:"kabu-tracker", exported_at:new Date().toISOString(), data:data});
+  const json = JSON.stringify({app:"kabu-tracker", backup_version:2, exported_at:new Date().toISOString(), data:data});
   const blob = new Blob([json], {type:"application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -1744,7 +1744,7 @@ function openBackupModal(){
   $("modal").innerHTML = `
     <span class="close" onclick="closeModal()">✕</span>
     <h2>💾 データのバックアップ・復元</h2>
-    <p class="kome" style="margin-top:4px">タグ・投資額・取得単価・メモなどは、すべて<b>このブラウザにだけ</b>保存されています。ファイルに書き出しておけば、他の端末（iPhoneなど）へ同じ内容を復元したり、ブラウザのデータが消えたときに復元したりできます（現在 ${count}件のデータあり）。</p>
+    <p class="kome" style="margin-top:4px">タグ・投資額・取得単価・業種・ディフェンシブ区分・メモなどは、すべて<b>このブラウザにだけ</b>保存されています。ファイルに書き出しておけば、他の端末（iPhoneなど）へ同じ内容を復元したり、ブラウザのデータが消えたときに復元したりできます（現在 ${count}件のデータあり）。</p>
     <h3>書き出す</h3>
     <button class="btn" onclick="downloadBackup()">📥 ファイルとしてダウンロード</button>
     <p class="kome">ダウンロードしたファイルは、復元したい端末のブラウザでこの画面を開き、下の「ファイルを選択」から読み込んでください。</p>
@@ -1776,7 +1776,9 @@ function applyBackup(){
   if (!keys.length){ msgEl.innerHTML = '<span class="err">復元できるデータが見つかりませんでした。</span>'; return; }
   if (!confirm(`現在このブラウザに保存されているデータ（タグ・投資額・取得単価・メモ等）を、貼り付けた内容（${keys.length}件）で上書きします。よろしいですか？`)) return;
   keys.forEach(k => LS.set(k, data[k]));
-  msgEl.innerHTML = `<span class="c-green">✅ ${keys.length}件のデータを復元しました</span>`;
+  const sectorKeys=keys.filter(k=>k.startsWith("portfolio_sector_")&&!k.startsWith("portfolio_sector_type_"));
+  const sectorNotice=sectorKeys.length?"":"<br><span class=\"c-orange\">⚠️ このバックアップには業種情報が含まれていません。元のタブで新しいバックアップを作成してください。</span>";
+  msgEl.innerHTML = `<span class="c-green">✅ ${keys.length}件のデータを復元しました</span>${sectorNotice}`;
   $("signalPanic").checked=LS.get("signal_panic")==="1";
   $("signalCircuit").checked=LS.get("signal_circuit")==="1";
   renderOperationMode();
