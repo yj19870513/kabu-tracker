@@ -63,6 +63,11 @@
   .tab.on { background:var(--blue); color:#fff; border-color:var(--blue); }
   .ctrl { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
   .ctrl select, .ctrl input { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:13px; box-shadow:var(--shadow); }
+  .sort-panel { display:flex; align-items:end; gap:8px; flex-wrap:wrap; width:100%; padding:8px 10px; margin-bottom:2px; background:#f8fbff; border:1px solid #d9e5f5; border-radius:9px; }
+  .sort-panel label { color:var(--muted); font-size:11px; }
+  .sort-panel select { display:block; margin-top:3px; min-width:150px; }
+  .sort-panel .sort-step { min-width:145px; }
+  .sort-note { color:var(--muted); font-size:11px; padding-bottom:8px; }
   .fcount { color:var(--muted); font-size:12.5px; margin-bottom:10px; }
   .qf { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
   .qf button { background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:16px; padding:5px 14px; cursor:pointer; font-size:13px; box-shadow:var(--shadow); }
@@ -362,12 +367,20 @@
 
   <div class="tabs" id="tabs"></div>
   <div class="ctrl">
-    <select id="sort">
-      <option value="yield">利回り順</option>
-      <option value="score">財務スコア順</option>
-      <option value="code">コード順</option>
-      <option value="price">株価順</option>
-    </select>
+    <div class="sort-panel" id="sortPanel">
+      <label>運用ビュー<select id="sortPreset">
+        <option value="yield">利回り重視</option>
+        <option value="new">新規購入候補（推奨）</option>
+        <option value="holding">保有の買い増し</option>
+        <option value="value">割安確認（PER・PBR）</option>
+        <option value="stability">配当安定性</option>
+        <option value="custom">自由設定</option>
+      </select></label>
+      <label>① 第1条件<select class="sort-step" id="sort1"></select></label>
+      <label>② 第2条件<select class="sort-step" id="sort2"></select></label>
+      <label>③ 第3条件<select class="sort-step" id="sort3"></select></label>
+      <span class="sort-note">左から順に優先。データなしは自動的に後ろへ。</span>
+    </div>
     <select id="secSel"><option value="">全セクター</option></select>
     <select id="scoreSel">
       <option value="0">スコア指定なし</option>
@@ -950,6 +963,59 @@ function buyChange(s){
   const last=+LS.get("lastbuyprice_"+s.code,0)||0, current=eff(s).price;
   return last>0&&Number.isFinite(+current) ? (+current/last-1)*100 : null;
 }
+const SORT_OPTIONS = [
+  ["yield","配当利回り（高い順）"], ["stability","配当安定性（良い順）"], ["score","財務8項目（高い順）"],
+  ["low52","52週位置（安い順）"], ["buy","前回購入比（下落順）"], ["per","PER（低い順）"],
+  ["pbr","PBR（低い順）"], ["price","株価（高い順）"], ["kana","50音順"], ["code","コード順"]
+];
+const SORT_PRESETS = {
+  yield:["yield","stability","score"],
+  new:["stability","score","low52"],
+  holding:["buy","stability","score"],
+  value:["per","pbr","yield"],
+  stability:["stability","score","yield"]
+};
+function setupSortControls(){
+  const opts='<option value="">指定なし</option>'+SORT_OPTIONS.map(([v,l])=>`<option value="${v}">${l}</option>`).join("");
+  ["sort1","sort2","sort3"].forEach(id=>{ const el=$(id); if(el) el.innerHTML=opts; });
+  const preset=LS.get("sort_preset","yield");
+  applySortPreset(preset,false);
+}
+function applySortPreset(preset,rerender=true){
+  const values=SORT_PRESETS[preset]||["yield","stability","score"];
+  $("sortPreset").value=SORT_PRESETS[preset]?preset:"custom";
+  ["sort1","sort2","sort3"].forEach((id,i)=>$(id).value=values[i]||"");
+  if(rerender) render();
+}
+function sortNumber(s,key){
+  if(key==="yield"){ const v=yieldOf(s); return v==="anomaly"?null:v; }
+  if(key==="score") return qualityScore(s);
+  if(key==="low52") return pos52(s);
+  if(key==="buy") return buyChange(s);
+  if(key==="per") { const v=Number(eff(s).per); return Number.isFinite(v)&&v>0?v:null; }
+  if(key==="pbr") { const v=Number(eff(s).pbr); return Number.isFinite(v)&&v>0?v:null; }
+  if(key==="price") { const v=Number(eff(s).price); return Number.isFinite(v)&&v>0?v:null; }
+  return null;
+}
+function sortCompare(a,b,key){
+  if(key==="stability"){
+    const rank={blue:8,aqua:7,green:6,amber:5,red:4,"red-partial":3,pause:2,pending:1,short:1};
+    return (rank[dividendStability(b).key]||0)-(rank[dividendStability(a).key]||0);
+  }
+  if(key==="kana") return String(a.name||a.code).localeCompare(String(b.name||b.code),"ja")||a.code.localeCompare(b.code,{numeric:true});
+  if(key==="code") return a.code.localeCompare(b.code,{numeric:true});
+  const av=sortNumber(a,key), bv=sortNumber(b,key);
+  if(av===null&&bv===null) return 0;
+  if(av===null) return 1;
+  if(bv===null) return -1;
+  // 利回り・スコア・安定性は高い方、買い時/PER/PBR/52週位置は低い方を優先
+  return ["low52","buy","per","pbr"].includes(key) ? av-bv : bv-av;
+}
+function sortCards(list){
+  const keys=["sort1","sort2","sort3"].map(id=>$(id)?.value).filter(Boolean);
+  if(!keys.length) return list;
+  return list.sort((a,b)=>{ for(const key of keys){ const c=sortCompare(a,b,key); if(c) return c; } return a.code.localeCompare(b.code,{numeric:true}); });
+}
 function filtered(){
   let list = DATA.stocks.slice();
   const sec=$("secSel").value, smin=+$("scoreSel").value, q=$("q").value.trim().toLowerCase();
@@ -979,14 +1045,7 @@ function filtered(){
     );
   });
   if (FIL_BORDERS.size) list = list.filter(s=>FIL_BORDERS.has(dividendStability(s).key));
-  const key=$("sort").value;
-  if (TAB!=="top30") list.sort((a,b)=>{
-    const ya=yieldOf(a), yb=yieldOf(b);
-    if (key==="yield") return (yb==="anomaly"?-1:yb??-1)-(ya==="anomaly"?-1:ya??-1);
-    if (key==="score") return qualityScore(b)-qualityScore(a);
-    if (key==="price") return (eff(b).price??0)-(eff(a).price??0);
-    return a.code.localeCompare(b.code);
-  });
+  if (TAB!=="top30") sortCards(list);
   return list;
 }
 function borderClass(s){
@@ -1865,7 +1924,10 @@ async function init(){
   });
   const secs=[...new Set(DATA.stocks.map(s=>s.sector).filter(Boolean))];
   $("secSel").innerHTML += secs.map(s=>`<option>${s}</option>`).join("");
-  ["sort","secSel","scoreSel"].forEach(id=>$(id).addEventListener("change",render));
+  setupSortControls();
+  $("sortPreset").addEventListener("change",e=>{ LS.set("sort_preset",e.target.value); applySortPreset(e.target.value); });
+  ["sort1","sort2","sort3"].forEach(id=>$(id).addEventListener("change",()=>{ LS.set("sort_preset","custom"); $("sortPreset").value="custom"; render(); }));
+  ["secSel","scoreSel"].forEach(id=>$(id).addEventListener("change",render));
   $("q").addEventListener("input",render);
   $("supportToggle").addEventListener("click",()=>setSupportOpen(!SUPPORT_OPEN));
   $("qf").addEventListener("click",e=>{
