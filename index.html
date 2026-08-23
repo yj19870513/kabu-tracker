@@ -1645,7 +1645,7 @@ function portfolioSummary(rows){
   const defensive=rows.filter(r=>sectorType(r.s)==="defensive").reduce((n,r)=>n+r.dividend,0);
   const stable=rows.filter(r=>["blue","aqua"].includes(dividendStability(r.s).key)).reduce((n,r)=>n+r.dividend,0);
   const imported=rows.filter(r=>Boolean(importedSectorType(r.s.code))).length;
-  return {value,dividend,defensive:dividend?defensive/dividend*100:0,stable:dividend?stable/dividend*100:0,sectorImported:imported,sectorMissing:rows.length-imported};
+  return {value,dividend,yield:value?dividend/value*100:0,defensive:dividend?defensive/dividend*100:0,stable:dividend?stable/dividend*100:0,sectorImported:imported,sectorMissing:rows.length-imported};
 }
 function projectedRowsForBasket(basket){
   const byCode={};
@@ -1714,6 +1714,7 @@ function openSimulator(){
     <h3>③ 購入前 → 購入後</h3><div class="sim-metrics">
       ${metricHtml("時価評価額",yen(b.value),yen(a.value))}
       ${metricHtml("予想年間配当",yen(b.dividend),yen(a.dividend))}
+      ${metricHtml("配当利回り",pct1(b.yield),pct1(a.yield),"%")}
       ${metricHtml("ディフェンシブ比率（年間配当・管理シート区分）",fmt(b.defensive,1)+"%",fmt(a.defensive,1),"%")}
       ${metricHtml("安定枠比率（年間配当・青＋水色）",fmt(b.stable,1)+"%",fmt(a.stable,1),"%")}
     </div>
