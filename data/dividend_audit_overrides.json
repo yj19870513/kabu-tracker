@@ -8,6 +8,18 @@
       "note": "ETFの分配金であり、一般企業の普通配当・減配判定とは性質が異なるため、財務8項目の配当安定性判定対象外。分配金履歴は参考表示のみとする。",
       "sources": [{"kind": "dividend", "label": "IR BANK 配当推移（ETF分配金）", "url": "https://irbank.net/1343/dividend", "period": "分配金履歴"}]
     },
+    "1951": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {"2010": 10.0, "2011": 10.0, "2012": 10.0, "2013": 11.0, "2014": 12.0, "2015": 16.0, "2016": 19.0, "2017": 23.0, "2018": 25.0, "2019": 35.0, "2020": 40.0, "2021": 41.0, "2022": 47.0, "2023": 51.0, "2024": 60.0, "2025": 63.0, "2026": 68.0},
+      "actual_latest": {"year": "2026", "value": 68.0},
+      "forecast": {"year": "2027", "value": 80.0},
+      "confirmed_real_cuts": 0,
+      "note": "IR BANKの分割調整欄と公式資料を照合。2024年4月1日の1:2株式分割を反映し、2021年度の社名変更記念配当2円を除外した通常配当ベースで再構成。2010〜2026年は減配なし。ただし2008〜2009年は確認できないため、長期（青）ではなく2010年以降確認（水色）とする。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/1951/dividend", "period": "2010〜2027年"}, {"kind": "ir", "label": "エクシオグループ公式・有価証券報告書", "url": "https://www.exeo.co.jp/wp-content/uploads/2025/06/yuuhou202503.pdf", "period": "分割・記念配当の注記"}]
+    },
     "3649": {
       "status": "reviewed",
       "checked_at": "2026-08-19",
