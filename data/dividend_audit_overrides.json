@@ -8,6 +8,54 @@
       "note": "ETFの分配金であり、一般企業の普通配当・減配判定とは性質が異なるため、財務8項目の配当安定性判定対象外。分配金履歴は参考表示のみとする。",
       "sources": [{"kind": "dividend", "label": "IR BANK 配当推移（ETF分配金）", "url": "https://irbank.net/1343/dividend", "period": "分配金履歴"}]
     },
+    "6454": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {"2010": 9.0, "2011": 9.0, "2012": 9.0, "2013": 9.0, "2014": 9.0, "2015": 9.25, "2016": 9.75, "2017": 10.5, "2018": 10.5, "2019": 11.0, "2020": 11.5, "2021": 12.0, "2022": 16.0, "2023": 19.5, "2024": 25.25, "2025": 28.5, "2026": 37.0},
+      "actual_latest": {"year": "2026", "value": 37.0},
+      "forecast": {"year": "2027", "value": 40.0},
+      "confirmed_real_cuts": 0,
+      "note": "IR BANKの分割調整欄を確認。2010〜2026年の通常配当ベースで減配なし。2008〜2009年の表示用一株配当が不足するため、長期確認済みの青枠にはしない。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/6454/dividend", "period": "2010〜2027年"}]
+    },
+    "9882": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {"2010": 2.5, "2011": 4.5, "2012": 6.0, "2013": 8.0, "2014": 10.0, "2015": 11.5, "2016": 13.5, "2017": 15.0, "2018": 16.5, "2019": 18.0, "2020": 23.0, "2021": 27.0, "2022": 29.0, "2023": 31.0, "2024": 33.0, "2025": 50.0, "2026": 62.0},
+      "actual_latest": {"year": "2026", "value": 62.0},
+      "forecast": {"year": "2027", "value": 68.0},
+      "confirmed_real_cuts": 0,
+      "note": "IR BANKの分割調整欄を確認。2010〜2026年の通常配当ベースで減配なし。2008〜2009年の表示用一株配当が不足するため、長期確認済みの青枠にはしない。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/9882/dividend", "period": "2010〜2027年"}]
+    },
+    "4041": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {"2010": 20.0, "2011": 15.0, "2012": 15.0, "2013": 15.0, "2014": 20.0, "2015": 25.0, "2016": 30.0, "2017": 30.0, "2018": 30.0, "2019": 30.0, "2020": 35.0, "2021": 55.0, "2022": 65.0, "2023": 90.0, "2024": 120.0, "2025": 140.0, "2026": 160.0},
+      "actual_latest": {"year": "2026", "value": 160.0},
+      "forecast": {"year": "2027", "value": 160.0},
+      "confirmed_real_cuts": 1,
+      "note": "IR BANKの分割調整欄を確認。2010年20円から2011年15円への通常配当の減少が1回あるため、青枠にはしない。2010〜2026年の履歴を現在の一株基準で表示する。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/4041/dividend", "period": "2010〜2027年"}]
+    },
+    "4220": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {"2010": 6.0, "2011": 8.0, "2012": 9.0, "2013": 9.0, "2014": 9.0, "2015": 9.0, "2016": 10.0, "2017": 11.0, "2018": 12.0, "2019": 14.0, "2020": 16.0, "2021": 16.0, "2022": 19.0, "2023": 25.0, "2024": 32.0, "2025": 41.0, "2026": 54.0},
+      "actual_latest": {"year": "2026", "value": 54.0},
+      "forecast": {"year": "2027", "value": 54.0},
+      "confirmed_real_cuts": 0,
+      "note": "IR BANKの年度別実績を確認。2010〜2026年の通常配当ベースで減配なし。2008〜2009年の表示用一株配当が不足するため、長期確認済みの青枠にはしない。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/4220/dividend", "period": "2010〜2027年"}]
+    },
     "9069": {
       "status": "reviewed",
       "checked_at": "2026-08-29",
