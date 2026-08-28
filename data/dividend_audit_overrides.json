@@ -241,6 +241,30 @@
       "forecast": {"year": "2027", "value": 85.0},
       "note": "IR BANKで合併前の前身企業（2019年・2021年無配）と、2022年以降の現会社の履歴が分かれていることを確認。合併前後を同一会社の長期連続履歴とは扱わず、現会社として確認できる2022年以降のみを表示する。確認期間不足のため青枠にはしない。",
       "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/7374/dividend", "period": "現会社2022〜2026年"}, {"kind": "ir", "label": "コンフィデンス・インターワークス IR", "url": "https://confidence-web.co.jp/ir/", "period": "合併・配当履歴"}]
+    },
+    "2185": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {"2010": 10.0, "2011": 10.0, "2012": 11.67, "2013": 11.67, "2014": 13.33, "2015": 14.17, "2016": 14.17, "2017": 14.17, "2018": 18.0, "2019": 20.0, "2020": 25.0, "2021": 27.0, "2022": 30.0, "2023": 38.0, "2024": 44.0, "2025": 52.0},
+      "actual_latest": {"year": "2025", "value": 52.0},
+      "forecast": {"year": "2026", "value": 55.0},
+      "confirmed_real_cuts": 0,
+      "note": "IR BANKの年度別実績を確認。2010〜2025年の通常配当ベースで減配なし。2026年実績は未掲載のため予想値を別扱い。2008〜2009年の表示用一株配当が不足するため、長期青枠にはしない。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/2185/dividend", "period": "2010〜2026年"}]
+    },
+    "2269": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {"2010": 20.0, "2011": 20.0, "2012": 20.0, "2013": 20.0, "2014": 20.0, "2015": 25.0, "2016": 45.0, "2017": 55.0, "2018": 65.0, "2019": 70.0, "2020": 75.0, "2021": 80.0, "2022": 85.0, "2023": 90.0, "2024": 95.0, "2025": 100.0, "2026": 105.0},
+      "actual_latest": {"year": "2026", "value": 105.0},
+      "forecast": {"year": "2027", "value": 110.0},
+      "confirmed_real_cuts": 0,
+      "note": "IR BANKの年度別実績を確認。2010〜2026年の通常配当ベースで減配なし。2008〜2009年の表示用一株配当が不足するため、長期青枠にはしない。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/2269/dividend", "period": "2010〜2027年"}]
     }
   },
   "adjusted": {
@@ -293,3 +317,4 @@
     }
   }
 }
+
