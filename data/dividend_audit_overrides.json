@@ -20,6 +20,30 @@
       "note": "IR BANKの分割調整欄と公式資料を照合。2024年4月1日の1:2株式分割を反映し、2021年度の社名変更記念配当2円を除外した通常配当ベースで再構成。2010〜2026年は減配なし。ただし2008〜2009年は確認できないため、長期（青）ではなく2010年以降確認（水色）とする。",
       "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/1951/dividend", "period": "2010〜2027年"}, {"kind": "ir", "label": "エクシオグループ公式・有価証券報告書", "url": "https://www.exeo.co.jp/wp-content/uploads/2025/06/yuuhou202503.pdf", "period": "分割・記念配当の注記"}]
     },
+    "1723": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {"2010": 34.0, "2011": 30.0, "2012": 22.0, "2013": 28.0, "2014": 50.0, "2015": 50.0, "2016": 66.0, "2017": 75.0, "2018": 77.0, "2019": 94.0, "2020": 119.0, "2021": 125.0, "2022": 114.0, "2023": 152.0, "2024": 184.0, "2025": 163.0, "2026": 40.0},
+      "actual_latest": {"year": "2026", "value": 40.0},
+      "forecast": {"year": "2027", "value": 56.0},
+      "confirmed_real_cuts": 4,
+      "note": "IR BANKの分割調整欄と日本電技公式・JPX決算短信を照合。2026年4月1日の1:4株式分割後の1株ベースに換算し、2026年実績160円は40円として表示。2010〜2026年に複数回の減少があるため、青枠対象外。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/1723/dividend", "period": "2010〜2027年"}, {"kind": "ir", "label": "日本電技公式・JPX決算短信", "url": "https://www2.jpx.co.jp/disc/17230/140120260501516969.pdf", "period": "2026年株式分割・配当"}]
+    },
+    "9368": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "medium",
+      "history": {"2010": 20.0, "2011": 20.0, "2012": 20.0, "2013": 22.0, "2014": 25.0, "2015": 27.0, "2016": 27.0, "2017": 27.0, "2018": 27.0, "2019": 32.0, "2020": 38.0, "2021": 40.0, "2022": 52.0, "2023": 42.0, "2024": 55.0, "2025": 63.0, "2026": 34.0},
+      "actual_latest": {"year": "2026", "value": 34.0},
+      "forecast": {"year": "2027", "value": 38.0},
+      "confirmed_real_cuts": 1,
+      "note": "IR BANKの分割調整欄とキムラユニティー公式・決算短信を照合。2021年7月1日と2025年4月1日の各1:2株式分割を反映した通常配当ベース。2022→2023年、2025→2026年に減少があるため、減配なしとは扱わない。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/9368/dividend", "period": "2010〜2027年"}, {"kind": "ir", "label": "キムラユニティー公式・決算短信", "url": "https://www.daiwair.co.jp/td_download.cgi?c=9368&i=3193061", "period": "株式分割・配当"}]
+    },
     "3649": {
       "status": "reviewed",
       "checked_at": "2026-08-19",
