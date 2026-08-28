@@ -32,6 +32,8 @@
   .stat-low { border-top:3px solid #5b8fd8; }
   .stat-alert { border-top:3px solid var(--red); }
   .stat-pending { border-top:3px solid #929aa8; }
+  .stat-gakucho { border-top:3px solid #c58a2d; cursor:pointer; }
+  .stat-gakucho:hover { border-color:#c58a2d; box-shadow:0 2px 8px rgba(197,138,45,.18); }
   .stat span { font-size:11.5px; color:var(--muted); }
   /* 市場環境 */
   .market { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 16px; margin-bottom:12px; display:flex; gap:24px; flex-wrap:wrap; align-items:center; box-shadow:var(--shadow); }
@@ -72,6 +74,7 @@
   .qf { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
   .qf button { background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:16px; padding:5px 14px; cursor:pointer; font-size:13px; box-shadow:var(--shadow); }
   .qf button.on { background:var(--green); color:#fff; border-color:var(--green); }
+  .qf button.gakucho-filter.on { background:#9a6a14; border-color:#9a6a14; color:#fff; }
   .qf button.on.sector-filter { background:#6b4fb3; border-color:#6b4fb3; }
   .qf button.bulk-danger { margin-left:auto; color:#a23a48; border-color:#e1a3ad; background:#fff8f9; }
   .support-toggle { margin-left:auto; }
@@ -174,6 +177,7 @@
   .badge-candidate { background:#fff1dc; color:#a65c00; border-color:#f0cf9b; }
   .badge-crashbuy { background:#f1edff; color:#4f3b96; border-color:#b9a9ed; }
   .badge-low { background:#e5f5f7; color:#087886; border-color:#b8e0e5; }
+  .badge-gakucho { background:#fff7dd; color:#8a5d00; border-color:#e8c86e; }
   .source-badge { cursor:pointer; background:#f7f7f7; color:#4b5563; border-color:#b9c0cb; }
   .source-badge:hover { background:#e9edf2; color:var(--blue); }
   .buffett-badge { background:#eef5ff; color:#285b9c; border-color:#b8cce9; text-decoration:none; }
@@ -457,6 +461,8 @@
 <script>
 "use strict";
 let DATA = null, TAB = "all", FIL_HOLD = null, FIL_LOW = false, FIL_UNHELD_SECTOR = false, SUPPORT_OPEN = true;
+let GAKUCHO_INTRO = {stocks:[]};
+let GAKUCHO_CODES = new Set();
 const FIL_BORDERS = new Set();
 const FIL_BUY_ZONES = new Set();
 const $ = id => document.getElementById(id);
@@ -1009,7 +1015,8 @@ function tagOf(code){
 function crashBuyTagged(code){ return !!LS.get("crashbuy_"+code); }
 
 /* ---------- フィルター＆描画 ---------- */
-const TABS = [["all","全銘柄"],["y4","4%以上"],["y37","3.7%以上"],["holding","保有中"],["watch","ウォッチ"],["candidate","候補"],["top30","トップ30"],["error","エラー"]];
+const TABS = [["all","全銘柄"],["y4","4%以上"],["y37","3.7%以上"],["holding","保有中"],["watch","ウォッチ"],["candidate","候補"],["gakucho","学長紹介"],["top30","トップ30"],["error","エラー"]];
+function isGakuchoIntro(s){ return GAKUCHO_CODES.has(String(s.code)); }
 function buyChange(s){
   if(!LS.get("holding_"+s.code)) return null;
   const last=+LS.get("lastbuyprice_"+s.code,0)||0, current=eff(s).price;
@@ -1092,6 +1099,7 @@ function filtered(){
     if (TAB==="y4") list = list.filter(s=>{const y=yieldOf(s); return y!=="anomaly"&&y>=4;});
     if (TAB==="y37") list = list.filter(s=>{const y=yieldOf(s); return y!=="anomaly"&&y>=3.7;});
     if (["holding","watch","candidate"].includes(TAB)) list = list.filter(s=>LS.get(TAB+"_"+s.code));
+    if (TAB==="gakucho") list = list.filter(isGakuchoIntro);
     if (TAB==="top30") list = list.filter(s=>top30Score(s)!==null).sort((a,b)=>top30Score(b)-top30Score(a)).slice(0,30);
   }
   if (sec) list = list.filter(s=>cardSectorName(s)===sec);
@@ -1128,6 +1136,7 @@ function stabilityChip(s){
   return `<span class="stability-chip ${st.key}" title="${reason}">${mark} ${label}</span>`;
 }
 function countTagged(key){ return DATA.stocks.filter(s=>!s.error&&LS.get(key+"_"+s.code)).length; }
+function countGakucho(){ return DATA.stocks.filter(s=>!s.error&&isGakuchoIntro(s)).length; }
 function countLow(){ return DATA.stocks.filter(s=>!s.error&&pos52(s)!==null&&pos52(s)<=33).length; }
 function triggerCounts(){
   return DATA.stocks.filter(s=>!s.error&&LS.get("holding_"+s.code)).reduce((n,s)=>{
@@ -1141,7 +1150,7 @@ function tabLabel(k,label,counts){ return `${label}${counts[k]===undefined?"":` 
 function refreshTabs(){
   const ok=DATA.stocks.filter(s=>!s.error), ys=ok.map(s=>yieldOf(s)).filter(y=>y!==null&&y!=="anomaly");
   const counts={all:ok.length,y4:ys.filter(y=>y>=4).length,y37:ys.filter(y=>y>=3.7).length,
-    holding:countTagged("holding"),watch:countTagged("watch"),candidate:countTagged("candidate"),
+    holding:countTagged("holding"),watch:countTagged("watch"),candidate:countTagged("candidate"),gakucho:countGakucho(),
     error:DATA.stocks.filter(s=>s.error||yieldOf(s)==="anomaly").length};
   $("tabs").innerHTML=TABS.map(([k,l])=>`<div class="tab ${k===TAB?"on":""}" data-k="${k}">${tabLabel(k,l,counts)}</div>`).join("");
 }
@@ -1187,7 +1196,8 @@ function render(){
     `<div class="stat stat-primary"><b>${countTagged("holding")}</b><span>保有中</span></div>`+
     `<div class="stat stat-good"><b>${countTagged("candidate")}</b><span>候補</span></div>`+
     `<div class="stat stat-alert"><b>${tc.reached}</b><span>20%基準到達</span></div>`+
-    `<div class="stat stat-pending"><b>${tc.unknown}</b><span>前回価格未確認</span></div>`;
+    `<div class="stat stat-pending"><b>${tc.unknown}</b><span>前回価格未確認</span></div>`+
+    `<div class="stat stat-gakucho" onclick="TAB='gakucho';render()" title="過去の学長紹介銘柄を表示"><b>${countGakucho()}</b><span>学長紹介（過去）</span></div>`;
   // フィルター後の件数・平均
   const fok = list.map(s=>yieldOf(s)).filter(y=>y!=="anomaly"&&y!==null);
   const favg = fok.length?fok.reduce((a,b)=>a+b,0)/fok.length:0;
@@ -1203,7 +1213,8 @@ function card(s){
   const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `${yieldLabel} <b>${fmt(y)}%</b>`;
   const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">前日比 ${chg>=0?"+":""}${fmt(chg)}%</span>`;
   const tagB = (t?`<span class="badge badge-${t}">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"")+
-    (crashBuyTagged(s.code)?`<span class="badge badge-crashbuy" title="暴落時の購入候補として登録">暴落時買い</span>`:"");
+    (crashBuyTagged(s.code)?`<span class="badge badge-crashbuy" title="暴落時の購入候補として登録">暴落時買い</span>`:"")+ 
+    (isGakuchoIntro(s)?`<span class="badge badge-gakucho" title="学長紹介銘柄シートに掲載された履歴">学長紹介</span>`:"");
   const buffettB = `<a class="card-bc-link" href="https://www.buffett-code.com/company/${s.code}/stockprice" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="バフェット・コードの株価・指標ページを開く">バフェット・コードで株価指標を見る ↗</a>`;
   const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
   const t30 = top30Score(s);
@@ -2019,6 +2030,14 @@ async function init(){
   }catch(e){
     $("updated").innerHTML='<span class="err">data/stocks.json を読み込めませんでした。Webサーバー経由（GitHub Pages等）で開いてください。</span>';
     return;
+  }
+  try{
+    const r = await fetch("data/gakucho_intro_stocks.json?t="+Date.now());
+    GAKUCHO_INTRO = await r.json();
+    GAKUCHO_CODES = new Set((GAKUCHO_INTRO.stocks||[]).map(x=>String(x.code).padStart(4,"0")));
+  }catch(e){
+    GAKUCHO_INTRO = {stocks:[]};
+    GAKUCHO_CODES = new Set();
   }
   const sectorAudit=sectorAuditSummary();
   $("updated").innerHTML = `株価更新日：<b>${DATA.updated}</b>（自動取得・リアルタイムではありません）<br><span>配当確認日：<b>${latestDividendCheckedAt()}</b>　｜　財務8項目確認日：<b>${latestFinancialCheckedAt()}</b>　｜　業種確認日：<b>${sectorAudit.date}</b>${sectorAudit.missing?`　｜　業種未確認：<b class="c-red">${sectorAudit.missing}銘柄</b>`:""}</span>`;
