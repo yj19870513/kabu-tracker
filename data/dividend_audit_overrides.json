@@ -231,6 +231,18 @@
       "note": "IR BANKの分割調整欄と注記を再確認。2024年は普通配当40円＋特別配当10円のため通常配当14円（調整後）、2026年は普通配当135円＋170円、創業100周年記念配当を除き調整後61円。通常配当ベースでは2024年に16円から14円への減少があるため、減配なしとは判定しない。",
       "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/6648/dividend", "period": "2010〜2026年"}, {"kind": "ir", "label": "かわでん IR・配当資料", "url": "https://www.kawaden.co.jp/ir/", "period": "特別配当・分割注記"}]
     },
+    "6381": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {"2010": 5.0, "2011": 9.5, "2012": 10.0, "2013": 12.5, "2014": 15.5, "2015": 16.5, "2016": 22.0, "2017": 20.0, "2018": 20.0, "2019": 22.0, "2020": 24.0, "2021": 24.0, "2022": 30.0, "2023": 38.0, "2024": 49.0, "2025": 45.0, "2026": 87.0},
+      "actual_latest": {"year": "2026", "value": 87.0},
+      "forecast": {"year": "2027", "value": 93.0},
+      "confirmed_real_cuts": 2,
+      "note": "IR BANKの年度別実績を確認。通常配当ベースで2016年22円から2017年20円、2024年49円から2025年45円への減配を2回確認。2008〜2009年の表示用一株配当が不足するため、長期青枠にはしない。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/6381/dividend", "period": "2010〜2027年"}]
+    },
     "1976": {
       "status": "reviewed",
       "checked_at": "2026-08-29",
