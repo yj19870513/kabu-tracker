@@ -30759,12 +30759,13 @@
         "2026": 21
       },
       "div_confirmed": {
-        "2025": 9
+        "2025": 9,
+        "2026": 21
       },
       "dividend_raw_yahoo": 21,
-      "dividend": 9,
+      "dividend": 21,
       "dividend_source": "IR BANK調整履歴",
-      "yield_pct": 2.18,
+      "yield_pct": 5.08,
       "name_en": "RISE CONSULTING GROUP INC",
       "sector": "サービス業",
       "sector_yahoo_reference": "Industrials",
