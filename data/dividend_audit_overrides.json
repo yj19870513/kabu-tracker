@@ -1502,6 +1502,48 @@
           "period": "2021〜2026年・分割注記"
         }
       ]
+    },
+    "6539": {
+      "status": "partial_ok",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {
+        "2017": 8.75,
+        "2018": 11.25,
+        "2019": 15.0,
+        "2020": 15.0,
+        "2021": 15.0,
+        "2022": 15.0,
+        "2023": 49.0,
+        "2024": 56.0,
+        "2025": 56.0,
+        "2026": 56.0
+      },
+      "actual_latest": {
+        "year": "2026",
+        "value": 56.0
+      },
+      "forecast": {
+        "year": "2027",
+        "value": 56.0
+      },
+      "confirmed_real_cuts": 0,
+      "note": "IR BANKの配当表とMS-Japan公式決算資料を確認。2017〜2026年の上場後・分割調整後の通常配当ベースで減配なし。IR BANKに表示される2013〜2014年の上場前数値は上場後の現会社と連続比較せず、グラフ・安定性判定から除外。確認期間が10年未満のため長期青枠にはしない。",
+      "sources": [
+        {
+          "kind": "dividend",
+          "label": "IR BANK 配当推移",
+          "url": "https://irbank.net/E32801/dividend",
+          "period": "上場後2017〜2027年"
+        },
+        {
+          "kind": "ir",
+          "label": "MS-Japan公式 決算資料",
+          "url": "https://ir.jmsc.co.jp/irnews/auto_20250514552297/pdfFile.pdf",
+          "period": "2025年配当"
+        }
+      ]
     }
   },
   "adjusted": {
