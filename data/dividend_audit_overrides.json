@@ -1484,22 +1484,22 @@
       },
       "forecast": {
         "year": "2027",
-        "value": 50.0
+        "value": 55.0
       },
       "confirmed_real_cuts": 1,
-      "note": "IR BANKの分割調整後の年度別配当と新晃工業公式の配当表を突合。2024年12月1日付の1株→3株分割を反映し、通常配当ベースで2020年19.33円→2021年16.67円の実質減配1回を確認。2025年の50円は分割後基準の中間18円＋期末32円で、特別配当を含めない。2008〜2009年の表示用一株配当が不足するため長期青枠にはしない。",
+      "note": "IR BANKの分割調整後履歴と新晃工業公式の配当表を照合。2024年12月1日の1株→3株分割を反映。2020年19.33円→2021年16.67円の実質減配を1回確認。2008〜2009年の表示用一株配当が不足するため長期青枠にはしない。",
       "sources": [
         {
           "kind": "dividend",
           "label": "IR BANK 配当推移",
-          "url": "https://irbank.net/E01669/dividend",
+          "url": "https://irbank.net/E01643/dividend",
           "period": "2010〜2027年"
         },
         {
           "kind": "ir",
-          "label": "新晃工業公式 株主還元・配当",
+          "label": "新晃工業公式 配当情報",
           "url": "https://www.sinko.co.jp/ir/stock/dividend.html",
-          "period": "2021〜2026年・分割注記"
+          "period": "配当政策・分割確認"
         }
       ]
     },
@@ -1529,19 +1529,74 @@
         "value": 56.0
       },
       "confirmed_real_cuts": 0,
-      "note": "IR BANKの配当表とMS-Japan公式決算資料を確認。2017〜2026年の上場後・分割調整後の通常配当ベースで減配なし。IR BANKに表示される2013〜2014年の上場前数値は上場後の現会社と連続比較せず、グラフ・安定性判定から除外。確認期間が10年未満のため長期青枠にはしない。",
+      "note": "IR BANKと公式決算資料を照合。上場後の2017〜2026年は通常配当ベースで減配なし。上場前の数値は現会社の連続履歴として扱わず、確認期間不足のため長期青枠にはしない。",
       "sources": [
         {
           "kind": "dividend",
           "label": "IR BANK 配当推移",
           "url": "https://irbank.net/E32801/dividend",
-          "period": "上場後2017〜2027年"
+          "period": "2017〜2027年"
         },
         {
           "kind": "ir",
-          "label": "MS-Japan公式 決算資料",
+          "label": "公式配当方針資料",
           "url": "https://ir.jmsc.co.jp/irnews/auto_20250514552297/pdfFile.pdf",
-          "period": "2025年配当"
+          "period": "配当方針"
+        }
+      ]
+    },
+    "6652": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {
+        "2010": 20.0,
+        "2011": 25.0,
+        "2012": 30.0,
+        "2013": 30.0,
+        "2014": 30.0,
+        "2015": 35.0,
+        "2016": 36.0,
+        "2017": 36.0,
+        "2018": 50.0,
+        "2019": 50.0,
+        "2020": 50.0,
+        "2021": 50.0,
+        "2022": 80.0,
+        "2023": 130.0,
+        "2024": 130.0,
+        "2025": 130.0,
+        "2026": 130.0
+      },
+      "actual_latest": {
+        "year": "2026",
+        "value": 130.0
+      },
+      "forecast": {
+        "year": "2027",
+        "value": 130.0
+      },
+      "confirmed_real_cuts": 0,
+      "note": "IR BANKの年度別配当表とIDEC公式資料を照合。2017年は年間40円のうち設立70周年記念配当4円を除外して通常配当36円、2022年は年間100円のうち設立75周年記念配当20円を除外して通常配当80円として再構成。通常配当ベースで2010〜2026年に減配なし。2008〜2009年の表示用一株配当が不足するため長期青枠にはしない。",
+      "sources": [
+        {
+          "kind": "dividend",
+          "label": "IR BANK 配当推移",
+          "url": "https://irbank.net/E01951/dividend",
+          "period": "2010〜2027年"
+        },
+        {
+          "kind": "ir",
+          "label": "IDEC公式 配当政策",
+          "url": "https://www.idec.com/en/ir/dividend",
+          "period": "2010〜2026年"
+        },
+        {
+          "kind": "ir",
+          "label": "IDEC公式 75周年記念配当資料",
+          "url": "https://jp.idec.com/media/gyouseki%20haito202203v4.pdf",
+          "period": "2022年記念配当20円"
         }
       ]
     }
