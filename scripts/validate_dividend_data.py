@@ -150,6 +150,13 @@ def main():
             errors.append(f"{code}: 出典正本の減配回数 {computed} とメタデータ {declared} が不一致")
 
     missing = sorted(stock_codes - source_codes)
+    effective_status_counts = {}
+    effective_pending = []
+    for code, item in sources.items():
+        status = item.get("status", "unknown") if isinstance(item, dict) else "invalid"
+        effective_status_counts[status] = effective_status_counts.get(status, 0) + 1
+        if status in ("pending", "source_history_pending"):
+            effective_pending.append(code)
     result = {
         "stocks": len(stock_codes),
         "sources": len(source_codes),
@@ -159,6 +166,8 @@ def main():
         "warnings": warnings,
         "legacy_conflicts": legacy_conflicts,
         "consistency_conflicts": consistency_conflicts,
+        "effective_status_counts": effective_status_counts,
+        "effective_pending": sorted(effective_pending),
     }
     if args.json:
         print(json.dumps(result, ensure_ascii=False, indent=2))
@@ -168,6 +177,8 @@ def main():
         print(f"エラー: {len(errors)}件 / 警告: {len(warnings)}件")
         print(f"旧履歴との不一致（出典正本を優先）: {len(legacy_conflicts)}件")
         print(f"判定保留が必要な履歴矛盾: {len(consistency_conflicts)}件")
+        print(f"実効ステータス: {", ".join(f"{k}={v}" for k, v in sorted(effective_status_counts.items()))}")
+        print(f"実効的な履歴確認待ち: {len(effective_pending)}件")
         for line in errors:
             print(f"ERROR: {line}")
         for line in warnings[:30]:
