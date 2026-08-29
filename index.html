@@ -27,6 +27,7 @@
   .stats { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
   .stat { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 16px; box-shadow:var(--shadow); min-width:104px; }
   .stat b { font-size:18px; display:block; }
+  .stat b small { font-size:12px; font-weight:600; color:var(--muted); }
   .stat-primary { border-top:3px solid var(--blue); }
   .stat-good { border-top:3px solid var(--green); }
   .stat-low { border-top:3px solid #5b8fd8; }
@@ -1137,6 +1138,8 @@ function stabilityChip(s){
 }
 function countTagged(key){ return DATA.stocks.filter(s=>!s.error&&LS.get(key+"_"+s.code)).length; }
 function countGakucho(){ return DATA.stocks.filter(s=>!s.error&&isGakuchoIntro(s)).length; }
+function countGakuchoTotal(){ return (GAKUCHO_INTRO.stocks||[]).length; }
+function countGakuchoUnavailable(){ return Math.max(0,countGakuchoTotal()-countGakucho()); }
 function countLow(){ return DATA.stocks.filter(s=>!s.error&&pos52(s)!==null&&pos52(s)<=33).length; }
 function triggerCounts(){
   return DATA.stocks.filter(s=>!s.error&&LS.get("holding_"+s.code)).reduce((n,s)=>{
@@ -1150,7 +1153,7 @@ function tabLabel(k,label,counts){ return `${label}${counts[k]===undefined?"":` 
 function refreshTabs(){
   const ok=DATA.stocks.filter(s=>!s.error), ys=ok.map(s=>yieldOf(s)).filter(y=>y!==null&&y!=="anomaly");
   const counts={all:ok.length,y4:ys.filter(y=>y>=4).length,y37:ys.filter(y=>y>=3.7).length,
-    holding:countTagged("holding"),watch:countTagged("watch"),candidate:countTagged("candidate"),gakucho:countGakucho(),
+    holding:countTagged("holding"),watch:countTagged("watch"),candidate:countTagged("candidate"),gakucho:`${countGakucho()}/${countGakuchoTotal()}`,
     error:DATA.stocks.filter(s=>s.error||yieldOf(s)==="anomaly").length};
   $("tabs").innerHTML=TABS.map(([k,l])=>`<div class="tab ${k===TAB?"on":""}" data-k="${k}">${tabLabel(k,l,counts)}</div>`).join("");
 }
@@ -1197,11 +1200,13 @@ function render(){
     `<div class="stat stat-good"><b>${countTagged("candidate")}</b><span>候補</span></div>`+
     `<div class="stat stat-alert"><b>${tc.reached}</b><span>20%基準到達</span></div>`+
     `<div class="stat stat-pending"><b>${tc.unknown}</b><span>前回価格未確認</span></div>`+
-    `<div class="stat stat-gakucho" onclick="TAB='gakucho';render()" title="過去の学長紹介銘柄を表示"><b>${countGakucho()}</b><span>学長紹介（過去）</span></div>`;
+    `<div class="stat stat-gakucho" onclick="TAB='gakucho';render()" title="過去の学長紹介銘柄を表示。現行カードがある銘柄数／リスト掲載数"><b>${countGakucho()}<small> / ${countGakuchoTotal()}</small></b><span>学長紹介（過去）</span></div>`;
   // フィルター後の件数・平均
   const fok = list.map(s=>yieldOf(s)).filter(y=>y!=="anomaly"&&y!==null);
   const favg = fok.length?fok.reduce((a,b)=>a+b,0)/fok.length:0;
-  $("fcount").textContent = `表示 ${list.length}件 ／ 平均利回り ${fmt(favg)}%`;
+  $("fcount").textContent = TAB==="gakucho"
+    ? `表示 ${list.length}件 ／ 学長紹介リスト ${countGakuchoTotal()}件中（未登録 ${countGakuchoUnavailable()}件）`
+    : `表示 ${list.length}件 ／ 平均利回り ${fmt(favg)}%`;
   // 保有状況の正本は管理シート。ここでは配当ベースの偏り確認と購入前シミュレーションに絞る
   $("holdArea").innerHTML = TAB==="holding" ? `<div class="hold-note"><span><b>保有管理は管理シートが正本です。</b><br>この画面では保有銘柄のカード確認と、購入前後のバランス試算ができます。</span><button class="btn" onclick="openSimulator()">🧮 購入後を試算する</button></div>${holdingDividendRotation()}` : "";
   // カード
