@@ -1716,6 +1716,61 @@
         }
       ]
     },
+    "7921": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "history": {
+        "2010": 25,
+        "2011": 24,
+        "2012": 24,
+        "2013": 20,
+        "2014": 20,
+        "2015": 35,
+        "2016": 50,
+        "2017": 50,
+        "2018": 50,
+        "2019": 50,
+        "2020": 54,
+        "2021": 54,
+        "2022": 54,
+        "2023": 70,
+        "2024": 80,
+        "2025": 90,
+        "2026": 120
+      },
+      "actual_latest": {
+        "year": "2026",
+        "value": 120
+      },
+      "forecast": {
+        "year": "2027",
+        "value": 180
+      },
+      "confirmed_real_cuts": 2,
+      "confidence": "medium",
+      "note": "IR BANKの注記と会社開示を突合し、記念・特別配当を除外。通常配当ベースでは2011年・2013年に減配が残るため青枠にはしない。",
+      "sources": [
+        {
+          "kind": "dividend",
+          "label": "IR BANK 配当推移・注記",
+          "url": "https://irbank.net/7921/dividend",
+          "period": "2010〜2026年"
+        },
+        {
+          "kind": "official",
+          "label": "TAKARA & COMPANY IR",
+          "url": "https://www.takara-company.co.jp/ir/",
+          "period": "会社開示・配当政策"
+        },
+        {
+          "kind": "official",
+          "label": "2025年5月期 決算短信",
+          "url": "https://www2.jpx.co.jp/disc/79210/140120250708509794.pdf",
+          "period": "2025〜2026年"
+        }
+      ]
+    },
     "9057": {
       "status": "partial_ok",
       "checked_at": "2026-08-29",
@@ -1853,6 +1908,61 @@
           "label": "アジア航測 公式IR",
           "url": "https://www.ajiko.co.jp/ir/",
           "period": "2024年通常配当37円・記念配当7円の照合"
+        }
+      ]
+    },
+    "9303": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "history": {
+        "2010": 20,
+        "2011": 20,
+        "2012": 22,
+        "2013": 22,
+        "2014": 24,
+        "2015": 24,
+        "2016": 24,
+        "2017": 31,
+        "2018": 33,
+        "2019": 30,
+        "2020": 37,
+        "2021": 48,
+        "2022": 97,
+        "2023": 100,
+        "2024": 101,
+        "2025": 103,
+        "2026": 103
+      },
+      "actual_latest": {
+        "year": "2026",
+        "value": 103
+      },
+      "forecast": {
+        "year": "2027",
+        "value": 103
+      },
+      "confirmed_real_cuts": 1,
+      "confidence": "high",
+      "note": "IRBANKと住友倉庫公式の配当履歴を突合。特別・記念配当と2018年10月1日の2株→1株併合を調整。通常配当ベースでは2019年に33円→30円の実質減配が1回残るため青枠にはしない。",
+      "sources": [
+        {
+          "kind": "dividend",
+          "label": "IR BANK 配当推移・注記",
+          "url": "https://irbank.net/9303/dividend",
+          "period": "2010〜2026年"
+        },
+        {
+          "kind": "official",
+          "label": "住友倉庫 配当情報・自己株式取得",
+          "url": "https://www.sumitomo-soko.co.jp/ir/dividend.html",
+          "period": "2008〜2027年予想"
+        },
+        {
+          "kind": "official",
+          "label": "2022年3月期 決算説明会資料",
+          "url": "https://www.sumitomo-soko.co.jp/images/topics/1653026637/1653026637_12.pdf",
+          "period": "2013年度以降"
         }
       ]
     },
