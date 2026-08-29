@@ -177,7 +177,7 @@ def main():
         print(f"エラー: {len(errors)}件 / 警告: {len(warnings)}件")
         print(f"旧履歴との不一致（出典正本を優先）: {len(legacy_conflicts)}件")
         print(f"判定保留が必要な履歴矛盾: {len(consistency_conflicts)}件")
-        print(f"実効ステータス: {", ".join(f"{k}={v}" for k, v in sorted(effective_status_counts.items()))}")
+        print(f'実効ステータス: {", ".join(f"{k}={v}" for k, v in sorted(effective_status_counts.items()))}')
         print(f"実効的な履歴確認待ち: {len(effective_pending)}件")
         for line in errors:
             print(f"ERROR: {line}")
