@@ -1716,6 +1716,55 @@
         }
       ]
     },
+    "9057": {
+      "status": "partial_ok",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {
+        "2010": 16,
+        "2011": 16,
+        "2012": 16,
+        "2013": 16,
+        "2014": 16,
+        "2015": 16,
+        "2016": 16,
+        "2017": 16,
+        "2018": 20,
+        "2019": 28,
+        "2020": 45,
+        "2021": 70,
+        "2022": 80,
+        "2023": 94,
+        "2024": 94,
+        "2025": 96,
+        "2026": 96
+      },
+      "actual_latest": {
+        "year": "2026",
+        "value": 96
+      },
+      "forecast": {
+        "year": "2027",
+        "value": 96
+      },
+      "confirmed_real_cuts": 0,
+      "note": "IR BANKの年度別履歴と注記を確認。2015年は普通配当8円＋設立50周年記念配当2円の年間18円だったため、通常配当を16円へ補正。2010〜2026年の通常配当に減配なし。2008〜2009年の一株配当表示がないため長期青枠にはしない。",
+      "sources": [
+        {
+          "kind": "dividend",
+          "label": "IR BANK 配当推移・注記",
+          "url": "https://irbank.net/E04209/dividend",
+          "period": "2010〜2027年"
+        },
+        {
+          "kind": "ir",
+          "label": "遠州トラック公式 決算短信",
+          "url": "https://www.enshu-truck.co.jp/files/pdf/53/b7e451ca8f4e3719b0b38bbda0a8d02b.pdf",
+          "period": "2015年普通配当・記念配当の照合"
+        }
+      ]
+    },
     "9069": {
       "status": "reviewed",
       "checked_at": "2026-08-29",
