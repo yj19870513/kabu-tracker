@@ -653,7 +653,9 @@ function dividendStability(s){
   const reviewStatus=(source&&source.status)|| (review&&review.status);
   const sourceReviewed=source&&source.status==="reviewed";
   if(longCoverage && (reviewStatus==="blue_ok"||sourceReviewed) && cuts===0) return {key:"blue", label:(source||review).method?"減配なし（調整後）":"減配なし", history:history, cuts:cuts, coverage:"long"};
-  if(midCoverage && (reviewStatus==="blue_ok"||sourceReviewed) && cuts===0) return {key:"aqua", label:"減配なし（2010年以降）", history:history, cuts:cuts, coverage:"partial"};
+  // partial_ok は「2010年以降の確認済み・2008〜2009年は未確認」を意味する。
+  // これを確認中へ落とすと、確認済みの銘柄まで枠なし表示になるため、水色へ分類する。
+  if(midCoverage && (reviewStatus==="blue_ok"||reviewStatus==="partial_ok"||sourceReviewed) && cuts===0) return {key:"aqua", label:"減配なし（2010年以降）", history:history, cuts:cuts, coverage:"partial"};
   if(history.length<DIV_MIN_YEARS) return {key:"short", label:"確認不足（10年未満）", history:history, cuts:cuts, coverage:"short"};
   return {key:"pending", label:"調整確認中（減配判定保留）", history:history, cuts:cuts, coverage:"partial"};
 }
