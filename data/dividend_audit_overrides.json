@@ -257,6 +257,18 @@
       "note": "IR BANKの年度別実績と公式決算資料を確認。2021年の年間29円には創立55周年記念配当5円が含まれるため、通常配当は24円として再構成。2016年17円→2017年15円の減配を1回確認。株式分割による調整は確認されない。",
       "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/E05075/dividend", "period": "2010〜2026年"}, {"kind": "ir", "label": "昭和システムエンジニアリング公式決算資料", "url": "https://f.irbank.net/pdf/20210519/140120210519422623.pdf", "period": "2021年創立55周年記念配当"}]
     },
+    "5186": {
+      "status": "reviewed",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "confidence": "high",
+      "history": {"2010": 16.0, "2011": 26.0, "2012": 30.0, "2013": 30.0, "2014": 35.0, "2015": 43.0, "2016": 52.0, "2017": 52.0, "2018": 63.0, "2019": 68.0, "2020": 70.0, "2021": 70.0, "2022": 100.0, "2023": 110.0, "2024": 122.0, "2025": 135.0, "2026": 160.0},
+      "actual_latest": {"year": "2026", "value": 160.0},
+      "forecast": {"year": "2027", "value": 170.0},
+      "confirmed_real_cuts": 0,
+      "note": "IR BANKの年度別実績とニッタ公式決算資料を照合。2025年の年間140円には創業140周年記念配当5円が含まれるため、通常配当は135円として再構成。2026年160円は前期普通配当135円との比較で確認。通常配当ベースで2010〜2026年に減配なし。株式分割による調整は確認されない。",
+      "sources": [{"kind": "dividend", "label": "IR BANK 配当推移", "url": "https://irbank.net/E01111/dividend", "period": "2010〜2027年"}, {"kind": "ir", "label": "ニッタ公式決算資料", "url": "https://assets.minkabu.jp/news/article_media_content/urn%3Anewsml%3Atdnet.info%3A20260507518722/140120260507518722.pdf", "period": "2025年記念配当・2026年配当"}]
+    },
     "6648": {
       "status": "reviewed",
       "checked_at": "2026-08-19",
