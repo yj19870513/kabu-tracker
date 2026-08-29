@@ -2014,6 +2014,55 @@
         }
       ]
     },
+    "9310": {
+      "status": "partial_ok",
+      "checked_at": "2026-08-29",
+      "exclude_special_dividends": true,
+      "history": {
+        "2010": 8.5,
+        "2011": 8.5,
+        "2012": 9,
+        "2013": 9,
+        "2014": 9,
+        "2015": 9.5,
+        "2016": 10,
+        "2017": 10,
+        "2018": 10,
+        "2019": 10,
+        "2020": 10,
+        "2021": 10,
+        "2022": 10.5,
+        "2023": 11.5,
+        "2024": 13,
+        "2025": 39,
+        "2026": 43
+      },
+      "actual_latest": {
+        "year": "2026",
+        "value": 43
+      },
+      "forecast": {
+        "year": "2027",
+        "value": 43.5
+      },
+      "confirmed_real_cuts": 0,
+      "confidence": "high",
+      "note": "IRBANKの年度別配当表を確認。分割調整を含む2010〜2026年の表示値で減配なし。2008〜2009年の長期表示値が確認範囲外のため、青枠にはせず水色相当として扱う。",
+      "sources": [
+        {
+          "kind": "dividend",
+          "label": "IR BANK 配当推移",
+          "url": "https://irbank.net/9310/dividend",
+          "period": "2010〜2027年予想"
+        },
+        {
+          "kind": "official",
+          "label": "日本トランスシティ IR",
+          "url": "https://www.trancy.co.jp/ir/",
+          "period": "会社開示"
+        }
+      ]
+    },
     "9368": {
       "status": "reviewed",
       "checked_at": "2026-08-29",
