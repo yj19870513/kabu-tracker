@@ -184,6 +184,8 @@
   .buffett-badge { background:#eef5ff; color:#285b9c; border-color:#b8cce9; text-decoration:none; }
   .buffett-badge:hover { background:#dfeeff; color:#174b89; }
   .card-bc-link { display:inline-block; margin-top:5px; color:#285b9c; font-size:10.5px; text-decoration:underline; text-underline-offset:2px; }
+  .holding-div-share { display:block; margin-top:4px; color:#587184; font-size:10.5px; letter-spacing:.01em; }
+  .holding-div-share b { color:#2c7a72; font-weight:700; }
   .card-bc-link:hover { color:#174b89; }
   .scorebar { position:relative; height:16px; background:#eceff5; border-radius:8px; margin-top:8px; overflow:hidden; }
   .scorebar i { display:block; height:100%; background:linear-gradient(90deg,#4d9ce8,#2fae6d); }
@@ -388,13 +390,6 @@
     <div class="market-item"><div class="lbl">VIX（恐怖指数）</div><b id="vix">-</b> <span class="lbl" id="vixNote"></span></div>
     <div class="market-item"><div class="lbl">騰落レシオ（手動入力）</div><input id="tdr" type="number" step="0.1" placeholder="入力する"> <b id="tdrView"></b></div>
   </div>
-
-  <section class="mode-panel" aria-labelledby="modeTitle">
-    <div class="mode-top"><div class="mode-title" id="modeTitle">今日の運用モード</div><div class="mode-switch"><button class="mode-btn" data-mode="normal">平常時</button><button class="mode-btn" data-mode="crash">暴落時</button></div></div>
-    <div class="mode-message" id="modeMessage"></div>
-    <div class="mode-steps" id="modeSteps"></div>
-    <div class="signal-row"><span>暴落の補助サイン（これだけで買わない）</span><label><input type="checkbox" id="signalPanic"> SNS等で総悲観</label><label><input type="checkbox" id="signalCircuit"> サーキットブレーカー</label><span class="signal-summary" id="signalSummary"></span></div>
-  </section>
 
   <div class="tabs" id="tabs"></div>
   <div class="ctrl">
@@ -1266,6 +1261,7 @@ function card(s){
     (isGakuchoIntro(s)?`<span class="badge badge-gakucho" title="学長紹介銘柄シートに掲載された履歴">学長紹介</span>`:"");
   const buffettB = `<a class="card-bc-link" href="https://www.buffett-code.com/company/${s.code}/stockprice" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="バフェット・コードの株価・指標ページを開く">バフェット・コードで株価指標を見る ↗</a>`;
   const lowB = (p!==null&&p<=33) ? `<span class="badge badge-low">📉安値圏</span>` : "";
+  const holdingShare = holdingDividendShare(s);
   const t30 = top30Score(s);
   const scoreHtml=isExempt(s.code)
     ? `<div class="scorebar"><span>財務評価は対象外</span></div>`
@@ -1274,7 +1270,7 @@ function card(s){
     <div class="badges">${tagB}${lowB}${TAB==="top30"&&t30!==null?`<span class="badge">${t30}点</span>`:""}</div>
     <div class="card-primary"><div class="code">${s.code}</div><div class="name">${s.name||s.code}</div>
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
-    <div class="yield">${ydisp}</div>${buffettB}
+    <div class="yield">${ydisp}</div>${holdingShare}${buffettB}
     <div class="card-valuation" title="青=買い時候補、緑=中間、赤=割高注意。業種差があるため簡易目安です"><span>PER <b class="${valuationTone(e.per,"per")}">${e.per===null?"—":fmt(e.per)+"倍"}</b></span><span>PBR <b class="${valuationTone(e.pbr,"pbr")}">${e.pbr===null?"—":fmt(e.pbr)+"倍"}</b></span></div>
     <div class="sub">${authoritativeSector(s)}｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</div>
     ${dividendHistoryCard(s)}</div>
@@ -1612,6 +1608,12 @@ function portfolioRows(){
     const shares=+LS.get("shares_"+s.code,0)||0, e=eff(s);
     return {s,sector:portfolioSectorName(s),shares,value:shares*(e.price||0),dividend:shares*(e.dividend||0)};
   }).filter(r=>r.shares>0);
+}
+function holdingDividendShare(s){
+  if(!LS.get("holding_"+s.code)) return "";
+  const rows=portfolioRows(), total=rows.reduce((n,r)=>n+r.dividend,0), row=rows.find(r=>r.s.code===s.code);
+  if(!row||row.dividend<=0||total<=0) return "";
+  return `<span class="holding-div-share" title="保有銘柄全体の年間配当に占める割合">年間配当の構成比 <b>${pct1(row.dividend/total*100)}%</b></span>`;
 }
 function simBasket(){ try{ const a=JSON.parse(LS.get("sim_basket","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function simOwnershipLabel(s){ return LS.get("holding_"+s.code)?"":"（未保有）"; }
@@ -2014,9 +2016,6 @@ function applyBackup(){
   const sectorKeys=keys.filter(k=>k.startsWith("portfolio_sector_")&&!k.startsWith("portfolio_sector_type_"));
   const sectorNotice=sectorKeys.length?"":"<br><span class=\"c-orange\">⚠️ このバックアップには業種情報が含まれていません。元のタブで新しいバックアップを作成してください。</span>";
   msgEl.innerHTML = `<span class="c-green">✅ ${keys.length}件のデータを復元しました</span>${sectorNotice}`;
-  $("signalPanic").checked=LS.get("signal_panic")==="1";
-  $("signalCircuit").checked=LS.get("signal_circuit")==="1";
-  renderOperationMode();
   render();
 }
 
@@ -2094,12 +2093,6 @@ async function init(){
   liveVix();
   tdrView();
   $("tdr").addEventListener("change",e=>{ LS.set("tdr_value",e.target.value); tdrView(); });
-  $("signalPanic").checked=LS.get("signal_panic")==="1";
-  $("signalCircuit").checked=LS.get("signal_circuit")==="1";
-  $("signalPanic").addEventListener("change",e=>{ e.target.checked?LS.set("signal_panic","1"):LS.del("signal_panic"); updateSignalSummary(); });
-  $("signalCircuit").addEventListener("change",e=>{ e.target.checked?LS.set("signal_circuit","1"):LS.del("signal_circuit"); updateSignalSummary(); });
-  document.querySelectorAll(".mode-btn").forEach(b=>b.addEventListener("click",()=>setOperationMode(b.dataset.mode)));
-  renderOperationMode();
   $("tabs").innerHTML = TABS.map(([k,l])=>`<div class="tab ${k===TAB?"on":""}" data-k="${k}">${l}</div>`).join("");
   $("tabs").addEventListener("click",e=>{
     const k=e.target.dataset.k; if(!k) return;
