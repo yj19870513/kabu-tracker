@@ -1,7 +1,7 @@
 {
- "updated": "2026-08-29 19:48",
+ "updated": "2026-08-30 05:27",
  "vix": 14.51,
- "vix_updated": "2026-08-29 19:48",
+ "vix_updated": "2026-08-30 05:27",
  "stocks": [
   {
    "code": "1343",
@@ -677,7 +677,7 @@
    "sector": "食料品",
    "sector_yahoo_reference": "Consumer Defensive",
    "market_cap": 65700143104.0,
-   "per": 19.81,
+   "per": 19.8,
    "pbr": 1.33,
    "op_margin": 5.4,
    "payout": 76.8,
@@ -1374,7 +1374,7 @@
    "sector": "不動産業",
    "sector_yahoo_reference": "Real Estate",
    "market_cap": 1364117946368.0,
-   "per": 11.42,
+   "per": 11.43,
    "pbr": 1.44,
    "op_margin": 25.9,
    "payout": 42.6,
@@ -2967,7 +2967,7 @@
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 99260317696.0,
-   "per": 13.11,
+   "per": 13.12,
    "pbr": 0.94,
    "op_margin": 8.55,
    "payout": 37.45,
@@ -3433,7 +3433,7 @@
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 66906476544.0,
-   "per": 14.36,
+   "per": 14.35,
    "pbr": 0.78,
    "op_margin": 7.82,
    "payout": 47.38,
@@ -4132,7 +4132,7 @@
    "sector": "医薬品",
    "sector_yahoo_reference": "Healthcare",
    "market_cap": 282080018432.0,
-   "per": 10.05,
+   "per": 10.06,
    "pbr": 0.86,
    "op_margin": 15.86,
    "payout": 39.07,
@@ -4597,7 +4597,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 82088919040.0,
-   "per": 15.78,
+   "per": 15.8,
    "pbr": 2.46,
    "op_margin": 6.89,
    "payout": 49.3,
@@ -10841,7 +10841,7 @@
    "sector": "サービス業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 11276551168.0,
-   "per": 12.09,
+   "per": 12.08,
    "pbr": 1.93,
    "op_margin": 25.96,
    "payout": 55.44,
@@ -11729,7 +11729,7 @@
    "sector": "サービス業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 23054069760.0,
-   "per": 13.45,
+   "per": 13.46,
    "pbr": 1.59,
    "op_margin": 31.92,
    "payout": 54.93,
@@ -12985,7 +12985,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 15178297344.0,
-   "per": 17.02,
+   "per": 17.01,
    "pbr": 2.6,
    "op_margin": 23.54,
    "payout": 33.99,
@@ -14295,7 +14295,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 86666543104.0,
-   "per": 17.78,
+   "per": 17.76,
    "pbr": 5.19,
    "op_margin": 28.17,
    "payout": 50.87,
@@ -14525,7 +14525,7 @@
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 131961716736.0,
-   "per": 14.65,
+   "per": 14.66,
    "pbr": 2.35,
    "op_margin": 36.55,
    "payout": 25.97,
@@ -15169,7 +15169,7 @@
    "sector": "サービス業",
    "sector_yahoo_reference": "Financial Services",
    "market_cap": 77771186176.0,
-   "per": 16.11,
+   "per": 16.1,
    "pbr": 3.63,
    "op_margin": 38.71,
    "payout": 71.55,
@@ -15919,6 +15919,235 @@
    "name": "日本セラミック"
   },
   {
+   "code": "6988",
+   "error": false,
+   "price": 3471.0,
+   "prev_close": 3421.0,
+   "change_pct": 1.46,
+   "div_hist": [
+    {
+     "date": "2020-09-29",
+     "amount": 20.0
+    },
+    {
+     "date": "2021-03-30",
+     "amount": 20.0
+    },
+    {
+     "date": "2021-09-29",
+     "amount": 22.0
+    },
+    {
+     "date": "2022-03-30",
+     "amount": 22.0
+    },
+    {
+     "date": "2022-09-29",
+     "amount": 24.0
+    },
+    {
+     "date": "2023-03-30",
+     "amount": 24.0
+    },
+    {
+     "date": "2023-09-28",
+     "amount": 26.0
+    },
+    {
+     "date": "2024-03-28",
+     "amount": 26.0
+    },
+    {
+     "date": "2024-09-27",
+     "amount": 28.0
+    },
+    {
+     "date": "2025-03-28",
+     "amount": 28.0
+    },
+    {
+     "date": "2025-09-29",
+     "amount": 30.0
+    },
+    {
+     "date": "2026-03-30",
+     "amount": 30.0
+    }
+   ],
+   "div_by_year": {
+    "2010": 8.0,
+    "2011": 18.0,
+    "2012": 20.0,
+    "2013": 20.0,
+    "2014": 20.0,
+    "2015": 24.0,
+    "2016": 28.0,
+    "2017": 30.0,
+    "2018": 32.0,
+    "2019": 36.0,
+    "2020": 40.0,
+    "2021": 40.0,
+    "2022": 44.0,
+    "2023": 48.0,
+    "2024": 52.0,
+    "2025": 56.0,
+    "2026": 60.0
+   },
+   "div_confirmed": {
+    "2010": 8.0,
+    "2011": 18.0,
+    "2012": 20.0,
+    "2013": 20.0,
+    "2014": 20.0,
+    "2015": 24.0,
+    "2016": 28.0,
+    "2017": 30.0,
+    "2018": 32.0,
+    "2019": 36.0,
+    "2020": 40.0,
+    "2021": 40.0,
+    "2022": 44.0,
+    "2023": 48.0,
+    "2024": 52.0,
+    "2025": 56.0
+   },
+   "dividend_raw_yahoo": 64.0,
+   "dividend": 56.0,
+   "dividend_source": "IR BANK調整履歴",
+   "yield_pct": 1.61,
+   "name_en": "NITTO DENKO CORP",
+   "sector": "化学",
+   "sector_yahoo_reference": "Basic Materials",
+   "market_cap": 2296149180416.0,
+   "per": 17.61,
+   "pbr": 2.01,
+   "op_margin": 18.11,
+   "payout": 30.44,
+   "roe": 12.55,
+   "equity_ratio": 79.63,
+   "equity_hist": [
+    {
+     "year": "2023",
+     "value": 902211000000.0
+    },
+    {
+     "year": "2024",
+     "value": 984020000000.0
+    },
+    {
+     "year": "2025",
+     "value": 1044083000000.0
+    },
+    {
+     "year": "2026",
+     "value": 1148027000000.0
+    }
+   ],
+   "cash_hist": [
+    {
+     "year": "2023",
+     "value": 329966000000.0
+    },
+    {
+     "year": "2024",
+     "value": 342269000000.0
+    },
+    {
+     "year": "2025",
+     "value": 363344000000.0
+    },
+    {
+     "year": "2026",
+     "value": 359805000000.0
+    }
+   ],
+   "debt_hist": [
+    {
+     "year": "2023",
+     "value": 272000000.0
+    },
+    {
+     "year": "2024",
+     "value": 345000000.0
+    },
+    {
+     "year": "2025",
+     "value": 455000000.0
+    },
+    {
+     "year": "2026",
+     "value": 0.0
+    }
+   ],
+   "revenue_hist": [
+    {
+     "year": "2023",
+     "value": 929036000000.0
+    },
+    {
+     "year": "2024",
+     "value": 915139000000.0
+    },
+    {
+     "year": "2025",
+     "value": 1013878000000.0
+    },
+    {
+     "year": "2026",
+     "value": 1028171000000.0
+    }
+   ],
+   "eps_hist": [
+    {
+     "year": "2023",
+     "value": 147.696
+    },
+    {
+     "year": "2024",
+     "value": 143.86
+    },
+    {
+     "year": "2025",
+     "value": 195.65
+    },
+    {
+     "year": "2026",
+     "value": 197.11
+    }
+   ],
+   "op_cf": 217908000000.0,
+   "op_cf_hist": [
+    {
+     "year": "2022",
+     "value": 144489000000.0
+    },
+    {
+     "year": "2023",
+     "value": 181702000000.0
+    },
+    {
+     "year": "2024",
+     "value": 155521000000.0
+    },
+    {
+     "year": "2025",
+     "value": 217908000000.0
+    }
+   ],
+   "shares_outstanding": 661523850.0,
+   "div_capacity_years": 9.71,
+   "high52": 4068.0,
+   "low52": 2882.5,
+   "ma25": 3446.64,
+   "ma75": 3236.22,
+   "div_warning": null,
+   "avg_yield_10y": 2.62,
+   "avg_per_10y": 14.87,
+   "avg_pbr_10y": 1.63,
+   "hist_years_used": 10,
+   "name": "日東電工"
+  },
+  {
    "code": "7447",
    "error": false,
    "price": 1712.0,
@@ -16022,7 +16251,7 @@
    "sector": "卸売業",
    "sector_yahoo_reference": "Consumer Cyclical",
    "market_cap": 50610786304.0,
-   "per": 20.71,
+   "per": 20.7,
    "pbr": 1.3,
    "op_margin": 26.26,
    "payout": 72.5,
@@ -18442,7 +18671,7 @@
    "sector": "建設業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 122804756480.0,
-   "per": 14.91,
+   "per": 14.93,
    "pbr": 1.7,
    "op_margin": 12.16,
    "payout": 37.59,
@@ -19547,7 +19776,7 @@
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 65790767104.0,
-   "per": 20.86,
+   "per": 20.88,
    "pbr": 1.38,
    "op_margin": 12.74,
    "payout": 65.78,
@@ -20461,7 +20690,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 44643344384.0,
-   "per": 16.17,
+   "per": 16.18,
    "pbr": 2.23,
    "op_margin": 12.0,
    "payout": 76.72,
@@ -20677,7 +20906,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Healthcare",
    "market_cap": 41700839424.0,
-   "per": 27.65,
+   "per": 27.63,
    "pbr": 2.75,
    "op_margin": 5.54,
    "payout": 124.02,
@@ -21790,7 +22019,7 @@
    "sector": "サービス業",
    "sector_yahoo_reference": "Consumer Cyclical",
    "market_cap": 24675788800.0,
-   "per": 29.19,
+   "per": 29.23,
    "pbr": 4.37,
    "op_margin": 13.78,
    "payout": 97.61,
@@ -22246,7 +22475,7 @@
    "sector": "機械",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 42266214400.0,
-   "per": 10.84,
+   "per": 10.83,
    "pbr": 0.97,
    "op_margin": 7.22,
    "payout": 40.15,
@@ -23389,7 +23618,7 @@
    "sector": "電気機器",
    "sector_yahoo_reference": "Technology",
    "market_cap": 20936089600.0,
-   "per": 15.07,
+   "per": 15.08,
    "pbr": 1.24,
    "op_margin": 8.05,
    "payout": 45.89,
@@ -24720,7 +24949,7 @@
    "sector": "繊維製品",
    "sector_yahoo_reference": "Consumer Cyclical",
    "market_cap": 299611979776.0,
-   "per": 12.46,
+   "per": 12.45,
    "pbr": 2.37,
    "op_margin": 1.58,
    "payout": 31.1,
@@ -25334,7 +25563,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 178677350400.0,
-   "per": 15.68,
+   "per": 15.67,
    "pbr": 2.99,
    "op_margin": 10.75,
    "payout": 50.73,
@@ -26029,7 +26258,7 @@
    "sector": "建設業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 536148475904.0,
-   "per": 17.44,
+   "per": 17.45,
    "pbr": 1.56,
    "op_margin": 6.87,
    "payout": 45.02,
@@ -27454,35 +27683,9 @@
    "op_margin": 13.79,
    "payout": 68.45,
    "roe": 7.5,
-   "equity_ratio": 82.76,
-   "equity_hist": [
-    {
-     "year": "2022",
-     "value": 5161268000.0
-    },
-    {
-     "year": "2023",
-     "value": 5345436000.0
-    },
-    {
-     "year": "2024",
-     "value": 5426031000.0
-    }
-   ],
-   "cash_hist": [
-    {
-     "year": "2022",
-     "value": 2721958000.0
-    },
-    {
-     "year": "2023",
-     "value": 2605250000.0
-    },
-    {
-     "year": "2024",
-     "value": 2677903000.0
-    }
-   ],
+   "equity_ratio": null,
+   "equity_hist": [],
+   "cash_hist": [],
    "debt_hist": [],
    "revenue_hist": [
     {
@@ -27528,7 +27731,7 @@
     }
    ],
    "shares_outstanding": 6630770.0,
-   "div_capacity_years": 9.28,
+   "div_capacity_years": null,
    "high52": 1356.0,
    "low52": 1169.0,
    "ma25": 1178.39,
@@ -27536,7 +27739,7 @@
    "div_warning": null,
    "avg_yield_10y": 3.28,
    "avg_per_10y": 16.81,
-   "avg_pbr_10y": 1.4,
+   "avg_pbr_10y": null,
    "hist_years_used": 10,
    "name": "プラネット"
   },
@@ -27641,7 +27844,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 32506507264.0,
-   "per": 12.45,
+   "per": 12.44,
    "pbr": 2.56,
    "op_margin": 7.27,
    "payout": 44.45,
@@ -28627,7 +28830,7 @@
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 447835045888.0,
-   "per": 16.62,
+   "per": 16.61,
    "pbr": 1.39,
    "op_margin": 13.41,
    "payout": 40.3,
@@ -29576,7 +29779,7 @@
    "sector": "石油・石炭製品",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 64053153792.0,
-   "per": 14.91,
+   "per": 14.93,
    "pbr": 0.81,
    "op_margin": 1.01,
    "payout": 53.03,
@@ -31498,7 +31701,7 @@
    "sector": "電気機器",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 103740227584.0,
-   "per": 26.68,
+   "per": 26.67,
    "pbr": 1.4,
    "op_margin": 11.48,
    "payout": 99.1,
@@ -32686,7 +32889,7 @@
    "sector": "卸売業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 108397248512.0,
-   "per": 12.49,
+   "per": 12.48,
    "pbr": 1.14,
    "op_margin": 11.34,
    "payout": 45.48,
@@ -33155,7 +33358,7 @@
    "name_en": "TAKARA & COMPANY LTD",
    "sector": "その他製品",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 56729300992.0,
+   "market_cap": 56729362432.0,
    "per": 16.78,
    "pbr": 1.75,
    "op_margin": 21.39,
@@ -33271,7 +33474,7 @@
      "value": 4366622000.0
     }
    ],
-   "shares_outstanding": 12907691.0,
+   "shares_outstanding": 12907705.0,
    "div_capacity_years": 10.87,
    "high52": 4795.0,
    "low52": 2783.0,
@@ -33646,7 +33849,7 @@
    "sector": "陸運業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 375854759936.0,
-   "per": 19.83,
+   "per": 19.84,
    "pbr": 1.62,
    "op_margin": 4.29,
    "payout": 44.15,
@@ -34132,7 +34335,7 @@
    "sector": "倉庫・運輸関連業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 320243040256.0,
-   "per": 18.33,
+   "per": 18.31,
    "pbr": 1.02,
    "op_margin": 6.97,
    "payout": 44.62,
@@ -34379,7 +34582,7 @@
    "sector": "倉庫・運輸関連業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 120811536384.0,
-   "per": 19.54,
+   "per": 19.53,
    "pbr": 1.72,
    "op_margin": 5.72,
    "payout": 50.16,
@@ -35106,7 +35309,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 28649660416.0,
-   "per": 13.41,
+   "per": 13.42,
    "pbr": 1.58,
    "op_margin": 13.82,
    "payout": 51.4,
@@ -35336,7 +35539,7 @@
    "sector": "卸売業",
    "sector_yahoo_reference": "Consumer Cyclical",
    "market_cap": 151507009536.0,
-   "per": 13.0,
+   "per": 12.99,
    "pbr": 1.22,
    "op_margin": 7.05,
    "payout": 45.14,
@@ -35708,6 +35911,86 @@
    "avg_pbr_10y": 1.63,
    "hist_years_used": 10,
    "name": "東テク"
+  },
+  {
+   "code": "5010",
+   "error": false,
+   "price": 287.0,
+   "prev_close": 290.0,
+   "change_pct": -1.03,
+   "div_hist": [],
+   "div_by_year": {
+    "2009": 5,
+    "2010": 10,
+    "2011": 15,
+    "2012": 10,
+    "2013": 10,
+    "2014": 10,
+    "2015": 10,
+    "2016": 10,
+    "2017": 10,
+    "2018": 10,
+    "2019": 10,
+    "2020": 0,
+    "2021": 2.5,
+    "2022": 2.5,
+    "2023": 0,
+    "2024": 0,
+    "2025": 0,
+    "2026": 0
+   },
+   "div_confirmed": {
+    "2009": 5,
+    "2010": 10,
+    "2011": 15,
+    "2012": 10,
+    "2013": 10,
+    "2014": 10,
+    "2015": 10,
+    "2016": 10,
+    "2017": 10,
+    "2018": 10,
+    "2019": 10,
+    "2020": 0,
+    "2021": 2.5,
+    "2022": 2.5,
+    "2023": 0,
+    "2024": 0,
+    "2025": 0
+   },
+   "dividend_raw_yahoo": 0,
+   "dividend": 0,
+   "dividend_source": "IR BANK調整履歴",
+   "yield_pct": 0,
+   "name_en": "NIPPON SEIRO CO., LTD.",
+   "sector": "石油・石炭製品",
+   "sector_yahoo_reference": "Basic Materials",
+   "market_cap": 6428000000.0,
+   "per": 8.12,
+   "pbr": 0.75,
+   "op_margin": 5.93,
+   "payout": null,
+   "roe": 10.93,
+   "equity_ratio": 23.4,
+   "equity_hist": [],
+   "cash_hist": [],
+   "debt_hist": [],
+   "revenue_hist": [],
+   "eps_hist": [],
+   "op_cf": null,
+   "op_cf_hist": [],
+   "shares_outstanding": null,
+   "div_capacity_years": null,
+   "high52": null,
+   "low52": null,
+   "ma25": null,
+   "ma75": null,
+   "div_warning": "2023年以降無配",
+   "avg_yield_10y": null,
+   "avg_per_10y": null,
+   "avg_pbr_10y": null,
+   "hist_years_used": 0,
+   "name": "日本精蝋"
   }
  ]
 }

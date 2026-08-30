@@ -5421,5 +5421,30 @@
     "period": "株式分割・配当方針の確認"
    }
   ]
+ },
+ "6988": {
+  "status": "reviewed",
+  "checked_at": "2026-08-30",
+  "exclude_special_dividends": true,
+  "history": {"2010": 8, "2011": 18, "2012": 20, "2013": 20, "2014": 20, "2015": 24, "2016": 28, "2017": 30, "2018": 32, "2019": 36, "2020": 40, "2021": 40, "2022": 44, "2023": 48, "2024": 52, "2025": 56, "2026": 60},
+  "actual_latest": {"year": "2026", "value": 60},
+  "forecast": {"year": "2027", "value": 64},
+  "confirmed_real_cuts": 0,
+  "confidence": "high",
+  "note": "IR BANKの分割調整済み配当履歴と日東電工公式の株主還元情報・2026年3月期決算資料を確認。2024年10月1日の1株→5株分割を反映し、2010〜2026年の通常配当ベースで減配なし。2008〜2009年の表示用一株配当が不足するため、長期青枠にはせず2010年以降確認として扱う。2025年は分割前の年間168円を分割後56円へ換算。",
+  "sources": [{"kind": "dividend", "label": "IR BANK 配当推移・注記", "url": "https://irbank.net/6988/dividend", "period": "2010〜2027年予想"}, {"kind": "official", "label": "日東電工公式 株主還元", "url": "https://www.nitto.com/jp/ja/ir/stock/dividend/", "period": "配当方針・一株配当"}, {"kind": "official", "label": "日東電工 2026年3月期決算資料", "url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20260427/20260424510818.pdf", "period": "2026年実績・2027年予想・株式分割"}]
+ }
+ ,"5010": {
+  "status": "reviewed",
+  "checked_at": "2026-08-30",
+  "exclude_special_dividends": true,
+  "history": {"2009": 5, "2010": 10, "2011": 15, "2012": 10, "2013": 10, "2014": 10, "2015": 10, "2016": 10, "2017": 10, "2018": 10, "2019": 10, "2020": 0, "2021": 2.5, "2022": 2.5, "2023": 0, "2024": 0, "2025": 0, "2026": 0},
+  "actual_latest": {"year": "2025", "value": 0},
+  "forecast": {"year": "2026", "value": 0},
+  "confirmed_real_cuts": 3,
+  "confidence": "high",
+  "dividend_pause": {"from": "2023", "to": "2026", "years": 4},
+  "note": "IR BANKの配当履歴と日本精蝋公式の決算資料を確認。2012年に15円→10円の減配、2020年に10円→無配、2021〜2022年は2.5円へ回復したが、2023年以降は無配。2025年12月期決算短信では配当0円、2026年12月期も無配予想。利益・営業CF・自己資本比率も不安定なため、配当安定銘柄の悪い例として扱う。",
+  "sources": [{"kind": "dividend", "label": "IR BANK 配当推移・注記", "url": "https://irbank.net/E01005/results", "period": "2009〜2026年予想"}, {"kind": "official", "label": "日本精蝋公式 IR資料", "url": "https://www.seiro.co.jp/ir/document/", "period": "決算短信・決算説明資料"}, {"kind": "official", "label": "2025年12月期決算短信", "url": "https://assets.minkabu.jp/news/article_media_content/urn%3Anewsml%3Atdnet.info%3A20260206550461/010120260206550461.pdf", "period": "2025年実績・2026年予想・配当"}]
  }
 }

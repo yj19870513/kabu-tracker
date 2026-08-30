@@ -1200,7 +1200,7 @@
         "to": 11.0
       }
     ],
-    "confirmed_real_cuts": 2,
+    "confirmed_real_cuts": 3,
     "confidence": "medium"
   },
   "3076": {
@@ -3512,5 +3512,23 @@
     "remaining_drops": [],
     "confirmed_real_cuts": 0,
     "confidence": "medium"
+  },
+  "6988": {
+    "code": "6988",
+    "history": {"2010": 8, "2011": 18, "2012": 20, "2013": 20, "2014": 20, "2015": 24, "2016": 28, "2017": 30, "2018": 32, "2019": 36, "2020": 40, "2021": 40, "2022": 44, "2023": 48, "2024": 52, "2025": 56, "2026": 60},
+    "method": "verified_dividend_history_adjusted",
+    "status": "not_blue",
+    "remaining_drops": [],
+    "confirmed_real_cuts": 0,
+    "confidence": "high"
+  },
+  "5010": {
+    "code": "5010",
+    "history": {"2009": 5, "2010": 10, "2011": 15, "2012": 10, "2013": 10, "2014": 10, "2015": 10, "2016": 10, "2017": 10, "2018": 10, "2019": 10, "2020": 0, "2021": 2.5, "2022": 2.5, "2023": 0, "2024": 0, "2025": 0, "2026": 0},
+    "method": "verified_dividend_history_adjusted",
+    "status": "not_blue",
+    "remaining_drops": [],
+    "confirmed_real_cuts": 3,
+    "confidence": "high"
   }
 }
