@@ -104,16 +104,16 @@
   .card { background:var(--card); border:none; border-radius:var(--radius); padding:20px; cursor:pointer; position:relative; box-shadow:none; transition:box-shadow .2s ease, transform .2s ease; }
   .card:hover { box-shadow:var(--shadow-lg); transform:translateY(-2px); }
   /* 枠は評価の強さを、細い色線と実線/破線/二重線の違いだけで抑えめに表現する */
-  .card.b-red { box-shadow:inset 0 0 0 1.5px var(--red); }
-  .card.b-red-partial { border:1.5px dashed var(--red); }
-  .card.b-pause { border:2px dashed var(--red); }
-  .card.b-amber { border:1.5px dashed var(--orange); }
-  .card.b-blue { box-shadow:inset 0 0 0 1.5px var(--blue); }
-  .card.b-aqua { border:1.5px double var(--aqua); }
-  .card.b-green { box-shadow:inset 0 0 0 1.5px var(--green); }
-  .card.b-red:hover { box-shadow:inset 0 0 0 1.5px var(--red), var(--shadow-lg); }
-  .card.b-blue:hover { box-shadow:inset 0 0 0 1.5px var(--blue), var(--shadow-lg); }
-  .card.b-green:hover { box-shadow:inset 0 0 0 1.5px var(--green), var(--shadow-lg); }
+  .card.b-red { box-shadow:inset 0 0 0 3px var(--red); }
+  .card.b-red-partial { border:2.5px dashed var(--red); }
+  .card.b-pause { border:3px dashed var(--red); }
+  .card.b-amber { border:2.5px dashed var(--orange); }
+  .card.b-blue { box-shadow:inset 0 0 0 3px var(--blue); }
+  .card.b-aqua { border:3px double var(--aqua); }
+  .card.b-green { box-shadow:inset 0 0 0 3px var(--green); }
+  .card.b-red:hover { box-shadow:inset 0 0 0 3px var(--red), var(--shadow-lg); }
+  .card.b-blue:hover { box-shadow:inset 0 0 0 3px var(--blue), var(--shadow-lg); }
+  .card.b-green:hover { box-shadow:inset 0 0 0 3px var(--green), var(--shadow-lg); }
   .card .code { color:var(--muted); font-size:11.5px; letter-spacing:.02em; }
   .card .name { font-size:16px; font-weight:650; letter-spacing:-.005em; margin-bottom:5px; }
   .market-price { display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; }
