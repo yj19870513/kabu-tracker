@@ -99,6 +99,13 @@
   .buy-filter button[data-buy-zone="up20"].on { background:var(--red); border-color:var(--red); }
   .buy-filter button[data-buy-zone="down20"].on { background:#2f7fd6; border-color:#2f7fd6; }
   .buy-filter button small { opacity:.78; font-size:10px; margin-left:2px; }
+  .filter-collapse { margin-bottom:10px; }
+  .filter-collapse > summary { cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:5px; color:var(--muted); font-size:12.5px; font-weight:600; padding:2px 0; }
+  .filter-collapse > summary::-webkit-details-marker { display:none; }
+  .filter-collapse > summary::before { content:"▶"; font-size:9px; color:var(--blue); }
+  .filter-collapse[open] > summary::before { content:"▼"; }
+  .filter-collapse > summary:hover { color:var(--text); }
+  .filter-collapse .buy-filter { margin-top:8px; margin-bottom:0; }
   /* カード */
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(268px,1fr)); gap:20px; }
   .card { background:var(--card); border:none; border-radius:var(--radius); padding:20px; cursor:pointer; position:relative; box-shadow:none; transition:box-shadow .2s ease, transform .2s ease; }
@@ -442,14 +449,17 @@
     <button data-border="pending">枠なし｜確認中</button>
     <button data-border="short">枠なし｜短期</button>
   </div>
-  <div class="buy-filter" id="buyFilter">
-    <span>買い増し価格帯</span>
-    <button data-buy-zone="down20">−20%以下</button>
-    <button data-buy-zone="down10">−20〜−10%</button>
-    <button data-buy-zone="flat">−10〜0%</button>
-    <button data-buy-zone="up20">0〜＋20%</button>
-    <button data-buy-zone="over20">＋20%以上</button>
-  </div>
+  <details class="filter-collapse" id="buyFilterDetails">
+    <summary>買い増し価格帯で絞り込む</summary>
+    <div class="buy-filter" id="buyFilter">
+      <span>買い増し価格帯</span>
+      <button data-buy-zone="down20">−20%以下</button>
+      <button data-buy-zone="down10">−20〜−10%</button>
+      <button data-buy-zone="flat">−10〜0%</button>
+      <button data-buy-zone="up20">0〜＋20%</button>
+      <button data-buy-zone="over20">＋20%以上</button>
+    </div>
+  </details>
   <div class="fcount" id="fcount"></div>
 
   <div id="holdArea"></div>
@@ -1983,6 +1993,23 @@ function downloadBackup(){
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+  localStorage.setItem("kabu_last_backup_at", new Date().toISOString());
+  refreshUpdatedLine();
+}
+function lastBackupLabel(){
+  const raw = localStorage.getItem("kabu_last_backup_at");
+  if (!raw) return '<span class="c-orange">最終バックアップ：未実施</span>';
+  const at = new Date(raw);
+  if (isNaN(at.getTime())) return '<span class="c-orange">最終バックアップ：未実施</span>';
+  const days = Math.floor((Date.now() - at.getTime()) / 86400000);
+  const dateStr = at.toISOString().slice(0,10);
+  const cls = days > 35 ? "c-orange" : "";
+  return `最終バックアップ：<b class="${cls}">${dateStr}（${days}日前）</b>`;
+}
+function refreshUpdatedLine(){
+  if (!DATA) return;
+  const sectorAudit = sectorAuditSummary();
+  $("updated").innerHTML = `株価更新日：<b>${DATA.updated}</b>（自動取得・リアルタイムではありません）<br><span>配当確認日：<b>${latestDividendCheckedAt()}</b>　｜　財務8項目確認日：<b>${latestFinancialCheckedAt()}</b>　｜　業種確認日：<b>${sectorAudit.date}</b>${sectorAudit.missing?`　｜　業種未確認：<b class="c-red">${sectorAudit.missing}銘柄</b>`:""}　｜　${lastBackupLabel()}</span>`;
 }
 function openBackupModal(){
   const count = Object.keys(collectBackupData()).length;
@@ -2095,8 +2122,7 @@ async function init(){
     GAKUCHO_INTRO = {stocks:[]};
     GAKUCHO_CODES = new Set();
   }
-  const sectorAudit=sectorAuditSummary();
-  $("updated").innerHTML = `株価更新日：<b>${DATA.updated}</b>（自動取得・リアルタイムではありません）<br><span>配当確認日：<b>${latestDividendCheckedAt()}</b>　｜　財務8項目確認日：<b>${latestFinancialCheckedAt()}</b>　｜　業種確認日：<b>${sectorAudit.date}</b>${sectorAudit.missing?`　｜　業種未確認：<b class="c-red">${sectorAudit.missing}銘柄</b>`:""}</span>`;
+  refreshUpdatedLine();
   if (DATA.vix!==null) showVix(DATA.vix,"（"+(DATA.vix_updated||"")+" 時点）");
   liveVix();
   tdrView();
@@ -2250,7 +2276,7 @@ function enhanceModal(code){
     const r2=await fetch("data/financial8_verified.json?t="+t);
     window.FIN8=await r2.json();
   }catch(e){ window.FIN8=null; }
-  if(DATA) { const sectorAudit=sectorAuditSummary(); $("updated").innerHTML = `株価更新日：<b>${DATA.updated}</b>（自動取得・リアルタイムではありません）<br><span>配当確認日：<b>${latestDividendCheckedAt()}</b>　｜　財務8項目確認日：<b>${latestFinancialCheckedAt()}</b>　｜　業種確認日：<b>${sectorAudit.date}</b>${sectorAudit.missing?`　｜　業種未確認：<b class="c-red">${sectorAudit.missing}銘柄</b>`:""}</span>`; }
+  if(DATA) { refreshUpdatedLine(); }
   if (DATA) render();
 })();
 </script>
