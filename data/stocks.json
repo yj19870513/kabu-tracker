@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-02 16:21",
- "vix": 16.34,
- "vix_updated": "2026-09-02 16:21",
+ "updated": "2026-09-02 20:47",
+ "vix": 16.42,
+ "vix_updated": "2026-09-02 20:47",
  "stocks": [
   {
    "code": "1343",
@@ -1141,7 +1141,7 @@
    "name_en": "SAN-A CO LTD",
    "sector": "小売業",
    "sector_yahoo_reference": "Consumer Cyclical",
-   "market_cap": 204461408256.0,
+   "market_cap": 202516234240.0,
    "per": 19.65,
    "pbr": 1.39,
    "op_margin": 7.28,
@@ -1257,8 +1257,8 @@
      "value": 31617000000.0
     }
    ],
-   "shares_outstanding": 60313099.0,
-   "div_capacity_years": 16.43,
+   "shares_outstanding": 59739299.0,
+   "div_capacity_years": 16.59,
    "high52": 3485.0,
    "low52": 2632.0,
    "ma25": 3333.4,
@@ -1266,7 +1266,7 @@
    "div_warning": null,
    "avg_yield_10y": 2.91,
    "avg_per_10y": 10.97,
-   "avg_pbr_10y": 1.01,
+   "avg_pbr_10y": 1.0,
    "hist_years_used": 10,
    "name": "サンエー"
   },
@@ -1373,7 +1373,7 @@
    "name_en": "HULIC CO LTD",
    "sector": "不動産業",
    "sector_yahoo_reference": "Real Estate",
-   "market_cap": 1344984973312.0,
+   "market_cap": 1344755204096.0,
    "per": 11.27,
    "pbr": 1.42,
    "op_margin": 25.9,
@@ -1489,8 +1489,8 @@
      "value": 269239000000.0
     }
    ],
-   "shares_outstanding": 759449485.0,
-   "div_capacity_years": -44.18,
+   "shares_outstanding": 759319729.0,
+   "div_capacity_years": -44.19,
    "high52": 2094.0,
    "low52": 1525.5,
    "ma25": 1767.46,
@@ -4481,7 +4481,7 @@
    ],
    "shares_outstanding": 58882242.0,
    "div_capacity_years": 6.56,
-   "high52": 996.67,
+   "high52": 995.0,
    "low52": 747.67,
    "ma25": 841.12,
    "ma75": 799.58,
@@ -9346,7 +9346,7 @@
    "shares_outstanding": 23493592.0,
    "div_capacity_years": 5.43,
    "high52": 2445.0,
-   "low52": 1964.0,
+   "low52": 1987.0,
    "ma25": 2293.6,
    "ma75": 2233.47,
    "div_warning": null,
@@ -11278,7 +11278,7 @@
    "name_en": "NIHON M&A CENTER HOLDINGS INC",
    "sector": "サービス業",
    "sector_yahoo_reference": "Financial Services",
-   "market_cap": 209433804800.0,
+   "market_cap": 209257824256.0,
    "per": 16.77,
    "pbr": 4.4,
    "op_margin": 25.81,
@@ -11394,7 +11394,7 @@
      "value": 15551000000.0
     }
    ],
-   "shares_outstanding": 317323937.0,
+   "shares_outstanding": 317057300.0,
    "div_capacity_years": 3.96,
    "high52": 813.0,
    "low52": 607.7,
@@ -12790,7 +12790,7 @@
    "name_en": "AKATSUKI INC",
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Communication Services",
-   "market_cap": 55237292032.0,
+   "market_cap": 46083592192.0,
    "per": 9.77,
    "pbr": 1.19,
    "op_margin": 13.56,
@@ -12906,8 +12906,8 @@
      "value": 2693000000.0
     }
    ],
-   "shares_outstanding": 14422269.0,
-   "div_capacity_years": 13.8,
+   "shares_outstanding": 12032269.0,
+   "div_capacity_years": 16.54,
    "high52": 4025.0,
    "low52": 2480.0,
    "ma25": 3445.8,
@@ -12915,7 +12915,7 @@
    "div_warning": null,
    "avg_yield_10y": 2.4,
    "avg_per_10y": 22.01,
-   "avg_pbr_10y": 0.82,
+   "avg_pbr_10y": 0.69,
    "hist_years_used": 10,
    "name": "アカツキ"
   },
@@ -15078,7 +15078,7 @@
    ],
    "shares_outstanding": 80506353.0,
    "div_capacity_years": 3.03,
-   "high52": 997.0,
+   "high52": 971.0,
    "low52": 501.0,
    "ma25": 558.2,
    "ma75": 556.16,
@@ -15789,7 +15789,7 @@
    "name_en": "NIPPON CERAMIC CO LTD",
    "sector": "電気機器",
    "sector_yahoo_reference": "Technology",
-   "market_cap": 77318635520.0,
+   "market_cap": 76616835072.0,
    "per": 14.48,
    "pbr": 1.68,
    "op_margin": 21.95,
@@ -15905,10 +15905,10 @@
      "value": 4888000000.0
     }
    ],
-   "shares_outstanding": 20701108.0,
-   "div_capacity_years": 8.76,
+   "shares_outstanding": 20513208.0,
+   "div_capacity_years": 8.84,
    "high52": 4280.0,
-   "low52": 3215.0,
+   "low52": 3220.0,
    "ma25": 3753.6,
    "ma75": 3800.4,
    "div_warning": null,
@@ -16250,7 +16250,7 @@
    "name_en": "NAGAILEBEN CO",
    "sector": "卸売業",
    "sector_yahoo_reference": "Consumer Cyclical",
-   "market_cap": 50569486336.0,
+   "market_cap": 49960411136.0,
    "per": 20.4,
    "pbr": 1.28,
    "op_margin": 26.26,
@@ -16349,8 +16349,8 @@
      "value": 2180900000.0
     }
    ],
-   "shares_outstanding": 29922774.0,
-   "div_capacity_years": 8.1,
+   "shares_outstanding": 29562374.0,
+   "div_capacity_years": 8.2,
    "high52": 2091.0,
    "low52": 1598.0,
    "ma25": 1712.94,
@@ -16358,7 +16358,7 @@
    "div_warning": null,
    "avg_yield_10y": 3.23,
    "avg_per_10y": 20.09,
-   "avg_pbr_10y": 1.35,
+   "avg_pbr_10y": 1.33,
    "hist_years_used": 10,
    "name": "ナガイレーベン"
   },
@@ -16693,7 +16693,7 @@
    "name_en": "SHOEI CO LTD",
    "sector": "その他製品",
    "sector_yahoo_reference": "Consumer Cyclical",
-   "market_cap": 105375178752.0,
+   "market_cap": null,
    "per": 16.75,
    "pbr": 3.25,
    "op_margin": 31.01,
@@ -16809,8 +16809,8 @@
      "value": 9757207000.0
     }
    ],
-   "shares_outstanding": 51202714.0,
-   "div_capacity_years": 6.34,
+   "shares_outstanding": null,
+   "div_capacity_years": null,
    "high52": 2135.0,
    "low52": 1551.0,
    "ma25": 2043.2,
@@ -16818,7 +16818,7 @@
    "div_warning": null,
    "avg_yield_10y": 2.99,
    "avg_per_10y": 16.54,
-   "avg_pbr_10y": 3.89,
+   "avg_pbr_10y": null,
    "hist_years_used": 10,
    "name": "SHOEI"
   },
@@ -17747,7 +17747,7 @@
    "name_en": "JAPAN PETROLEUM EXPLORATION CO ",
    "sector": "鉱業",
    "sector_yahoo_reference": "Energy",
-   "market_cap": 492542656512.0,
+   "market_cap": 491083857920.0,
    "per": 9.22,
    "pbr": 0.83,
    "op_margin": 9.53,
@@ -17863,8 +17863,8 @@
      "value": 102976000000.0
     }
    ],
-   "shares_outstanding": 255999291.0,
-   "div_capacity_years": 4.24,
+   "shares_outstanding": 255241091.0,
+   "div_capacity_years": 4.25,
    "high52": 2819.0,
    "low52": 1195.0,
    "ma25": 1816.52,
@@ -19775,7 +19775,7 @@
    "name_en": "STELLA CHEMIFA",
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
-   "market_cap": 65425924096.0,
+   "market_cap": 65424584704.0,
    "per": 20.72,
    "pbr": 1.37,
    "op_margin": 12.74,
@@ -19891,7 +19891,7 @@
      "value": 6009000000.0
     }
    ],
-   "shares_outstanding": 12206329.0,
+   "shares_outstanding": 12206079.0,
    "div_capacity_years": 4.46,
    "high52": 8100.0,
    "low52": 3890.0,
@@ -23844,7 +23844,7 @@
    "name_en": "NIRECO CORPORATION",
    "sector": "電気機器",
    "sector_yahoo_reference": "Technology",
-   "market_cap": 6978696192.0,
+   "market_cap": 20936089600.0,
    "per": 15.09,
    "pbr": 1.24,
    "op_margin": 8.05,
@@ -23960,8 +23960,8 @@
      "value": 1861560000.0
     }
    ],
-   "shares_outstanding": 7157637.0,
-   "div_capacity_years": 18.02,
+   "shares_outstanding": 21472911.0,
+   "div_capacity_years": 6.01,
    "high52": 1033.33,
    "low52": 594.67,
    "ma25": 947.61,
@@ -23969,7 +23969,7 @@
    "div_warning": null,
    "avg_yield_10y": 4.53,
    "avg_per_10y": 3.45,
-   "avg_pbr_10y": 0.21,
+   "avg_pbr_10y": 0.63,
    "hist_years_used": 10,
    "name": "ニレコ"
   },
@@ -29329,7 +29329,7 @@
    "name_en": "SAKATA INX CORP",
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
-   "market_cap": 127495880704.0,
+   "market_cap": 127825477632.0,
    "per": 10.66,
    "pbr": 1.01,
    "op_margin": 6.56,
@@ -29445,7 +29445,7 @@
      "value": 17005000000.0
     }
    ],
-   "shares_outstanding": 48625433.0,
+   "shares_outstanding": 48751138.0,
    "div_capacity_years": -2.81,
    "high52": 2740.0,
    "low52": 2130.0,
@@ -30031,7 +30031,7 @@
    "name_en": "NICHIREKI GROUP CO LTD",
    "sector": "石油・石炭製品",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 64878374912.0,
+   "market_cap": 64878362624.0,
    "per": 15.11,
    "pbr": 0.82,
    "op_margin": 1.01,
@@ -30147,7 +30147,7 @@
      "value": 2416000000.0
     }
    ],
-   "shares_outstanding": 28455429.0,
+   "shares_outstanding": 28455422.0,
    "div_capacity_years": 2.59,
    "high52": 2851.0,
    "low52": 1934.0,
@@ -31254,7 +31254,7 @@
    "name_en": "MAX CO LTD",
    "sector": "機械",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 318798495744.0,
+   "market_cap": 323981279232.0,
    "per": 23.53,
    "pbr": 2.86,
    "op_margin": 20.76,
@@ -31370,8 +31370,8 @@
      "value": 14799000000.0
     }
    ],
-   "shares_outstanding": 176913696.0,
-   "div_capacity_years": 7.68,
+   "shares_outstanding": 179789828.0,
+   "div_capacity_years": 7.56,
    "high52": 1963.0,
    "low52": 1345.0,
    "ma25": 1831.76,
@@ -31379,7 +31379,7 @@
    "div_warning": null,
    "avg_yield_10y": 3.39,
    "avg_per_10y": 17.75,
-   "avg_pbr_10y": 1.54,
+   "avg_pbr_10y": 1.57,
    "hist_years_used": 10,
    "name": "マックス"
   },
@@ -31499,7 +31499,7 @@
    "name_en": "SINKO INDUSTRIES LTD",
    "sector": "機械",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 82992603136.0,
+   "market_cap": 82990825472.0,
    "per": 12.4,
    "pbr": 1.27,
    "op_margin": 10.09,
@@ -31615,7 +31615,7 @@
      "value": 8010000000.0
     }
    ],
-   "shares_outstanding": 67146121.0,
+   "shares_outstanding": 67144678.0,
    "div_capacity_years": 2.59,
    "high52": 1621.0,
    "low52": 1166.0,
@@ -31953,7 +31953,7 @@
    "name_en": "IDEC CORPORATION",
    "sector": "電気機器",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 109043073024.0,
+   "market_cap": 109223632896.0,
    "per": 28.06,
    "pbr": 1.48,
    "op_margin": 11.48,
@@ -32069,7 +32069,7 @@
      "value": 7442000000.0
     }
    ],
-   "shares_outstanding": 29591063.0,
+   "shares_outstanding": 29640063.0,
    "div_capacity_years": -2.39,
    "high52": 3975.0,
    "low52": 2253.0,
@@ -32078,7 +32078,7 @@
    "div_warning": null,
    "avg_yield_10y": 4.34,
    "avg_per_10y": 20.92,
-   "avg_pbr_10y": 1.17,
+   "avg_pbr_10y": 1.18,
    "hist_years_used": 10,
    "name": "IDEC"
   },
@@ -33260,7 +33260,7 @@
    "shares_outstanding": 35893128.0,
    "div_capacity_years": 18.46,
    "high52": 3755.0,
-   "low52": 2649.0,
+   "low52": 2702.0,
    "ma25": 3005.84,
    "ma75": 2943.31,
    "div_warning": null,
@@ -35791,7 +35791,7 @@
    "name_en": "YELLOW HAT LTD",
    "sector": "卸売業",
    "sector_yahoo_reference": "Consumer Cyclical",
-   "market_cap": 150912860160.0,
+   "market_cap": 150084026368.0,
    "per": 12.94,
    "pbr": 1.21,
    "op_margin": 7.05,
@@ -35907,8 +35907,8 @@
      "value": 10469000000.0
     }
    ],
-   "shares_outstanding": 84877870.0,
-   "div_capacity_years": -2.55,
+   "shares_outstanding": 84411710.0,
+   "div_capacity_years": -2.56,
    "high52": 1891.0,
    "low52": 1437.0,
    "ma25": 1776.08,
