@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-03 16:26",
- "vix": 15.2,
- "vix_updated": "2026-09-03 16:26",
+ "updated": "2026-09-03 20:47",
+ "vix": 15.29,
+ "vix_updated": "2026-09-03 20:47",
  "stocks": [
   {
    "code": "1343",
@@ -13301,7 +13301,7 @@
    "shares_outstanding": 18507150.0,
    "div_capacity_years": 7.85,
    "high52": 1408.0,
-   "low52": 1103.0,
+   "low52": 1104.0,
    "ma25": 1217.96,
    "ma75": 1227.33,
    "div_warning": null,
@@ -23505,7 +23505,7 @@
    "shares_outstanding": 16015485.0,
    "div_capacity_years": 10.05,
    "high52": 2780.0,
-   "low52": 1362.0,
+   "low52": 1402.0,
    "ma25": 1743.48,
    "ma75": 1765.13,
    "div_warning": "Yahoo参考値66.0円は2025年の実績16.0円と大きく異なります。株式分割やデータ不備の可能性があるため、証券会社の情報で必ず確認してください。",
@@ -35081,7 +35081,7 @@
    "sector_yahoo_reference": "Industrials",
    "market_cap": 85771853824.0,
    "per": 13.26,
-   "pbr": 0.84,
+   "pbr": 0.83,
    "op_margin": 6.73,
    "payout": 40.75,
    "roe": 6.98,
