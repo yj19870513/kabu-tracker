@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-04 20:48",
- "vix": 14.12,
- "vix_updated": "2026-09-04 20:48",
+ "updated": "2026-09-04 22:15",
+ "vix": 14.18,
+ "vix_updated": "2026-09-04 22:15",
  "stocks": [
   {
    "code": "1343",
@@ -28097,7 +28097,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 31693844480.0,
-   "per": 12.21,
+   "per": 12.14,
    "pbr": 2.5,
    "op_margin": 7.27,
    "payout": 44.45,
