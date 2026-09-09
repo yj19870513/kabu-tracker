@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-09 20:52",
- "vix": 16.38,
- "vix_updated": "2026-09-09 20:52",
+ "updated": "2026-09-09 22:27",
+ "vix": 16.2,
+ "vix_updated": "2026-09-09 22:27",
  "stocks": [
   {
    "code": "1343",
@@ -21584,19 +21584,19 @@
     "2024": 50.0,
     "2025": 64.0
    },
-   "dividend_raw_yahoo": 86.0,
+   "dividend_raw_yahoo": null,
    "dividend": 64.0,
    "dividend_source": "IR BANK調整履歴",
    "yield_pct": 2.37,
-   "name_en": "FUJIKURA COMPOSITES INC",
+   "name_en": "5121",
    "sector": "ゴム製品",
-   "sector_yahoo_reference": "Consumer Cyclical",
-   "market_cap": 49484709888.0,
-   "per": 12.93,
-   "pbr": 1.26,
-   "op_margin": 15.92,
-   "payout": 36.43,
-   "roe": 10.99,
+   "sector_yahoo_reference": "",
+   "market_cap": null,
+   "per": null,
+   "pbr": null,
+   "op_margin": null,
+   "payout": null,
+   "roe": null,
    "equity_ratio": 76.16,
    "equity_hist": [
     {
@@ -21707,16 +21707,16 @@
      "value": 5738655000.0
     }
    ],
-   "shares_outstanding": 18354862.0,
-   "div_capacity_years": 7.24,
-   "high52": 2830.0,
-   "low52": 1765.0,
+   "shares_outstanding": null,
+   "div_capacity_years": null,
+   "high52": null,
+   "low52": null,
    "ma25": 2720.4,
    "ma75": 2596.15,
    "div_warning": null,
    "avg_yield_10y": 3.54,
    "avg_per_10y": 7.47,
-   "avg_pbr_10y": 0.66,
+   "avg_pbr_10y": null,
    "hist_years_used": 10,
    "name": "藤倉コンポジット"
   },
@@ -35144,42 +35144,8 @@
      "value": 35353000000.0
     }
    ],
-   "revenue_hist": [
-    {
-     "year": "2023",
-     "value": 134063000000.0
-    },
-    {
-     "year": "2024",
-     "value": 122555000000.0
-    },
-    {
-     "year": "2025",
-     "value": 124765000000.0
-    },
-    {
-     "year": "2026",
-     "value": 125517000000.0
-    }
-   ],
-   "eps_hist": [
-    {
-     "year": "2023",
-     "value": 95.73
-    },
-    {
-     "year": "2024",
-     "value": 72.53
-    },
-    {
-     "year": "2025",
-     "value": 95.75
-    },
-    {
-     "year": "2026",
-     "value": 105.52
-    }
-   ],
+   "revenue_hist": [],
+   "eps_hist": [],
    "op_cf": 9294000000.0,
    "op_cf_hist": [
     {
@@ -35207,7 +35173,7 @@
    "ma75": 1257.37,
    "div_warning": null,
    "avg_yield_10y": 2.68,
-   "avg_per_10y": 9.04,
+   "avg_per_10y": null,
    "avg_pbr_10y": 0.56,
    "hist_years_used": 10,
    "name": "日本トランスシティ"
