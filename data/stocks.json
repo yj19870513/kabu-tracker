@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-15 17:05",
- "vix": 17.7,
- "vix_updated": "2026-09-15 17:05",
+ "updated": "2026-09-15 21:09",
+ "vix": 17.1,
+ "vix_updated": "2026-09-15 21:09",
  "stocks": [
   {
    "code": "1343",
@@ -114,8 +114,8 @@
    "div_capacity_years": null,
    "high52": 2249.5,
    "low52": 1880.0,
-   "ma25": 1931.7,
-   "ma75": 1936.22,
+   "ma25": 1930.06,
+   "ma75": 1935.83,
    "div_warning": null,
    "avg_yield_10y": 4.51,
    "avg_per_10y": null,
