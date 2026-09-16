@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-16 16:56",
- "vix": 16.94,
- "vix_updated": "2026-09-16 16:56",
+ "updated": "2026-09-16 21:05",
+ "vix": 16.79,
+ "vix_updated": "2026-09-16 21:05",
  "stocks": [
   {
    "code": "1343",
@@ -5981,7 +5981,7 @@
    "pbr": 1.57,
    "op_margin": 5.49,
    "payout": 247.8,
-   "roe": 9.53,
+   "roe": 0.68,
    "equity_ratio": 68.74,
    "equity_hist": [
     {
@@ -11731,9 +11731,9 @@
    "market_cap": 23130787840.0,
    "per": 13.61,
    "pbr": 1.6,
-   "op_margin": 31.92,
+   "op_margin": 20.14,
    "payout": 54.93,
-   "roe": null,
+   "roe": 13.56,
    "equity_ratio": 86.98,
    "equity_hist": [
     {
@@ -20912,9 +20912,9 @@
    "market_cap": 40869593088.0,
    "per": 27.25,
    "pbr": 2.7,
-   "op_margin": 5.54,
+   "op_margin": 13.09,
    "payout": 124.02,
-   "roe": 7.31,
+   "roe": 7.49,
    "equity_ratio": 74.12,
    "equity_hist": [
     {
@@ -22254,7 +22254,7 @@
    "pbr": 4.22,
    "op_margin": 20.72,
    "payout": 87.22,
-   "roe": 16.49,
+   "roe": 19.59,
    "equity_ratio": 77.48,
    "equity_hist": [
     {
@@ -26246,7 +26246,7 @@
    "pbr": 3.43,
    "op_margin": 20.21,
    "payout": 30.19,
-   "roe": 15.87,
+   "roe": 20.29,
    "equity_ratio": 76.69,
    "equity_hist": [
     {
@@ -31713,7 +31713,7 @@
    "market_cap": 24753596416.0,
    "per": 23.94,
    "pbr": 2.89,
-   "op_margin": 39.36,
+   "op_margin": 21.66,
    "payout": 134.49,
    "roe": 12.32,
    "equity_ratio": 88.07,
