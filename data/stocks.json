@@ -1,7 +1,7 @@
 {
- "updated": "2026-09-18 16:39",
- "vix": 15.06,
- "vix_updated": "2026-09-18 16:39",
+ "updated": "2026-09-18 20:49",
+ "vix": 15.36,
+ "vix_updated": "2026-09-18 20:49",
  "stocks": [
   {
    "code": "1343",
@@ -22252,9 +22252,9 @@
    "market_cap": 25293713408.0,
    "per": 26.81,
    "pbr": 4.23,
-   "op_margin": 20.72,
+   "op_margin": 20.74,
    "payout": 87.22,
-   "roe": 19.59,
+   "roe": 19.57,
    "equity_ratio": 77.48,
    "equity_hist": [
     {
@@ -27910,7 +27910,7 @@
    "sector_yahoo_reference": "Technology",
    "market_cap": 7666038784.0,
    "per": 18.71,
-   "pbr": 1.44,
+   "pbr": 1.41,
    "op_margin": 16.77,
    "payout": 70.34,
    "roe": 7.43,
