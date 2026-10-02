@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-02 17:56",
- "vix": 15.98,
- "vix_updated": "2026-10-02 17:56",
+ "updated": "2026-10-02 22:11",
+ "vix": 15.51,
+ "vix_updated": "2026-10-02 22:11",
  "stocks": [
   {
    "code": "1343",
@@ -1606,7 +1606,7 @@
    "sector": "卸売業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 158459133952.0,
-   "per": 13.26,
+   "per": 13.27,
    "pbr": 1.35,
    "op_margin": 10.11,
    "payout": 55.78,
@@ -34722,7 +34722,7 @@
    "shares_outstanding": 75541046.0,
    "div_capacity_years": -4.6,
    "high52": 4285.0,
-   "low52": 3075.0,
+   "low52": 3125.0,
    "ma25": 4122.94,
    "ma75": 3975.23,
    "div_warning": null,
