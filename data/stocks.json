@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-06 18:23",
- "vix": 15.44,
- "vix_updated": "2026-10-06 18:23",
+ "updated": "2026-10-06 22:41",
+ "vix": 15.41,
+ "vix_updated": "2026-10-06 22:41",
  "stocks": [
   {
    "code": "1343",
@@ -17988,7 +17988,7 @@
    "sector": "建設業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 155507998720.0,
-   "per": 13.31,
+   "per": 13.28,
    "pbr": 1.84,
    "op_margin": 11.28,
    "payout": 50.84,
@@ -19555,7 +19555,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 28637904896.0,
-   "per": 13.65,
+   "per": 13.68,
    "pbr": 3.16,
    "op_margin": 9.66,
    "payout": 52.77,
@@ -19783,7 +19783,7 @@
    "name_en": "STELLA CHEMIFA",
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
-   "market_cap": 68091068416.0,
+   "market_cap": 67274153984.0,
    "per": 21.79,
    "pbr": 1.44,
    "op_margin": 12.74,
@@ -19899,8 +19899,8 @@
      "value": 6009000000.0
     }
    ],
-   "shares_outstanding": 12094328.0,
-   "div_capacity_years": 4.5,
+   "shares_outstanding": 11949228.0,
+   "div_capacity_years": 4.56,
    "high52": 8100.0,
    "low52": 3890.0,
    "ma25": 5285.24,
@@ -19908,7 +19908,7 @@
    "div_warning": null,
    "avg_yield_10y": 2.41,
    "avg_per_10y": 17.7,
-   "avg_pbr_10y": 0.91,
+   "avg_pbr_10y": 0.9,
    "hist_years_used": 10,
    "name": "ステラケミファ"
   },
@@ -26016,7 +26016,7 @@
    "name_en": "NSD CO.LTD",
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
-   "market_cap": 223986139136.0,
+   "market_cap": 223057412096.0,
    "per": 17.41,
    "pbr": 3.28,
    "op_margin": 13.97,
@@ -26132,8 +26132,8 @@
      "value": 16156000000.0
     }
    ],
-   "shares_outstanding": 75632665.0,
-   "div_capacity_years": 4.7,
+   "shares_outstanding": 75319065.0,
+   "div_capacity_years": 4.72,
    "high52": 3651.0,
    "low52": 2378.0,
    "ma25": 2903.32,
@@ -26141,7 +26141,7 @@
    "div_warning": null,
    "avg_yield_10y": 2.67,
    "avg_per_10y": 20.17,
-   "avg_pbr_10y": 3.49,
+   "avg_pbr_10y": 3.47,
    "hist_years_used": 10,
    "name": "NSD"
   },
@@ -28358,7 +28358,7 @@
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 199405125632.0,
-   "per": 11.07,
+   "per": 11.14,
    "pbr": 0.94,
    "op_margin": 10.91,
    "payout": 47.93,
