@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-09 18:33",
- "vix": 15.22,
- "vix_updated": "2026-10-09 18:33",
+ "updated": "2026-10-09 22:48",
+ "vix": 15.08,
+ "vix_updated": "2026-10-09 22:48",
  "stocks": [
   {
    "code": "1343",
@@ -231,7 +231,7 @@
    "per": 16.03,
    "pbr": 2.27,
    "op_margin": 18.88,
-   "payout": 60.49,
+   "payout": 60.52,
    "roe": 14.44,
    "equity_ratio": 81.38,
    "equity_hist": [
@@ -677,10 +677,10 @@
    "sector": "食料品",
    "sector_yahoo_reference": "Consumer Defensive",
    "market_cap": 67666776064.0,
-   "per": 20.39,
+   "per": 20.58,
    "pbr": 1.37,
    "op_margin": 5.4,
-   "payout": 76.81,
+   "payout": 77.51,
    "roe": 6.72,
    "equity_ratio": 78.49,
    "equity_hist": [
@@ -1145,7 +1145,7 @@
    "per": 16.89,
    "pbr": 1.25,
    "op_margin": 7.87,
-   "payout": 57.92,
+   "payout": 57.14,
    "roe": 7.96,
    "equity_ratio": 71.99,
    "equity_hist": [
@@ -1373,7 +1373,7 @@
    "name_en": "HULIC CO LTD",
    "sector": "不動産業",
    "sector_yahoo_reference": "Real Estate",
-   "market_cap": 1268280590336.0,
+   "market_cap": 1268063928320.0,
    "per": 10.62,
    "pbr": 1.34,
    "op_margin": 25.9,
@@ -1489,8 +1489,8 @@
      "value": 269239000000.0
     }
    ],
-   "shares_outstanding": 759449485.0,
-   "div_capacity_years": -44.18,
+   "shares_outstanding": 759319729.0,
+   "div_capacity_years": -44.19,
    "high52": 2094.0,
    "low52": 1525.5,
    "ma25": 1724.82,
@@ -1842,7 +1842,7 @@
    "per": 9.75,
    "pbr": 0.91,
    "op_margin": 13.37,
-   "payout": 41.38,
+   "payout": 46.02,
    "roe": 9.6,
    "equity_ratio": 28.5,
    "equity_hist": [
@@ -2291,7 +2291,7 @@
    "per": 10.54,
    "pbr": 1.74,
    "op_margin": 13.86,
-   "payout": 45.11,
+   "payout": 44.43,
    "roe": 17.53,
    "equity_ratio": 64.72,
    "equity_hist": [
@@ -2524,7 +2524,7 @@
    "per": 18.55,
    "pbr": 2.11,
    "op_margin": 7.83,
-   "payout": 48.56,
+   "payout": 73.34,
    "roe": null,
    "equity_ratio": 74.64,
    "equity_hist": [
@@ -2967,10 +2967,10 @@
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 97169555456.0,
-   "per": 12.97,
+   "per": 10.01,
    "pbr": 0.93,
    "op_margin": 8.55,
-   "payout": 37.56,
+   "payout": 29.0,
    "roe": 9.91,
    "equity_ratio": 67.84,
    "equity_hist": [
@@ -3203,7 +3203,7 @@
    "per": 14.86,
    "pbr": 0.95,
    "op_margin": 11.37,
-   "payout": 75.54,
+   "payout": 57.12,
    "roe": null,
    "equity_ratio": 59.04,
    "equity_hist": [
@@ -3433,10 +3433,10 @@
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 66078425088.0,
-   "per": 14.36,
+   "per": 12.89,
    "pbr": 0.77,
    "op_margin": 7.82,
-   "payout": 47.38,
+   "payout": 43.06,
    "roe": 6.17,
    "equity_ratio": 68.22,
    "equity_hist": [
@@ -3669,7 +3669,7 @@
    "per": 15.42,
    "pbr": 1.41,
    "op_margin": 12.84,
-   "payout": 50.03,
+   "payout": 49.14,
    "roe": 10.35,
    "equity_ratio": 58.36,
    "equity_hist": [
@@ -3898,11 +3898,11 @@
    "name_en": "PRESTIGE INTERNATIONAL INC",
    "sector": "サービス業",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 83703422976.0,
+   "market_cap": 84570177536.0,
    "per": 14.05,
    "pbr": 1.73,
    "op_margin": 12.5,
-   "payout": 55.5,
+   "payout": 53.87,
    "roe": 13.59,
    "equity_ratio": 59.14,
    "equity_hist": [
@@ -4014,8 +4014,8 @@
      "value": 10466987000.0
     }
    ],
-   "shares_outstanding": 123456377.0,
-   "div_capacity_years": 7.39,
+   "shares_outstanding": 124734777.0,
+   "div_capacity_years": 7.32,
    "high52": 762.0,
    "low52": 607.0,
    "ma25": 678.22,
@@ -4023,7 +4023,7 @@
    "div_warning": null,
    "avg_yield_10y": 1.52,
    "avg_per_10y": 14.48,
-   "avg_pbr_10y": 1.71,
+   "avg_pbr_10y": 1.73,
    "hist_years_used": 10,
    "name": "プレステージ・インターナショナル"
   },
@@ -4135,7 +4135,7 @@
    "per": 9.36,
    "pbr": 0.86,
    "op_margin": 15.86,
-   "payout": 39.14,
+   "payout": 36.49,
    "roe": 9.32,
    "equity_ratio": 54.28,
    "equity_hist": [
@@ -4367,7 +4367,7 @@
    "per": 13.54,
    "pbr": 2.43,
    "op_margin": 8.34,
-   "payout": 55.97,
+   "payout": 59.6,
    "roe": 18.95,
    "equity_ratio": 69.51,
    "equity_hist": [
@@ -4597,10 +4597,10 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 78022492160.0,
-   "per": 15.33,
+   "per": 15.05,
    "pbr": 2.37,
    "op_margin": 6.89,
-   "payout": 49.63,
+   "payout": 48.71,
    "roe": 16.78,
    "equity_ratio": 69.89,
    "equity_hist": [
@@ -4833,7 +4833,7 @@
    "per": 11.82,
    "pbr": 0.99,
    "op_margin": 12.02,
-   "payout": 50.54,
+   "payout": 50.18,
    "roe": 8.55,
    "equity_ratio": 85.15,
    "equity_hist": [
@@ -5049,7 +5049,7 @@
    "per": 15.71,
    "pbr": 1.67,
    "op_margin": 6.3,
-   "payout": 50.07,
+   "payout": 57.91,
    "roe": 10.97,
    "equity_ratio": 67.27,
    "equity_hist": [
@@ -5511,10 +5511,10 @@
    "sector": "ガラス・土石製品",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 16818291712.0,
-   "per": 12.54,
+   "per": 11.72,
    "pbr": 0.75,
    "op_margin": 8.63,
-   "payout": 36.33,
+   "payout": 33.94,
    "roe": 6.6,
    "equity_ratio": 82.96,
    "equity_hist": [
@@ -5749,7 +5749,7 @@
    "per": 11.84,
    "pbr": 1.22,
    "op_margin": 10.78,
-   "payout": 37.97,
+   "payout": 36.87,
    "roe": 10.63,
    "equity_ratio": 70.15,
    "equity_hist": [
@@ -6212,10 +6212,10 @@
    "sector": "機械",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 90964099072.0,
-   "per": 14.27,
+   "per": 13.96,
    "pbr": 1.22,
    "op_margin": 3.28,
-   "payout": 60.76,
+   "payout": 59.44,
    "roe": 9.69,
    "equity_ratio": 81.24,
    "equity_hist": [
@@ -6450,7 +6450,7 @@
    "per": 11.89,
    "pbr": 1.8,
    "op_margin": 17.56,
-   "payout": 34.32,
+   "payout": 34.31,
    "roe": 16.29,
    "equity_ratio": 83.03,
    "equity_hist": [
@@ -6899,7 +6899,7 @@
    "per": null,
    "pbr": 0.86,
    "op_margin": -5.33,
-   "payout": 29.54,
+   "payout": 29.9,
    "roe": 7.42,
    "equity_ratio": 74.82,
    "equity_hist": [
@@ -7134,7 +7134,7 @@
    "per": 10.61,
    "pbr": 0.47,
    "op_margin": -5.13,
-   "payout": 57.86,
+   "payout": 67.56,
    "roe": 3.6,
    "equity_ratio": 71.75,
    "equity_hist": [
@@ -7600,7 +7600,7 @@
    "per": 10.05,
    "pbr": 1.02,
    "op_margin": 4.64,
-   "payout": 40.96,
+   "payout": 44.34,
    "roe": 10.67,
    "equity_ratio": 67.62,
    "equity_hist": [
@@ -7833,7 +7833,7 @@
    "per": 11.14,
    "pbr": 1.52,
    "op_margin": 9.83,
-   "payout": 62.23,
+   "payout": 54.81,
    "roe": 14.12,
    "equity_ratio": 64.35,
    "equity_hist": [
@@ -8299,7 +8299,7 @@
    "per": 9.93,
    "pbr": 0.51,
    "op_margin": 12.25,
-   "payout": 52.67,
+   "payout": 57.83,
    "roe": 4.9,
    "equity_ratio": 7.91,
    "equity_hist": [
@@ -8532,7 +8532,7 @@
    "per": 13.74,
    "pbr": 0.93,
    "op_margin": 9.17,
-   "payout": 40.79,
+   "payout": 48.45,
    "roe": 7.2,
    "equity_ratio": 15.21,
    "equity_hist": [
@@ -8759,11 +8759,11 @@
    "name_en": "MS&AD INS GP HLDGS",
    "sector": "保険業",
    "sector_yahoo_reference": "Financial Services",
-   "market_cap": 6990119567360.0,
+   "market_cap": 6949976932352.0,
    "per": 8.05,
    "pbr": 1.06,
    "op_margin": 23.01,
-   "payout": 23.64,
+   "payout": 21.09,
    "roe": 16.09,
    "equity_ratio": 16.65,
    "equity_hist": [
@@ -8875,8 +8875,8 @@
      "value": 762608000000.0
     }
    ],
-   "shares_outstanding": 1428012108.0,
-   "div_capacity_years": 4.45,
+   "shares_outstanding": 1419811516.0,
+   "div_capacity_years": 4.48,
    "high52": 5326.0,
    "low52": 3108.0,
    "ma25": 4969.83,
@@ -8884,7 +8884,7 @@
    "div_warning": null,
    "avg_yield_10y": 14.09,
    "avg_per_10y": 28.28,
-   "avg_pbr_10y": 0.89,
+   "avg_pbr_10y": 0.88,
    "hist_years_used": 10,
    "name": "MS&ADインシュアランスグループホールディングス"
   },
@@ -8996,7 +8996,7 @@
    "per": 15.62,
    "pbr": 1.2,
    "op_margin": 11.63,
-   "payout": 66.41,
+   "payout": 67.9,
    "roe": 7.86,
    "equity_ratio": 73.46,
    "equity_hist": [
@@ -9231,7 +9231,7 @@
    "per": 16.57,
    "pbr": 2.54,
    "op_margin": 7.42,
-   "payout": 73.98,
+   "payout": 75.93,
    "roe": 15.92,
    "equity_ratio": 74.26,
    "equity_hist": [
@@ -9466,7 +9466,7 @@
    "per": 20.67,
    "pbr": 0.49,
    "op_margin": 12.95,
-   "payout": 31.14,
+   "payout": 52.34,
    "roe": 3.39,
    "equity_ratio": 37.58,
    "equity_hist": [
@@ -9692,7 +9692,7 @@
    "sector": "サービス業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 110642839552.0,
-   "per": 13.58,
+   "per": 13.61,
    "pbr": 3.97,
    "op_margin": 29.68,
    "payout": 52.24,
@@ -9930,7 +9930,7 @@
    "per": 14.65,
    "pbr": 3.57,
    "op_margin": -1.14,
-   "payout": 60.56,
+   "payout": 59.62,
    "roe": 26.2,
    "equity_ratio": 65.03,
    "equity_hist": [
@@ -10163,7 +10163,7 @@
    "per": 18.69,
    "pbr": 1.2,
    "op_margin": 12.17,
-   "payout": 75.62,
+   "payout": 75.23,
    "roe": 7.36,
    "equity_ratio": 85.95,
    "equity_hist": [
@@ -10398,7 +10398,7 @@
    "per": 13.15,
    "pbr": 1.44,
    "op_margin": 5.61,
-   "payout": 48.82,
+   "payout": 48.93,
    "roe": 11.31,
    "equity_ratio": 60.15,
    "equity_hist": [
@@ -10616,7 +10616,7 @@
    "per": 4.77,
    "pbr": 1.79,
    "op_margin": 14.82,
-   "payout": 28.47,
+   "payout": 29.67,
    "roe": 11.24,
    "equity_ratio": 74.86,
    "equity_hist": [
@@ -10844,7 +10844,7 @@
    "per": 11.41,
    "pbr": 1.87,
    "op_margin": 25.96,
-   "payout": 55.44,
+   "payout": 54.22,
    "roe": 17.19,
    "equity_ratio": 71.34,
    "equity_hist": [
@@ -11053,7 +11053,7 @@
    "per": 18.94,
    "pbr": 7.84,
    "op_margin": 22.1,
-   "payout": 63.36,
+   "payout": 96.81,
    "roe": 44.76,
    "equity_ratio": 72.32,
    "equity_hist": [
@@ -11278,11 +11278,11 @@
    "name_en": "NIHON M&A CENTER HOLDINGS INC",
    "sector": "サービス業",
    "sector_yahoo_reference": "Financial Services",
-   "market_cap": 197534154752.0,
+   "market_cap": 197368184832.0,
    "per": 15.2,
    "pbr": 4.15,
    "op_margin": 25.81,
-   "payout": 58.45,
+   "payout": 56.15,
    "roe": 28.75,
    "equity_ratio": 75.78,
    "equity_hist": [
@@ -11394,7 +11394,7 @@
      "value": 15551000000.0
     }
    ],
-   "shares_outstanding": 317323937.0,
+   "shares_outstanding": 317057300.0,
    "div_capacity_years": 3.96,
    "high52": 813.0,
    "low52": 607.0,
@@ -11403,7 +11403,7 @@
    "div_warning": null,
    "avg_yield_10y": 1.64,
    "avg_per_10y": 22.65,
-   "avg_pbr_10y": 4.75,
+   "avg_pbr_10y": 4.74,
    "hist_years_used": 10,
    "name": "日本M&Aセンターホールディングス"
   },
@@ -11504,7 +11504,7 @@
    "per": 17.0,
    "pbr": 3.11,
    "op_margin": 23.93,
-   "payout": 163.8,
+   "payout": 150.44,
    "roe": 17.57,
    "equity_ratio": 82.16,
    "equity_hist": [
@@ -11729,10 +11729,10 @@
    "sector": "サービス業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 22473289728.0,
-   "per": 13.22,
+   "per": 12.08,
    "pbr": 1.57,
    "op_margin": 20.14,
-   "payout": 54.93,
+   "payout": 50.18,
    "roe": 13.56,
    "equity_ratio": 86.98,
    "equity_hist": [
@@ -12175,7 +12175,7 @@
    "per": 11.18,
    "pbr": 1.95,
    "op_margin": 31.13,
-   "payout": 50.13,
+   "payout": 45.07,
    "roe": 20.6,
    "equity_ratio": 86.89,
    "equity_hist": [
@@ -12405,7 +12405,7 @@
    "per": 19.15,
    "pbr": 3.74,
    "op_margin": 7.38,
-   "payout": 48.51,
+   "payout": 59.71,
    "roe": 20.17,
    "equity_ratio": 79.92,
    "equity_hist": [
@@ -12599,7 +12599,7 @@
    "per": 14.6,
    "pbr": 2.71,
    "op_margin": 37.46,
-   "payout": 67.52,
+   "payout": 68.73,
    "roe": 17.34,
    "equity_ratio": 77.49,
    "equity_hist": [
@@ -12794,7 +12794,7 @@
    "per": 7.29,
    "pbr": 1.2,
    "op_margin": 13.56,
-   "payout": 29.34,
+   "payout": 21.59,
    "roe": 19.18,
    "equity_ratio": 72.78,
    "equity_hist": [
@@ -12988,7 +12988,7 @@
    "per": null,
    "pbr": 2.38,
    "op_margin": 23.54,
-   "payout": 30.85,
+   "payout": 185.87,
    "roe": 15.77,
    "equity_ratio": 75.55,
    "equity_hist": [
@@ -13183,10 +13183,10 @@
    "sector": "化学",
    "sector_yahoo_reference": "Technology",
    "market_cap": 21982195712.0,
-   "per": 7.44,
+   "per": 7.47,
    "pbr": 0.89,
    "op_margin": 13.42,
-   "payout": 24.91,
+   "payout": 25.04,
    "roe": 12.79,
    "equity_ratio": 77.12,
    "equity_hist": [
@@ -13413,10 +13413,10 @@
    "sector": "サービス業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 33284349952.0,
-   "per": 12.48,
+   "per": 12.43,
    "pbr": 2.03,
    "op_margin": 23.06,
-   "payout": 44.59,
+   "payout": 44.4,
    "roe": 18.32,
    "equity_ratio": 76.22,
    "equity_hist": [
@@ -13636,7 +13636,7 @@
    "per": 14.47,
    "pbr": 3.83,
    "op_margin": 23.37,
-   "payout": 52.81,
+   "payout": 55.52,
    "roe": 27.05,
    "equity_ratio": 75.3,
    "equity_hist": [
@@ -13861,10 +13861,10 @@
    "sector": "医薬品",
    "sector_yahoo_reference": "Healthcare",
    "market_cap": 227275931648.0,
-   "per": 7.64,
+   "per": 7.2,
    "pbr": 0.77,
    "op_margin": 25.09,
-   "payout": 28.12,
+   "payout": 26.47,
    "roe": 11.54,
    "equity_ratio": 84.18,
    "equity_hist": [
@@ -14082,7 +14082,7 @@
    "per": 10.06,
    "pbr": 1.75,
    "op_margin": 17.96,
-   "payout": 59.02,
+   "payout": 59.04,
    "roe": 18.04,
    "equity_ratio": 83.5,
    "equity_hist": [
@@ -14298,7 +14298,7 @@
    "per": 17.27,
    "pbr": 4.95,
    "op_margin": 28.17,
-   "payout": 50.93,
+   "payout": 51.91,
    "roe": null,
    "equity_ratio": 74.66,
    "equity_hist": [
@@ -14528,7 +14528,7 @@
    "per": 17.02,
    "pbr": 2.74,
    "op_margin": 36.55,
-   "payout": 26.08,
+   "payout": 25.87,
    "roe": 17.61,
    "equity_ratio": 87.06,
    "equity_hist": [
@@ -14964,7 +14964,7 @@
    "per": 13.42,
    "pbr": 3.76,
    "op_margin": 21.86,
-   "payout": 54.92,
+   "payout": 57.97,
    "roe": null,
    "equity_ratio": 83.56,
    "equity_hist": [
@@ -15173,10 +15173,10 @@
    "sector": "サービス業",
    "sector_yahoo_reference": "Financial Services",
    "market_cap": 81688551424.0,
-   "per": 16.91,
+   "per": 15.49,
    "pbr": 3.81,
    "op_margin": 38.71,
-   "payout": 71.56,
+   "payout": 65.56,
    "roe": 25.7,
    "equity_ratio": 86.72,
    "equity_hist": [
@@ -15371,7 +15371,7 @@
    "per": 13.55,
    "pbr": 4.32,
    "op_margin": 37.45,
-   "payout": 50.1,
+   "payout": 48.72,
    "roe": 34.8,
    "equity_ratio": 77.32,
    "equity_hist": [
@@ -15586,7 +15586,7 @@
    "per": 11.1,
    "pbr": 1.63,
    "op_margin": 31.27,
-   "payout": 40.05,
+   "payout": 48.46,
    "roe": 14.41,
    "equity_ratio": 87.02,
    "equity_hist": [
@@ -15797,11 +15797,11 @@
    "name_en": "NIPPON CERAMIC CO LTD",
    "sector": "電気機器",
    "sector_yahoo_reference": "Technology",
-   "market_cap": 76227641344.0,
+   "market_cap": 75573272576.0,
    "per": 14.65,
    "pbr": 1.68,
    "op_margin": 21.95,
-   "payout": 48.85,
+   "payout": 49.19,
    "roe": 11.28,
    "equity_ratio": 84.44,
    "equity_hist": [
@@ -15913,8 +15913,8 @@
      "value": 4888000000.0
     }
    ],
-   "shares_outstanding": 20409008.0,
-   "div_capacity_years": 8.89,
+   "shares_outstanding": 20233808.0,
+   "div_capacity_years": 8.96,
    "high52": 4280.0,
    "low52": 3350.0,
    "ma25": 3680.0,
@@ -15922,7 +15922,7 @@
    "div_warning": null,
    "avg_yield_10y": 4.09,
    "avg_per_10y": 11.65,
-   "avg_pbr_10y": 1.0,
+   "avg_pbr_10y": 0.99,
    "hist_years_used": 10,
    "name": "日本セラミック"
   },
@@ -16030,7 +16030,7 @@
    "per": 17.88,
    "pbr": 2.09,
    "op_margin": 18.11,
-   "payout": 30.44,
+   "payout": 29.68,
    "roe": 12.55,
    "equity_ratio": 79.63,
    "equity_hist": [
@@ -16258,11 +16258,11 @@
    "name_en": "NAGAILEBEN CO",
    "sector": "卸売業",
    "sector_yahoo_reference": "Consumer Cyclical",
-   "market_cap": 49517133824.0,
+   "market_cap": 49783037952.0,
    "per": 19.22,
    "pbr": 1.27,
    "op_margin": 20.3,
-   "payout": 73.26,
+   "payout": 72.02,
    "roe": 6.59,
    "equity_ratio": 92.45,
    "equity_hist": [
@@ -16357,8 +16357,8 @@
      "value": 2180900000.0
     }
    ],
-   "shares_outstanding": 29404474.0,
-   "div_capacity_years": 8.25,
+   "shares_outstanding": 29562374.0,
+   "div_capacity_years": 8.2,
    "high52": 1958.0,
    "low52": 1598.0,
    "ma25": 1664.92,
@@ -16366,7 +16366,7 @@
    "div_warning": null,
    "avg_yield_10y": 3.22,
    "avg_per_10y": 20.09,
-   "avg_pbr_10y": 1.32,
+   "avg_pbr_10y": 1.33,
    "hist_years_used": 10,
    "name": "ナガイレーベン"
   },
@@ -16477,7 +16477,7 @@
    "per": 11.19,
    "pbr": 1.62,
    "op_margin": 19.93,
-   "payout": 40.52,
+   "payout": 40.49,
    "roe": 15.24,
    "equity_ratio": 82.15,
    "equity_hist": [
@@ -16701,11 +16701,11 @@
    "name_en": "SHOEI CO LTD",
    "sector": "その他製品",
    "sector_yahoo_reference": "Consumer Cyclical",
-   "market_cap": 115820535808.0,
+   "market_cap": null,
    "per": 17.1,
    "pbr": 3.57,
    "op_margin": 31.01,
-   "payout": 48.82,
+   "payout": 45.65,
    "roe": 22.01,
    "equity_ratio": 85.14,
    "equity_hist": [
@@ -16817,8 +16817,8 @@
      "value": 9757207000.0
     }
    ],
-   "shares_outstanding": 51202714.0,
-   "div_capacity_years": 6.34,
+   "shares_outstanding": null,
+   "div_capacity_years": null,
    "high52": 2266.0,
    "low52": 1551.0,
    "ma25": 2090.83,
@@ -16826,7 +16826,7 @@
    "div_warning": null,
    "avg_yield_10y": 3.06,
    "avg_per_10y": 16.08,
-   "avg_pbr_10y": 3.78,
+   "avg_pbr_10y": null,
    "hist_years_used": 10,
    "name": "SHOEI"
   },
@@ -16933,7 +16933,7 @@
    "per": 9.8,
    "pbr": 1.05,
    "op_margin": 10.62,
-   "payout": 39.37,
+   "payout": 42.69,
    "roe": 11.13,
    "equity_ratio": 83.5,
    "equity_hist": [
@@ -17141,10 +17141,10 @@
    "sector": "証券、商品先物取引業",
    "sector_yahoo_reference": "Financial Services",
    "market_cap": 117272879104.0,
-   "per": 20.78,
+   "per": 28.14,
    "pbr": 0.88,
    "op_margin": 37.78,
-   "payout": 124.12,
+   "payout": 168.08,
    "roe": 4.63,
    "equity_ratio": 84.96,
    "equity_hist": [
@@ -17303,7 +17303,7 @@
    "per": 9.52,
    "pbr": 1.49,
    "op_margin": 11.3,
-   "payout": 42.23,
+   "payout": 47.49,
    "roe": 16.68,
    "equity_ratio": 75.75,
    "equity_hist": [
@@ -17528,10 +17528,10 @@
    "sector": "サービス業",
    "sector_yahoo_reference": "Consumer Defensive",
    "market_cap": 33606979584.0,
-   "per": 12.46,
+   "per": 12.5,
    "pbr": 1.21,
    "op_margin": 19.19,
-   "payout": 48.84,
+   "payout": 51.3,
    "roe": 9.97,
    "equity_ratio": 89.7,
    "equity_hist": [
@@ -17755,11 +17755,11 @@
    "name_en": "JAPAN PETROLEUM EXPLORATION CO ",
    "sector": "鉱業",
    "sector_yahoo_reference": "Energy",
-   "market_cap": 429822803968.0,
+   "market_cap": 428549799936.0,
    "per": 10.49,
    "pbr": 0.73,
    "op_margin": 9.53,
-   "payout": 31.14,
+   "payout": 40.63,
    "roe": 7.47,
    "equity_ratio": 72.76,
    "equity_hist": [
@@ -17871,8 +17871,8 @@
      "value": 102976000000.0
     }
    ],
-   "shares_outstanding": 255999291.0,
-   "div_capacity_years": 4.24,
+   "shares_outstanding": 255241091.0,
+   "div_capacity_years": 4.25,
    "high52": 2819.0,
    "low52": 1195.0,
    "ma25": 1829.81,
@@ -17991,7 +17991,7 @@
    "per": 12.7,
    "pbr": 1.82,
    "op_margin": 11.28,
-   "payout": 50.84,
+   "payout": 49.26,
    "roe": 15.06,
    "equity_ratio": 71.47,
    "equity_hist": [
@@ -18217,10 +18217,10 @@
    "sector": "建設業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 1085414834176.0,
-   "per": 18.83,
+   "per": 17.35,
    "pbr": 2.51,
    "op_margin": 8.38,
-   "payout": 37.1,
+   "payout": 34.17,
    "roe": 14.6,
    "equity_ratio": 72.38,
    "equity_hist": [
@@ -18450,7 +18450,7 @@
    "per": 11.65,
    "pbr": 1.22,
    "op_margin": 9.14,
-   "payout": 37.09,
+   "payout": 33.66,
    "roe": 11.12,
    "equity_ratio": 72.09,
    "equity_hist": [
@@ -18682,7 +18682,7 @@
    "per": 15.52,
    "pbr": 1.86,
    "op_margin": 12.16,
-   "payout": 37.59,
+   "payout": 35.76,
    "roe": 12.59,
    "equity_ratio": 71.74,
    "equity_hist": [
@@ -18911,7 +18911,7 @@
    "per": 21.53,
    "pbr": 2.62,
    "op_margin": 5.89,
-   "payout": 83.49,
+   "payout": 116.08,
    "roe": 12.05,
    "equity_ratio": 74.43,
    "equity_hist": [
@@ -19123,7 +19123,7 @@
    "per": 17.88,
    "pbr": 1.25,
    "op_margin": 15.95,
-   "payout": 60.61,
+   "payout": 62.37,
    "roe": 7.16,
    "equity_ratio": 88.27,
    "equity_hist": [
@@ -19348,10 +19348,10 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Communication Services",
    "market_cap": 15080201216.0,
-   "per": 11.77,
+   "per": 11.84,
    "pbr": 1.17,
    "op_margin": 8.38,
-   "payout": 50.57,
+   "payout": 50.87,
    "roe": 8.92,
    "equity_ratio": 90.29,
    "equity_hist": [
@@ -19555,7 +19555,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 30140512256.0,
-   "per": 14.25,
+   "per": 14.4,
    "pbr": 3.33,
    "op_margin": 9.66,
    "payout": 52.77,
@@ -19787,7 +19787,7 @@
    "per": 19.65,
    "pbr": 1.4,
    "op_margin": 12.74,
-   "payout": 65.79,
+   "payout": 61.18,
    "roe": 7.18,
    "equity_ratio": 74.55,
    "equity_hist": [
@@ -20013,10 +20013,10 @@
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 60826378240.0,
-   "per": 13.98,
+   "per": 13.31,
    "pbr": 1.19,
    "op_margin": 16.16,
-   "payout": 48.86,
+   "payout": 46.48,
    "roe": 9.36,
    "equity_ratio": 78.54,
    "equity_hist": [
@@ -20241,7 +20241,7 @@
    "per": 13.93,
    "pbr": 1.22,
    "op_margin": 26.39,
-   "payout": 53.9,
+   "payout": 49.32,
    "roe": 9.26,
    "equity_ratio": 76.88,
    "equity_hist": [
@@ -20472,7 +20472,7 @@
    "per": 14.23,
    "pbr": 2.34,
    "op_margin": 10.19,
-   "payout": 40.19,
+   "payout": 41.45,
    "roe": 17.35,
    "equity_ratio": 74.4,
    "equity_hist": [
@@ -20701,7 +20701,7 @@
    "per": 15.51,
    "pbr": 2.14,
    "op_margin": 12.0,
-   "payout": 76.73,
+   "payout": 76.66,
    "roe": 14.6,
    "equity_ratio": 73.59,
    "equity_hist": [
@@ -20914,10 +20914,10 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Healthcare",
    "market_cap": 39137828864.0,
-   "per": 26.0,
+   "per": 25.95,
    "pbr": 1.96,
    "op_margin": 13.09,
-   "payout": 179.15,
+   "payout": 124.02,
    "roe": 7.49,
    "equity_ratio": 74.12,
    "equity_hist": [
@@ -21603,7 +21603,7 @@
    "per": 14.38,
    "pbr": 1.44,
    "op_margin": 15.92,
-   "payout": 36.52,
+   "payout": 35.49,
    "roe": 10.99,
    "equity_ratio": 76.16,
    "equity_hist": [
@@ -21829,10 +21829,10 @@
    "sector": "ゴム製品",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 100537344000.0,
-   "per": 9.92,
+   "per": 9.81,
    "pbr": 1.08,
    "op_margin": 9.25,
-   "payout": 40.09,
+   "payout": 39.46,
    "roe": 12.08,
    "equity_ratio": 70.21,
    "equity_hist": [
@@ -22060,7 +22060,7 @@
    "per": 15.82,
    "pbr": 0.77,
    "op_margin": 5.66,
-   "payout": 48.05,
+   "payout": 48.58,
    "roe": 5.46,
    "equity_ratio": 70.2,
    "equity_hist": [
@@ -22489,7 +22489,7 @@
    "per": 21.3,
    "pbr": 1.57,
    "op_margin": 8.99,
-   "payout": 73.33,
+   "payout": 77.27,
    "roe": 7.5,
    "equity_ratio": 81.33,
    "equity_hist": [
@@ -22714,10 +22714,10 @@
    "sector": "機械",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 38771957760.0,
-   "per": 10.2,
+   "per": 9.59,
    "pbr": 0.9,
    "op_margin": 7.22,
-   "payout": 40.15,
+   "payout": 38.49,
    "roe": 9.95,
    "equity_ratio": 79.15,
    "equity_hist": [
@@ -22945,7 +22945,7 @@
    "per": 14.71,
    "pbr": 1.76,
    "op_margin": 13.14,
-   "payout": 50.89,
+   "payout": 54.81,
    "roe": 13.29,
    "equity_ratio": 77.99,
    "equity_hist": [
@@ -23174,7 +23174,7 @@
    "per": 13.78,
    "pbr": 2.02,
    "op_margin": 5.75,
-   "payout": 63.16,
+   "payout": 65.08,
    "roe": 15.39,
    "equity_ratio": 71.79,
    "equity_hist": [
@@ -23402,7 +23402,7 @@
    "per": 8.78,
    "pbr": 3.25,
    "op_margin": 1.38,
-   "payout": 33.32,
+   "payout": 33.52,
    "roe": 1.11,
    "equity_ratio": 73.26,
    "equity_hist": [
@@ -23630,7 +23630,7 @@
    "per": 9.98,
    "pbr": 0.86,
    "op_margin": 15.02,
-   "payout": 46.45,
+   "payout": 41.78,
    "roe": 9.04,
    "equity_ratio": 81.35,
    "equity_hist": [
@@ -23856,11 +23856,11 @@
    "name_en": "NIRECO CORPORATION",
    "sector": "電気機器",
    "sector_yahoo_reference": "Technology",
-   "market_cap": 7923504128.0,
+   "market_cap": 23770513408.0,
    "per": 17.12,
    "pbr": 1.41,
    "op_margin": 8.05,
-   "payout": 45.89,
+   "payout": 45.38,
    "roe": 8.95,
    "equity_ratio": 82.93,
    "equity_hist": [
@@ -23972,8 +23972,8 @@
      "value": 1861560000.0
     }
    ],
-   "shares_outstanding": 7157637.0,
-   "div_capacity_years": 18.02,
+   "shares_outstanding": 21472911.0,
+   "div_capacity_years": 6.01,
    "high52": 1155.0,
    "low52": 594.67,
    "ma25": 1043.71,
@@ -23981,7 +23981,7 @@
    "div_warning": null,
    "avg_yield_10y": 4.58,
    "avg_per_10y": 3.01,
-   "avg_pbr_10y": 0.21,
+   "avg_pbr_10y": 0.62,
    "hist_years_used": 10,
    "name": "ニレコ"
   },
@@ -24056,7 +24056,7 @@
    "per": 13.22,
    "pbr": 1.52,
    "op_margin": 7.95,
-   "payout": 58.58,
+   "payout": 66.21,
    "roe": 11.91,
    "equity_ratio": 81.05,
    "equity_hist": [
@@ -24286,7 +24286,7 @@
    "per": 22.67,
    "pbr": 2.8,
    "op_margin": 17.13,
-   "payout": 67.47,
+   "payout": 67.64,
    "roe": 13.17,
    "equity_ratio": 81.01,
    "equity_hist": [
@@ -24741,7 +24741,7 @@
    "per": 11.36,
    "pbr": 1.04,
    "op_margin": 15.29,
-   "payout": 49.88,
+   "payout": 46.47,
    "roe": 9.41,
    "equity_ratio": 80.72,
    "equity_hist": [
@@ -25192,10 +25192,10 @@
    "sector": "繊維製品",
    "sector_yahoo_reference": "Consumer Cyclical",
    "market_cap": 296465367040.0,
-   "per": 12.34,
+   "per": 12.84,
    "pbr": 2.34,
    "op_margin": 1.58,
-   "payout": 31.12,
+   "payout": 32.39,
    "roe": 19.47,
    "equity_ratio": 76.92,
    "equity_hist": [
@@ -25423,7 +25423,7 @@
    "per": 13.43,
    "pbr": 1.19,
    "op_margin": 15.73,
-   "payout": 45.92,
+   "payout": 44.08,
    "roe": 9.12,
    "equity_ratio": 76.9,
    "equity_hist": [
@@ -25809,7 +25809,7 @@
    "per": 16.06,
    "pbr": 2.95,
    "op_margin": 10.75,
-   "payout": 50.83,
+   "payout": 52.64,
    "roe": 19.13,
    "equity_ratio": 74.5,
    "equity_hist": [
@@ -26020,7 +26020,7 @@
    "per": 17.39,
    "pbr": 3.36,
    "op_margin": 13.97,
-   "payout": 56.43,
+   "payout": 54.94,
    "roe": 20.26,
    "equity_ratio": 75.69,
    "equity_hist": [
@@ -26257,7 +26257,7 @@
    "per": 16.31,
    "pbr": 3.05,
    "op_margin": 20.21,
-   "payout": 30.19,
+   "payout": 28.94,
    "roe": 20.29,
    "equity_ratio": 76.69,
    "equity_hist": [
@@ -26501,10 +26501,10 @@
    "sector": "建設業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 512632356864.0,
-   "per": 16.69,
+   "per": 15.09,
    "pbr": 1.49,
    "op_margin": 6.87,
-   "payout": 45.02,
+   "payout": 40.68,
    "roe": 10.31,
    "equity_ratio": 49.5,
    "equity_hist": [
@@ -26743,7 +26743,7 @@
    "per": 14.15,
    "pbr": 1.12,
    "op_margin": 8.28,
-   "payout": 56.31,
+   "payout": 55.45,
    "roe": 8.09,
    "equity_ratio": 80.61,
    "equity_hist": [
@@ -26987,10 +26987,10 @@
    "sector": "建設業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 393956196352.0,
-   "per": 14.69,
+   "per": 14.88,
    "pbr": 3.02,
    "op_margin": 17.73,
-   "payout": 40.19,
+   "payout": 40.73,
    "roe": 21.87,
    "equity_ratio": 56.22,
    "equity_hist": [
@@ -27219,7 +27219,7 @@
    "per": 8.64,
    "pbr": 1.04,
    "op_margin": 12.27,
-   "payout": 26.24,
+   "payout": 25.51,
    "roe": 13.05,
    "equity_ratio": 79.54,
    "equity_hist": [
@@ -27448,7 +27448,7 @@
    "per": 28.33,
    "pbr": 1.48,
    "op_margin": 7.83,
-   "payout": 81.13,
+   "payout": 70.72,
    "roe": 5.53,
    "equity_ratio": 61.23,
    "equity_hist": [
@@ -27685,7 +27685,7 @@
    "per": 13.59,
    "pbr": 3.9,
    "op_margin": 16.11,
-   "payout": 44.25,
+   "payout": 43.94,
    "roe": 31.03,
    "equity_ratio": 64.85,
    "equity_hist": [
@@ -27924,7 +27924,7 @@
    "per": 18.66,
    "pbr": 1.4,
    "op_margin": 16.77,
-   "payout": 68.45,
+   "payout": 72.31,
    "roe": 7.43,
    "equity_ratio": 82.76,
    "equity_hist": [
@@ -28113,10 +28113,10 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 32025544704.0,
-   "per": 12.26,
+   "per": 12.51,
    "pbr": 2.52,
    "op_margin": 7.27,
-   "payout": 44.45,
+   "payout": 45.35,
    "roe": 21.36,
    "equity_ratio": 69.19,
    "equity_hist": [
@@ -28358,10 +28358,10 @@
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 197528993792.0,
-   "per": 11.05,
+   "per": 11.0,
    "pbr": 0.93,
    "op_margin": 10.91,
-   "payout": 47.93,
+   "payout": 47.76,
    "roe": 9.2,
    "equity_ratio": 66.64,
    "equity_hist": [
@@ -28608,7 +28608,7 @@
    "per": 11.19,
    "pbr": 1.16,
    "op_margin": 14.89,
-   "payout": 40.73,
+   "payout": 35.36,
    "roe": null,
    "equity_ratio": 68.87,
    "equity_hist": [
@@ -28852,10 +28852,10 @@
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 114602442752.0,
-   "per": 15.81,
+   "per": 13.61,
    "pbr": 1.68,
    "op_margin": 11.79,
-   "payout": 35.13,
+   "payout": 29.25,
    "roe": 14.12,
    "equity_ratio": 56.78,
    "equity_hist": [
@@ -29102,7 +29102,7 @@
    "per": 15.65,
    "pbr": 1.48,
    "op_margin": 13.41,
-   "payout": 40.78,
+   "payout": 35.81,
    "roe": 9.68,
    "equity_ratio": 55.97,
    "equity_hist": [
@@ -29345,11 +29345,11 @@
    "name_en": "SAKATA INX CORP",
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
-   "market_cap": 127739011072.0,
-   "per": 10.71,
+   "market_cap": 128069230592.0,
+   "per": 10.72,
    "pbr": 1.02,
    "op_margin": 6.56,
-   "payout": 40.78,
+   "payout": 40.85,
    "roe": 10.73,
    "equity_ratio": 52.76,
    "equity_hist": [
@@ -29461,7 +29461,7 @@
      "value": 17005000000.0
     }
    ],
-   "shares_outstanding": 48625433.0,
+   "shares_outstanding": 48751138.0,
    "div_capacity_years": -2.81,
    "high52": 2740.0,
    "low52": 2130.0,
@@ -29809,10 +29809,10 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 6759930880.0,
-   "per": 8.79,
+   "per": 8.47,
    "pbr": 1.15,
    "op_margin": 14.99,
-   "payout": 33.97,
+   "payout": 32.73,
    "roe": 14.19,
    "equity_ratio": 63.0,
    "equity_hist": [
@@ -30047,11 +30047,11 @@
    "name_en": "NICHIREKI GROUP CO LTD",
    "sector": "石油・石炭製品",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 60666974208.0,
+   "market_cap": 60666957824.0,
    "per": 13.57,
    "pbr": 0.77,
    "op_margin": 1.01,
-   "payout": 53.79,
+   "payout": 51.33,
    "roe": 5.91,
    "equity_ratio": 64.94,
    "equity_hist": [
@@ -30163,7 +30163,7 @@
      "value": 2416000000.0
     }
    ],
-   "shares_outstanding": 28455429.0,
+   "shares_outstanding": 28455422.0,
    "div_capacity_years": 2.59,
    "high52": 2623.0,
    "low52": 1934.0,
@@ -30298,7 +30298,7 @@
    "per": 13.11,
    "pbr": 1.15,
    "op_margin": 8.26,
-   "payout": 32.77,
+   "payout": 29.59,
    "roe": 9.32,
    "equity_ratio": 85.64,
    "equity_hist": [
@@ -30540,10 +30540,10 @@
    "sector": "鉄鋼",
    "sector_yahoo_reference": "Basic Materials",
    "market_cap": 32507658240.0,
-   "per": 9.69,
+   "per": 9.44,
    "pbr": 0.55,
    "op_margin": 11.56,
-   "payout": 40.76,
+   "payout": 39.67,
    "roe": 6.03,
    "equity_ratio": 80.5,
    "equity_hist": [
@@ -30782,7 +30782,7 @@
    "per": 10.29,
    "pbr": 0.97,
    "op_margin": 3.73,
-   "payout": 30.26,
+   "payout": 35.06,
    "roe": 9.81,
    "equity_ratio": 78.3,
    "equity_hist": [
@@ -31024,10 +31024,10 @@
    "sector": "機械",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 70325395456.0,
-   "per": 13.41,
+   "per": 12.83,
    "pbr": 1.43,
    "op_margin": 9.02,
-   "payout": 63.96,
+   "payout": 61.19,
    "roe": 12.19,
    "equity_ratio": 67.99,
    "equity_hist": [
@@ -31274,7 +31274,7 @@
    "per": 24.25,
    "pbr": 3.09,
    "op_margin": 20.76,
-   "payout": 48.73,
+   "payout": 46.15,
    "roe": 13.49,
    "equity_ratio": 83.6,
    "equity_hist": [
@@ -31515,11 +31515,11 @@
    "name_en": "SINKO INDUSTRIES LTD",
    "sector": "機械",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 81246806016.0,
+   "market_cap": 81245061120.0,
    "per": 13.24,
    "pbr": 1.24,
    "op_margin": 10.09,
-   "payout": 50.77,
+   "payout": 52.68,
    "roe": 10.06,
    "equity_ratio": 67.77,
    "equity_hist": [
@@ -31631,7 +31631,7 @@
      "value": 8010000000.0
     }
    ],
-   "shares_outstanding": 67146121.0,
+   "shares_outstanding": 67144678.0,
    "div_capacity_years": 2.59,
    "high52": 1621.0,
    "low52": 1166.0,
@@ -31969,11 +31969,11 @@
    "name_en": "IDEC CORPORATION",
    "sector": "電気機器",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 120287674368.0,
+   "market_cap": 120486862848.0,
    "per": 14.75,
    "pbr": 1.63,
    "op_margin": 11.48,
-   "payout": 99.1,
+   "payout": 47.18,
    "roe": 11.88,
    "equity_ratio": 61.56,
    "equity_hist": [
@@ -32085,7 +32085,7 @@
      "value": 7442000000.0
     }
    ],
-   "shares_outstanding": 29591063.0,
+   "shares_outstanding": 29640063.0,
    "div_capacity_years": -2.39,
    "high52": 4215.0,
    "low52": 2253.0,
@@ -32094,7 +32094,7 @@
    "div_warning": null,
    "avg_yield_10y": 4.4,
    "avg_per_10y": 20.56,
-   "avg_pbr_10y": 1.15,
+   "avg_pbr_10y": 1.16,
    "hist_years_used": 10,
    "name": "IDEC"
   },
@@ -32206,7 +32206,7 @@
    "per": 11.35,
    "pbr": 0.97,
    "op_margin": 10.76,
-   "payout": 83.47,
+   "payout": 73.33,
    "roe": 8.77,
    "equity_ratio": 80.21,
    "equity_hist": [
@@ -32430,7 +32430,7 @@
    "per": 14.8,
    "pbr": 2.13,
    "op_margin": 6.38,
-   "payout": 31.82,
+   "payout": 30.58,
    "roe": 15.35,
    "equity_ratio": 69.84,
    "equity_hist": [
@@ -32671,7 +32671,7 @@
    "per": 13.51,
    "pbr": 0.82,
    "op_margin": 6.53,
-   "payout": 45.72,
+   "payout": 47.8,
    "roe": 7.46,
    "equity_ratio": 77.63,
    "equity_hist": [
@@ -32914,7 +32914,7 @@
    "per": 12.81,
    "pbr": 1.09,
    "op_margin": 5.46,
-   "payout": 40.33,
+   "payout": 37.99,
    "roe": 8.89,
    "equity_ratio": 55.66,
    "equity_hist": [
@@ -33394,7 +33394,7 @@
    "per": 12.52,
    "pbr": 0.84,
    "op_margin": 19.89,
-   "payout": 48.64,
+   "payout": 46.53,
    "roe": 6.86,
    "equity_ratio": 87.82,
    "equity_hist": [
@@ -33629,9 +33629,9 @@
    "sector_yahoo_reference": "Industrials",
    "market_cap": 54664130560.0,
    "per": 15.06,
-   "pbr": 1.64,
+   "pbr": 1.69,
    "op_margin": 22.35,
-   "payout": 45.84,
+   "payout": 42.66,
    "roe": 11.4,
    "equity_ratio": 76.25,
    "equity_hist": [
@@ -33874,7 +33874,7 @@
    "per": 10.5,
    "pbr": 0.96,
    "op_margin": 6.38,
-   "payout": 31.78,
+   "payout": 31.66,
    "roe": 9.4,
    "equity_ratio": 62.17,
    "equity_hist": [
@@ -34117,11 +34117,11 @@
    "name_en": "SENKO GROUP HOLDINGS CO LTD",
    "sector": "陸運業",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 396062687232.0,
-   "per": 20.91,
+   "market_cap": 396447252480.0,
+   "per": 19.38,
    "pbr": 1.72,
    "op_margin": 4.29,
-   "payout": 44.15,
+   "payout": 40.92,
    "roe": 8.9,
    "equity_ratio": 27.68,
    "equity_hist": [
@@ -34233,8 +34233,8 @@
      "value": 61118000000.0
     }
    ],
-   "shares_outstanding": 167256205.0,
-   "div_capacity_years": -35.56,
+   "shares_outstanding": 167418605.0,
+   "div_capacity_years": -35.53,
    "high52": 2387.0,
    "low52": 1695.0,
    "ma25": 2282.21,
@@ -34242,7 +34242,7 @@
    "div_warning": null,
    "avg_yield_10y": 3.67,
    "avg_per_10y": 12.67,
-   "avg_pbr_10y": 1.11,
+   "avg_pbr_10y": 1.12,
    "hist_years_used": 10,
    "name": "センコーグループHD"
   },
@@ -34360,7 +34360,7 @@
    "per": 12.42,
    "pbr": 0.92,
    "op_margin": -20.2,
-   "payout": 61.39,
+   "payout": 54.57,
    "roe": 7.57,
    "equity_ratio": 55.42,
    "equity_hist": [
@@ -34604,10 +34604,10 @@
    "sector": "倉庫・運輸関連業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 314250756096.0,
-   "per": 17.97,
+   "per": 15.5,
    "pbr": 1.0,
    "op_margin": 6.97,
-   "payout": 44.64,
+   "payout": 38.38,
    "roe": 7.17,
    "equity_ratio": 61.18,
    "equity_hist": [
@@ -34851,10 +34851,10 @@
    "sector": "倉庫・運輸関連業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 110205665280.0,
-   "per": 18.7,
+   "per": 15.36,
    "pbr": 1.59,
    "op_margin": 5.72,
-   "payout": 50.54,
+   "payout": 42.7,
    "roe": 11.04,
    "equity_ratio": 57.31,
    "equity_hist": [
@@ -35095,11 +35095,11 @@
    "name_en": "JAPAN TRANSCITY CORP",
    "sector": "倉庫・運輸関連業",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 83466649600.0,
-   "per": 13.11,
+   "market_cap": 83318177792.0,
+   "per": 12.61,
    "pbr": 0.82,
    "op_margin": 6.73,
-   "payout": 40.77,
+   "payout": 39.4,
    "roe": 6.98,
    "equity_ratio": 57.92,
    "equity_hist": [
@@ -35211,7 +35211,7 @@
      "value": 9294000000.0
     }
    ],
-   "shares_outstanding": 60658904.0,
+   "shares_outstanding": 60551004.0,
    "div_capacity_years": -4.01,
    "high52": 1479.0,
    "low52": 1053.0,
@@ -35338,7 +35338,7 @@
    "per": 11.74,
    "pbr": 0.85,
    "op_margin": 8.14,
-   "payout": 43.64,
+   "payout": 39.03,
    "roe": 8.57,
    "equity_ratio": 62.07,
    "equity_hist": [
@@ -35578,10 +35578,10 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 28176713728.0,
-   "per": 13.2,
+   "per": 13.17,
    "pbr": 1.55,
    "op_margin": 13.82,
-   "payout": 51.4,
+   "payout": 51.28,
    "roe": 12.56,
    "equity_ratio": 71.27,
    "equity_hist": [
@@ -35811,7 +35811,7 @@
    "per": 11.37,
    "pbr": 1.09,
    "op_margin": 7.05,
-   "payout": 45.14,
+   "payout": 44.16,
    "roe": 9.97,
    "equity_ratio": 59.9,
    "equity_hist": [
@@ -36056,7 +36056,7 @@
    "per": 13.14,
    "pbr": 2.27,
    "op_margin": 7.09,
-   "payout": 40.12,
+   "payout": 40.79,
    "roe": 19.06,
    "equity_ratio": 63.99,
    "equity_hist": [
