@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-14 17:01",
- "vix": 15.21,
- "vix_updated": "2026-10-14 17:01",
+ "updated": "2026-10-14 21:25",
+ "vix": 15.26,
+ "vix_updated": "2026-10-14 21:25",
  "stocks": [
   {
    "code": "1343",
@@ -1141,7 +1141,7 @@
    "name_en": "SAN-A CO LTD",
    "sector": "小売業",
    "sector_yahoo_reference": "Consumer Cyclical",
-   "market_cap": 179509100544.0,
+   "market_cap": 178348523520.0,
    "per": 16.49,
    "pbr": 1.22,
    "op_margin": 8.26,
@@ -1257,8 +1257,8 @@
      "value": 31617000000.0
     }
    ],
-   "shares_outstanding": 59440099.0,
-   "div_capacity_years": 16.67,
+   "shares_outstanding": 59055799.0,
+   "div_capacity_years": 16.78,
    "high52": 3485.0,
    "low52": 2651.0,
    "ma25": 3274.0,
@@ -1266,7 +1266,7 @@
    "div_warning": null,
    "avg_yield_10y": 2.9,
    "avg_per_10y": 10.97,
-   "avg_pbr_10y": 1.0,
+   "avg_pbr_10y": 0.99,
    "hist_years_used": 10,
    "name": "サンエー"
   },
@@ -3551,7 +3551,7 @@
    "shares_outstanding": 55203363.0,
    "div_capacity_years": 18.68,
    "high52": 1257.0,
-   "low52": 999.0,
+   "low52": 1010.0,
    "ma25": 1187.47,
    "ma75": 1142.87,
    "div_warning": null,
@@ -6439,19 +6439,19 @@
     "2025": 200.0,
     "2027": 220.0
    },
-   "dividend_raw_yahoo": 220.0,
+   "dividend_raw_yahoo": 210.0,
    "dividend": 220.0,
    "dividend_source": "IR BANK調整履歴",
    "yield_pct": 2.8,
    "name_en": "TAKEUCHI MFG CO",
    "sector": "機械",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 362614390784.0,
+   "market_cap": 362775937024.0,
    "per": 12.36,
-   "pbr": 1.94,
-   "op_margin": 17.56,
+   "pbr": 1.83,
+   "op_margin": 18.82,
    "payout": 34.31,
-   "roe": 16.29,
+   "roe": 15.96,
    "equity_ratio": 83.03,
    "equity_hist": [
     {
@@ -6545,8 +6545,8 @@
      "value": 22889000000.0
     }
    ],
-   "shares_outstanding": 46192915.0,
-   "div_capacity_years": 5.63,
+   "shares_outstanding": 46213496.0,
+   "div_capacity_years": 5.62,
    "high52": 8020.0,
    "low52": 5740.0,
    "ma25": 7368.4,
@@ -11049,7 +11049,7 @@
    "name_en": "JAC RECRUITMENT CO LTD",
    "sector": "サービス業",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 171987828736.0,
+   "market_cap": 170131292160.0,
    "per": 19.05,
    "pbr": 7.88,
    "op_margin": 22.1,
@@ -11165,8 +11165,8 @@
      "value": 9566000000.0
     }
    ],
-   "shares_outstanding": 158953625.0,
-   "div_capacity_years": 4.07,
+   "shares_outstanding": 157237789.0,
+   "div_capacity_years": 4.12,
    "high52": 1128.0,
    "low52": 820.0,
    "ma25": 1026.28,
@@ -11174,7 +11174,7 @@
    "div_warning": null,
    "avg_yield_10y": 4.44,
    "avg_per_10y": 16.03,
-   "avg_pbr_10y": 5.41,
+   "avg_pbr_10y": 5.35,
    "hist_years_used": 10,
    "name": "ジェイエイシーリクルートメント"
   },
@@ -12790,7 +12790,7 @@
    "name_en": "AKATSUKI INC",
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Communication Services",
-   "market_cap": 57716203520.0,
+   "market_cap": 47828271104.0,
    "per": 7.46,
    "pbr": 1.23,
    "op_margin": 13.56,
@@ -18335,7 +18335,7 @@
    "shares_outstanding": 164481718.0,
    "div_capacity_years": 3.4,
    "high52": 8580.0,
-   "low52": 4997.0,
+   "low52": 5059.0,
    "ma25": 6794.29,
    "ma75": 7062.64,
    "div_warning": null,
@@ -18900,19 +18900,19 @@
     "2024": 88.0,
     "2025": 95.0
    },
-   "dividend_raw_yahoo": 96.0,
+   "dividend_raw_yahoo": 48.0,
    "dividend": 95.0,
    "dividend_source": "IR BANK調整履歴",
    "yield_pct": 5.73,
    "name_en": "DIP CORPORATION",
    "sector": "サービス業",
    "sector_yahoo_reference": "Communication Services",
-   "market_cap": 86856826880.0,
+   "market_cap": 86787227648.0,
    "per": 52.28,
-   "pbr": 2.34,
-   "op_margin": 5.89,
+   "pbr": 2.57,
+   "op_margin": -6.35,
    "payout": 116.08,
-   "roe": 12.05,
+   "roe": 4.66,
    "equity_ratio": 74.43,
    "equity_hist": [
     {
@@ -19006,7 +19006,7 @@
      "value": 9965763000.0
     }
    ],
-   "shares_outstanding": 52354930.0,
+   "shares_outstanding": 52312975.0,
    "div_capacity_years": 3.57,
    "high52": 2267.0,
    "low52": 1636.0,
@@ -20804,7 +20804,7 @@
    "shares_outstanding": 26463156.0,
    "div_capacity_years": 5.72,
    "high52": 1778.0,
-   "low52": 1471.0,
+   "low52": 1478.0,
    "ma25": 1603.64,
    "ma75": 1622.73,
    "div_warning": null,
@@ -28851,7 +28851,7 @@
    "name_en": "RIKEN TECHNOS CORPORATION",
    "sector": "化学",
    "sector_yahoo_reference": "Basic Materials",
-   "market_cap": 114696224768.0,
+   "market_cap": 108438110208.0,
    "per": 13.62,
    "pbr": 1.68,
    "op_margin": 11.79,
@@ -28967,8 +28967,8 @@
      "value": 13399941000.0
     }
    ],
-   "shares_outstanding": 46891344.0,
-   "div_capacity_years": 6.82,
+   "shares_outstanding": 44332834.0,
+   "div_capacity_years": 7.22,
    "high52": 2915.0,
    "low52": 1217.0,
    "ma25": 2361.09,
@@ -28976,7 +28976,7 @@
    "div_warning": null,
    "avg_yield_10y": 3.75,
    "avg_per_10y": 7.61,
-   "avg_pbr_10y": 0.63,
+   "avg_pbr_10y": 0.6,
    "hist_years_used": 10,
    "name": "リケンテクノス"
   },
