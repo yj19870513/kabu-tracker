@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-15 21:06",
- "vix": 17.38,
- "vix_updated": "2026-10-15 21:06",
+ "updated": "2026-10-15 23:00",
+ "vix": 17.41,
+ "vix_updated": "2026-10-15 23:00",
  "stocks": [
   {
    "code": "1343",
@@ -11728,7 +11728,7 @@
    "name_en": "GAKUJO CO LTD",
    "sector": "サービス業",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 22473289728.0,
+   "market_cap": 22296580096.0,
    "per": 12.08,
    "pbr": 1.57,
    "op_margin": 20.14,
@@ -11827,8 +11827,8 @@
      "value": 1898587000.0
     }
    ],
-   "shares_outstanding": 13149965.0,
-   "div_capacity_years": 6.45,
+   "shares_outstanding": 13046565.0,
+   "div_capacity_years": 6.5,
    "high52": 1905.0,
    "low52": 1506.0,
    "ma25": 1715.12,
@@ -11836,7 +11836,7 @@
    "div_warning": null,
    "avg_yield_10y": 3.43,
    "avg_per_10y": 11.43,
-   "avg_pbr_10y": 1.4,
+   "avg_pbr_10y": 1.39,
    "hist_years_used": 10,
    "name": "学情"
   },
@@ -13412,7 +13412,7 @@
    "name_en": "CTS CO LTD",
    "sector": "サービス業",
    "sector_yahoo_reference": "Industrials",
-   "market_cap": 33202370560.0,
+   "market_cap": 33156763648.0,
    "per": 12.4,
    "pbr": 2.03,
    "op_margin": 23.06,
@@ -13528,8 +13528,8 @@
      "value": 3339000000.0
     }
    ],
-   "shares_outstanding": 40990579.0,
-   "div_capacity_years": 2.15,
+   "shares_outstanding": 40934277.0,
+   "div_capacity_years": 2.16,
    "high52": 1112.0,
    "low52": 798.0,
    "ma25": 822.59,
