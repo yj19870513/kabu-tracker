@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-21 21:23",
- "vix": 17.33,
- "vix_updated": "2026-10-21 21:23",
+ "updated": "2026-10-21 23:26",
+ "vix": 17.4,
+ "vix_updated": "2026-10-21 23:26",
  "stocks": [
   {
    "code": "1343",
@@ -33628,7 +33628,7 @@
    "sector": "その他製品",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 54599593984.0,
-   "per": 15.16,
+   "per": 15.04,
    "pbr": 1.64,
    "op_margin": 22.35,
    "payout": 42.66,
