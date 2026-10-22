@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-22 21:24",
- "vix": 18.16,
- "vix_updated": "2026-10-22 21:24",
+ "updated": "2026-10-22 23:25",
+ "vix": 18.17,
+ "vix_updated": "2026-10-22 23:25",
  "stocks": [
   {
    "code": "1343",
@@ -11729,7 +11729,7 @@
    "sector": "サービス業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 22505324544.0,
-   "per": 12.18,
+   "per": 12.19,
    "pbr": 1.58,
    "op_margin": 20.14,
    "payout": 50.18,
@@ -26987,7 +26987,7 @@
    "sector": "建設業",
    "sector_yahoo_reference": "Industrials",
    "market_cap": 382182785024.0,
-   "per": 14.21,
+   "per": 14.44,
    "pbr": 2.93,
    "op_margin": 17.73,
    "payout": 40.73,
@@ -35578,7 +35578,7 @@
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
    "market_cap": 27631005696.0,
-   "per": 12.88,
+   "per": 12.91,
    "pbr": 1.52,
    "op_margin": 13.82,
    "payout": 51.28,
