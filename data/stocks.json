@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-26 17:07",
- "vix": 19.62,
- "vix_updated": "2026-10-26 17:07",
+ "updated": "2026-10-26 22:36",
+ "vix": 19.07,
+ "vix_updated": "2026-10-26 22:36",
  "stocks": [
   {
    "code": "1343",
@@ -17145,7 +17145,7 @@
    "sector": "証券、商品先物取引業",
    "sector_yahoo_reference": "Financial Services",
    "market_cap": 117615165440.0,
-   "per": 28.19,
+   "per": 28.23,
    "pbr": 0.88,
    "op_margin": 37.78,
    "payout": 168.08,
@@ -25825,7 +25825,7 @@
    "name_en": "DTS CORPORATION",
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
-   "market_cap": 191757582336.0,
+   "market_cap": 190967971840.0,
    "per": 17.55,
    "pbr": 3.23,
    "op_margin": 10.75,
@@ -25924,8 +25924,8 @@
      "value": 8929000000.0
     }
    ],
-   "shares_outstanding": 155395114.0,
-   "div_capacity_years": 6.03,
+   "shares_outstanding": 154755250.0,
+   "div_capacity_years": 6.06,
    "high52": 1362.0,
    "low52": 958.0,
    "ma25": 1143.84,
@@ -25933,7 +25933,7 @@
    "div_warning": null,
    "avg_yield_10y": 2.94,
    "avg_per_10y": 17.16,
-   "avg_pbr_10y": 2.4,
+   "avg_pbr_10y": 2.39,
    "hist_years_used": 10,
    "name": "DTS"
   },
