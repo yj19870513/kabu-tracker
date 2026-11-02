@@ -1,7 +1,7 @@
 {
- "updated": "2026-11-03 01:36",
- "vix": 18.76,
- "vix_updated": "2026-11-03 01:36",
+ "updated": "2026-11-03 04:12",
+ "vix": 20.03,
+ "vix_updated": "2026-11-03 04:12",
  "stocks": [
   {
    "code": "1343",
@@ -114,8 +114,8 @@
    "div_capacity_years": null,
    "high52": 2249.5,
    "low52": 1782.0,
-   "ma25": 1816.98,
-   "ma75": 1902.92,
+   "ma25": 1813.9,
+   "ma75": 1900.85,
    "div_warning": null,
    "avg_yield_10y": 4.51,
    "avg_per_10y": null,
@@ -13414,7 +13414,7 @@
    "sector_yahoo_reference": "Industrials",
    "market_cap": 31887800320.0,
    "per": 11.93,
-   "pbr": 1.8,
+   "pbr": 1.79,
    "op_margin": 26.58,
    "payout": 44.4,
    "roe": 16.89,
