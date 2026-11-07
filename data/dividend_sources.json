@@ -5590,5 +5590,183 @@
         "period": "配当情報"
       }
     ]
+  },
+  "6823": {
+    "status": "reviewed",
+    "checked_at": "2026-11-07",
+    "exclude_special_dividends": true,
+    "history": {
+      "2008": 15.0,
+      "2009": 15.0,
+      "2010": 15.0,
+      "2011": 18.0,
+      "2012": 18.0,
+      "2013": 22.0,
+      "2014": 25.0,
+      "2015": 28.0,
+      "2016": 30.0,
+      "2017": 30.0,
+      "2018": 35.0,
+      "2019": 40.0,
+      "2020": 43.0,
+      "2021": 43.0,
+      "2022": 45.0,
+      "2023": 45.0,
+      "2024": 50.0,
+      "2025": 65.0,
+      "2026": 85.0
+    },
+    "actual_latest": {
+      "year": "2026",
+      "value": 85
+    },
+    "forecast": {
+      "year": "2027",
+      "value": 90
+    },
+    "confirmed_real_cuts": 0,
+    "method": "company_filings_ordinary_dividends",
+    "confidence": "high",
+    "note": "各期の有価証券報告書・会社配当開示を照合。2012年3月期の記念配当2円、2024年・2025年3月期の記念配当各5円を除外。2008〜2026年3月期の普通配当で減配・無配転落は確認されず。実績と予想は年間総額。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "2008年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S0000OW6.pdf",
+        "period": "2008年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2009年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S0003HN9.pdf",
+        "period": "2009年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2010年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S00062Z1.pdf",
+        "period": "2010年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2011年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S0008LBJ.pdf",
+        "period": "2011年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2012年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S000B5NE.pdf",
+        "period": "2012年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2013年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S000DRDM.pdf",
+        "period": "2013年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2014年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S1002BGY.pdf",
+        "period": "2014年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2015年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S10051ZS.pdf",
+        "period": "2015年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2016年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S1007UDS.pdf",
+        "period": "2016年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2017年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S100AKV3.pdf",
+        "period": "2017年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2018年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S100DCS4.pdf",
+        "period": "2018年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2019年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S100G6VJ.pdf",
+        "period": "2019年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2020年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S100IXI0.pdf",
+        "period": "2020年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2021年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S100LNFM.pdf",
+        "period": "2021年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2022年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S100OETJ.pdf",
+        "period": "2022年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2023年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S100R2I9.pdf",
+        "period": "2023年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2024年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S100TRAL.pdf",
+        "period": "2024年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2024年3月期 配当確認資料",
+        "url": "https://www.rion.co.jp/news/pdf/news_240130_2.pdf",
+        "period": "2024年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2025年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S100W50Z.pdf",
+        "period": "2025年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2025年3月期 配当確認資料",
+        "url": "https://www.rion.co.jp/news/news_250130_2.pdf",
+        "period": "2025年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2026年3月期 配当確認資料",
+        "url": "https://cdn.ullet.com/edinet/pdf/S100YI2O.pdf",
+        "period": "2026年3月期"
+      },
+      {
+        "kind": "ir",
+        "label": "2026年3月期 通期決算短信",
+        "url": "https://www.rion.co.jp/news/news_260428_1.pdf",
+        "period": "2026年3月期実績"
+      },
+      {
+        "kind": "ir",
+        "label": "2027年3月期 中間決算短信",
+        "url": "https://www.rion.co.jp/news/news_261029_2.pdf",
+        "period": "2026年3月期実績・2027年3月期会社予想"
+      }
+    ]
   }
 }

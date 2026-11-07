@@ -3611,5 +3611,38 @@
   "remaining_drops": [],
   "confirmed_real_cuts": 3,
   "confidence": "high"
+ },
+ "6823": {
+  "code": "6823",
+  "history": {
+   "2008": 15.0,
+   "2009": 15.0,
+   "2010": 15.0,
+   "2011": 18.0,
+   "2012": 18.0,
+   "2013": 22.0,
+   "2014": 25.0,
+   "2015": 28.0,
+   "2016": 30.0,
+   "2017": 30.0,
+   "2018": 35.0,
+   "2019": 40.0,
+   "2020": 43.0,
+   "2021": 43.0,
+   "2022": 45.0,
+   "2023": 45.0,
+   "2024": 50.0,
+   "2025": 65.0,
+   "2026": 85.0
+  },
+  "method": "company_filings_ordinary_dividends",
+  "status": "blue_ok",
+  "remaining_drops": [],
+  "confirmed_real_cuts": 0,
+  "confidence": "high",
+  "actual_latest": {
+   "year": "2026",
+   "value": 85
+  }
  }
 }
