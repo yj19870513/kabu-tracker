@@ -5940,5 +5940,189 @@
         "period": "2026年11月4日公表"
       }
     ]
+  },
+  "5947": {
+    "status": "reviewed",
+    "checked_at": "2026-11-07",
+    "exclude_special_dividends": true,
+    "history": {
+      "2008": 12.0,
+      "2009": 13.33333333,
+      "2010": 14.0,
+      "2011": 16.0,
+      "2012": 18.66666667,
+      "2013": 20.0,
+      "2014": 22.66666667,
+      "2015": 25.33333333,
+      "2016": 27.33333333,
+      "2017": 28.66666667,
+      "2018": 30.0,
+      "2019": 31.33333333,
+      "2020": 32.66666667,
+      "2021": 38.33333333,
+      "2022": 46.66666667,
+      "2023": 53.33333333,
+      "2024": 60.0,
+      "2025": 80.0,
+      "2026": 100.0
+    },
+    "actual_latest": {
+      "year": "2026",
+      "value": 100
+    },
+    "forecast": {
+      "year": "2027",
+      "value": 106
+    },
+    "confirmed_real_cuts": 0,
+    "method": "company_filings_ordinary_dividends",
+    "confidence": "high",
+    "note": "2008〜2026年3月期を会社有報で確認。2023年4月の1株→3株分割後に換算し、2021年の記念配当10円（分割前）を除いた普通配当で無配転落・減配なし。2026年実績100円、2027年は中間53円・期末予想53円で年106円の会社予想。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "2008年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2007_edinet.pdf",
+        "period": "2008年3月期"
+      },
+      {
+        "kind": "split",
+        "label": "1株→3株分割の確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2022_4q_edinet.pdf",
+        "period": "2023年4月"
+      },
+      {
+        "kind": "dividend",
+        "label": "2009年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2008_4q_edinet.pdf",
+        "period": "2009年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2010年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2010_edinet.pdf",
+        "period": "2010年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2011年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2011_edinet.pdf",
+        "period": "2011年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2012年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2011_4q_edinet.pdf",
+        "period": "2012年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2013年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2012_4q_edinet.pdf",
+        "period": "2013年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2014年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2013_4q_edinet.pdf",
+        "period": "2014年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2015年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2014_4q_edinet.pdf",
+        "period": "2015年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2016年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2015_4q_edinet.pdf",
+        "period": "2016年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2017年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2016_4q_edinet.pdf",
+        "period": "2017年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2018年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2017_4q_edinet.pdf",
+        "period": "2018年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2019年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2018_4q_edinet.pdf",
+        "period": "2019年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2020年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2019_4q_edinet.pdf",
+        "period": "2020年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2021年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2020_4q_edinet.pdf",
+        "period": "2021年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2022年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2021_4q_edinet.pdf",
+        "period": "2022年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2024年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2023_4q_edinet.pdf",
+        "period": "2024年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2025年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2024_4q_edinet.pdf",
+        "period": "2025年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2026年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2025_4q_edinet.pdf",
+        "period": "2026年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2026年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2025_4q_rinji.pdf",
+        "period": "2026年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "2026年3月期 配当確認資料",
+        "url": "https://www.rinnai.co.jp/ir/edinet/pdf/2025_4q_rinji_r.pdf",
+        "period": "2026年3月期"
+      },
+      {
+        "kind": "ir",
+        "label": "2026年3月期 決算短信",
+        "url": "https://www.rinnai.co.jp/ir/document/pdf/202603cfs.pdf",
+        "period": "2026年3月期実績"
+      },
+      {
+        "kind": "ir",
+        "label": "2027年3月期 中間決算短信",
+        "url": "https://www.rinnai.co.jp/ir/document/pdf/202609cfs.pdf",
+        "period": "2026年11月5日公表"
+      },
+      {
+        "kind": "ir",
+        "label": "会社の業績推移",
+        "url": "https://www.rinnai.co.jp/ir/result/",
+        "period": "2022〜2026年3月期"
+      }
+    ]
   }
 }
