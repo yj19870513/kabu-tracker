@@ -2365,13 +2365,18 @@
    "2022": 45.0,
    "2023": 47.5,
    "2024": 53.0,
-   "2025": 97.0
+   "2025": 87,
+   "2026": 98
   },
   "method": "verified_dividend_history_adjusted",
   "status": "blue_ok",
   "remaining_drops": [],
   "confirmed_real_cuts": 0,
-  "confidence": "medium"
+  "confidence": "medium",
+  "actual_latest": {
+   "year": "2026",
+   "value": 98
+  }
  },
  "7931": {
   "code": "7931",

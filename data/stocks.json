@@ -25392,7 +25392,8 @@
     "2022": 45.0,
     "2023": 47.5,
     "2024": 53.0,
-    "2025": 97.0
+    "2025": 87,
+    "2026": 98
    },
    "div_confirmed": {
     "2010": 12.5,
@@ -25410,12 +25411,12 @@
     "2022": 45.0,
     "2023": 47.5,
     "2024": 53.0,
-    "2025": 97.0
+    "2025": 87
    },
    "dividend_raw_yahoo": 174.0,
-   "dividend": 97.0,
+   "dividend": 98,
    "dividend_source": "IR BANK調整履歴",
-   "yield_pct": 3.27,
+   "yield_pct": 3.3,
    "name_en": "SAKAI MOVING SERVICE",
    "sector": "陸運業",
    "sector_yahoo_reference": "Industrials",
@@ -25536,7 +25537,7 @@
     }
    ],
    "shares_outstanding": 40259728.0,
-   "div_capacity_years": 6.64,
+   "div_capacity_years": 6.57,
    "high52": 3115.0,
    "low52": 2648.0,
    "ma25": 3007.64,

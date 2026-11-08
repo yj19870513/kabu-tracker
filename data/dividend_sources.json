@@ -4633,19 +4633,58 @@
   },
   "9039": {
     "status": "reviewed",
-    "checked_at": "2026-08-17",
+    "checked_at": "2026-11-08",
     "exclude_special_dividends": true,
     "confidence": "medium",
-    "note": "既存の調整済み履歴で減配なしを確認。2008年以降の長期比較が可能なため青枠相当。",
+    "note": "2025年3月期の実績97円には記念配当10円を含むため、普通配当の履歴は87円。2026年3月期の実績98円、2027年3月期の会社予想117円（中間30円・期末87円）。2010〜2024年は従来の分割調整履歴。",
     "sources": [
       {
         "kind": "dividend",
         "label": "IR BANK 配当推移（確認用）",
         "url": "https://irbank.net/9039/dividend",
         "period": "2010〜2026年"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社決算短信：実績98円・2025年の記念配当",
+        "url": "https://www.hikkoshi-sakai.co.jp/ir/ou63ua0000000u1i-att/20260512.pdf",
+        "period": "2025〜2026年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社第1四半期決算短信：年間配当117円予想",
+        "url": "https://www.hikkoshi-sakai.co.jp/ir/ou63ua0000000tbc-att/20260810_fs.pdf",
+        "period": "2027年3月期予想"
       }
     ],
-    "confirmed_real_cuts": 0
+    "confirmed_real_cuts": 0,
+    "history": {
+      "2010": 12.5,
+      "2011": 15,
+      "2012": 15,
+      "2013": 15,
+      "2014": 17.5,
+      "2015": 17.5,
+      "2016": 20,
+      "2017": 20,
+      "2018": 25,
+      "2019": 27.5,
+      "2020": 30,
+      "2021": 40,
+      "2022": 45,
+      "2023": 47.5,
+      "2024": 53,
+      "2025": 87,
+      "2026": 98
+    },
+    "actual_latest": {
+      "year": "2026",
+      "value": 98
+    },
+    "forecast": {
+      "year": "2027",
+      "value": 117
+    }
   },
   "9057": {
     "status": "source_history_pending",
