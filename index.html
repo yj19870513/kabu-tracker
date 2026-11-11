@@ -128,6 +128,17 @@
   .card .price { font-size:21px; font-weight:650; letter-spacing:-.01em; }
   .card .chg { font-size:12.5px; margin-left:6px; }
   .card .yield { font-size:15px; margin-top:2px; }
+  .yield-pair { margin-top:9px; display:grid; gap:6px; }
+  .yield-row { display:grid; grid-template-columns:1fr auto; column-gap:8px; align-items:baseline; }
+  .yield-row > span { font-size:12px; }
+  .yield-row > b { font-size:18px; }
+  .yield-row.forecast > b { color:var(--blue); }
+  .yield-row.actual > b { font-size:15px; }
+  .yield-row small { grid-column:1 / -1; color:var(--muted); font-size:10.5px; }
+  .yield-row.actual { border-top:1px solid var(--line); padding-top:5px; }
+  .yield-input { color:var(--muted); font-size:10.5px; }
+  .yield-help { margin:0 0 12px; color:var(--muted); font-size:12px; }
+
   .card-valuation { display:flex; gap:10px; align-items:baseline; margin-top:3px; color:var(--muted); font-size:11.5px; }
   .card-valuation span { white-space:nowrap; }
   .card-valuation b { color:var(--text); font-weight:650; }
@@ -408,7 +419,7 @@
   <div class="ctrl">
     <div class="sort-panel" id="sortPanel">
       <label>運用ビュー<select id="sortPreset">
-        <option value="yield">利回り重視</option>
+        <option value="yield">会社予想利回り重視</option>
         <option value="new">新規購入候補（推奨）</option>
         <option value="holding">保有の買い増し</option>
         <option value="value">割安確認（PER・PBR）</option>
@@ -460,7 +471,7 @@
       <button data-buy-zone="over20">＋20%以上</button>
     </div>
   </details>
-  <div class="fcount" id="fcount"></div>
+  <div class="fcount" id="fcount"></div><p class="yield-help">青字＝会社予想 ／ 下段＝直近実績。どちらも年間配当 ÷ 表示株価（税引前）。利回り条件・平均・トップ30は会社予想だけを使用。未確認は実績で代用しません。</p>
 
   <div id="holdArea"></div>
   <div class="grid" id="grid"></div>
@@ -507,34 +518,48 @@ function saveManualSnapshot(code,patch){
 function importedMarketSnapshotCount(){
   return (DATA&&DATA.stocks||[]).filter(s=>Boolean(manual(s.code).portfolio_market_snapshot)).length;
 }
-function dividendBasis(s){
-  const e=rawEff(s), m=manual(s.code);
-  if(Number.isFinite(Number(m.dividend))) return {actual:Number(m.dividend),forecast:null,value:Number(m.dividend),source:"手動入力"};
+function dividendNumber(v){
+  if(v===null||v===undefined||String(v).trim()==="") return null;
+  const n=Number(v); return Number.isFinite(n)&&n>=0?n:null;
+}
+function dividendBasis(s,includeManual=true){
+  const m=manual(s.code), entered=dividendNumber(m.dividend);
+  if(includeManual&&entered!==null) return {actual:null,forecast:null,value:entered,source:m.portfolio_market_snapshot?"管理シート入力値":"手動入力値"};
   const source=(window.DIV_SOURCES||{})[s.code], adjusted=(window.DIV_ADJUSTED||{})[s.code];
-  // 出典付きの履歴・最新値を正本にする。調整履歴は、出典確認前の互換用データ。
   const metadata=(source&&source.actual_latest)||(adjusted&&adjusted.actual_latest);
   const forecast=(source&&source.forecast)||(adjusted&&adjusted.forecast);
-  if(metadata&&Number.isFinite(Number(metadata.value))){
-    const actual=Number(metadata.value), next=forecast&&Number.isFinite(Number(forecast.value))?Number(forecast.value):null;
-    return {actual,forecast:next,value:next??actual,actualYear:String(metadata.year||""),forecastYear:forecast?String(forecast.year||""):"",source:"IR BANK調整履歴"};
+  let actual=dividendNumber(metadata&&metadata.value), actualYear=actual!==null?String(metadata.year||""):"";
+  let next=dividendNumber(forecast&&forecast.value), forecastYear=next!==null?String(forecast.year||""):"";
+  if(actual===null){
+    const untypedHistory=(source&&source.history)||(adjusted&&adjusted.history);
+    const history=untypedHistory||s.div_confirmed||{};
+    const years=Object.keys(history).filter(y=>(!untypedHistory||Number(y)<Number(currentYear()))&&dividendNumber(history[y])!==null).sort((a,b)=>Number(a)-Number(b));
+    if(years.length){ actualYear=years[years.length-1]; actual=dividendNumber(history[actualYear]); }
   }
-  const history=(source&&source.history)||(adjusted&&adjusted.history);
-  if(history){
-    const cy=Number(currentYear());
-    const years=Object.keys(history).filter(y=>Number(y)<cy&&Number.isFinite(Number(history[y]))).sort((a,b)=>Number(a)-Number(b));
-    if(years.length) return {actual:Number(history[years[years.length-1]]),forecast:null,value:Number(history[years[years.length-1]]),actualYear:years[years.length-1],source:"IR BANK調整履歴"};
-  }
-  const confirmed=e.div_confirmed||{};
-  const years=Object.keys(confirmed).filter(y=>Number.isFinite(Number(confirmed[y]))).sort((a,b)=>Number(a)-Number(b));
-  const latest=years.length?Number(confirmed[years[years.length-1]]):null;
-  if(latest!==null&&latest>0) return {actual:latest,forecast:null,value:latest,actualYear:years[years.length-1],source:"配当履歴（年度集計）"};
-  return {actual:null,forecast:null,value:null,source:"未確認",warning:"IR BANK等で配当履歴を確認できていません"};
+  // 確定済み年度と同年以前の古い予想を、将来の予想として使わない。
+  if(actualYear&&forecastYear&&Number(forecastYear)<=Number(actualYear)){ next=null; forecastYear=""; }
+  return {actual,forecast:next,value:next??actual,actualYear,forecastYear,source:"登録済み配当資料",warning:actual===null&&next===null?"配当未確認":null};
 }
+function dividendYield(value,price){
+  const v=dividendNumber(value), p=Number(price);
+  if(v===null||!Number.isFinite(p)||p<=0) return null;
+  const y=v/p*100; return y>=20?"anomaly":y;
+}
+function yieldText(y){ return y===null?"未確認":y==="anomaly"?"要確認（異常値）":fmt(y)+"%"; }
+function dividendPeriod(year){ return /^\d{4}$/.test(year)?year+"年決算":year||"対象年未確認"; }
+function dividendYieldPanel(s,detail=false){
+  const d=dividendBasis(s,false), e=rawEff(s), m=manual(s.code);
+  const row=(label,value,year,kind)=>`<div class="yield-row ${kind}"><span>${label}</span><b>${s.error?"取得エラー":yieldText(dividendYield(value,e.price))}</b><small>${value===null?"配当額未確認":`${dividendPeriod(year)} · 年${divFmt(value)}円／株`}</small></div>`;
+  const entered=dividendNumber(m.dividend);
+  const extra=entered===null?"":`<div class="yield-input">${m.portfolio_market_snapshot?"管理シート":"手動"}入力値：${yieldText(dividendYield(entered,e.price))}（年${divFmt(entered)}円／株・予想／実績の区分未確認）</div>`;
+  return `<div class="yield-pair">${row("会社予想",d.forecast,d.forecastYear,"forecast")}${row("直近実績",d.actual,d.actualYear,"actual")}${extra}</div>${detail?'<p class="kome">年間1株配当 ÷ 表示株価 × 100（税引前）。<br>会社予想＝表示年の予定額 ／ 実績＝過去の確定額。<br>今から買って受け取れる残りの配当とは異なります。</p><details class="kome"><summary>配当の基準について</summary>会社予想は表示した対象年の登録値で、翌年の予想とは限りません。実績は登録済みの最新の確定額です。過去の普通配当履歴を使う銘柄は記念・特別配当を除きます。内訳・確認日は下の出典を参照。</details><p class="kome"></p>':""}`;
+}
+function adoptedDividendLabel(s){ const d=dividendBasis(s); return d.value===null?"配当未確認":d.source.includes("入力値")?d.source:d.forecast!==null?"会社予想":"実績で仮置き"; }
 function eff(s){
   const e=rawEff(s), d=dividendBasis(s);
   if(d.value!==null&&d.value!==undefined){
     e.dividend=d.value;
-    if(e.price) e.yield_pct=Math.round(d.value/e.price*10000)/100;
+    const y=dividendYield(d.value,e.price); e.yield_pct=typeof y==="number"?y:null;
   }else{
     e.dividend=null; e.yield_pct=null;
   }
@@ -543,13 +568,10 @@ function eff(s){
   e.dividend_source=d.source; e.dividend_warning=d.warning||null;
   return e;
 }
-function yieldOf(s){
-  const e = eff(s);
-  const y = e.yield_pct;
-  if (y===null||y===undefined) return null;
-  if (y>=20) return "anomaly"; // 利回り20%以上はデータ異常
-  return y;
-}
+// 一覧・ランキング・条件抽出は会社予想だけ。実績への自動代用なし。
+function yieldOf(s){ return s.error?null:dividendYield(dividendBasis(s,false).forecast,rawEff(s).price); }
+function actualYieldOf(s){ return s.error?null:dividendYield(dividendBasis(s,false).actual,rawEff(s).price); }
+function adoptedYieldOf(s){ return s.error?null:dividendYield(dividendBasis(s).value,rawEff(s).price); }
 function valuationTone(value,kind){
   const v=Number(value);
   if(!Number.isFinite(v)||v<=0) return "v-unknown";
@@ -1045,7 +1067,7 @@ function trapWarning(s){
   }
 
   if (!reasons.length) return null;
-  return `利回り${fmt(y)}%と高めですが、${reasons.join("／")}。学長マガジンでいう「罠銘柄」の可能性があるため、業績の安定性を必ず確認してください。`;
+  return `会社予想利回り${fmt(y)}%と高めですが、${reasons.join("／")}。学長マガジンでいう「罠銘柄」の可能性があるため、業績の安定性を必ず確認してください。`;
 }
 function top30Score(s){
   const y = yieldOf(s);
@@ -1073,7 +1095,7 @@ function tagOf(code){
 function crashBuyTagged(code){ return !!LS.get("crashbuy_"+code); }
 
 /* ---------- フィルター＆描画 ---------- */
-const TABS = [["all","全銘柄"],["y4","4%以上"],["y37","3.7%以上"],["holding","保有中"],["watch","ウォッチ"],["candidate","候補"],["gakucho","学長紹介"],["top30","トップ30"],["error","エラー"]];
+const TABS = [["all","全銘柄"],["y4","予想4%以上"],["y37","予想3.7%以上"],["holding","保有中"],["watch","ウォッチ"],["candidate","候補"],["gakucho","学長紹介"],["top30","トップ30"],["error","エラー"]];
 function isGakuchoIntro(s){ return GAKUCHO_CODES.has(String(s.code)); }
 function buyChange(s){
   if(!LS.get("holding_"+s.code)) return null;
@@ -1096,7 +1118,7 @@ function heldSectorSet(){
   return new Set(DATA.stocks.filter(s=>!s.error&&LS.get("holding_"+s.code)).map(cardSectorName));
 }
 const SORT_OPTIONS = [
-  ["yield","配当利回り（高い順）"], ["stability","配当安定性（良い順）"], ["score","財務8項目（高い順）"],
+  ["yield","会社予想利回り（高い順）"], ["actualYield","実績利回り（高い順）"], ["stability","配当安定性（良い順）"], ["score","財務8項目（高い順）"],
   ["low52","52週位置（安い順）"], ["buy","前回購入比（下落順）"], ["per","PER（低い順）"],
   ["pbr","PBR（低い順）"], ["price","株価（高い順）"], ["kana","50音順"], ["code","コード順"]
 ];
@@ -1120,7 +1142,7 @@ function applySortPreset(preset,rerender=true){
   if(rerender) render();
 }
 function sortNumber(s,key){
-  if(key==="yield"){ const v=yieldOf(s); return v==="anomaly"?null:v; }
+  if(key==="yield"||key==="actualYield"){ const v=key==="yield"?yieldOf(s):actualYieldOf(s); return v==="anomaly"?null:v; }
   if(key==="score") return qualityScore(s);
   if(key==="low52") return pos52(s);
   if(key==="buy") return buyChange(s);
@@ -1260,10 +1282,10 @@ function render(){
     `<div class="stat stat-gakucho" onclick="TAB='gakucho';render()" title="過去の学長紹介銘柄を表示。現行カードがある銘柄数／リスト掲載数"><b>${countGakucho()}<small> / ${countGakuchoTotal()}</small></b><span>学長紹介（過去）</span></div>`;
   // フィルター後の件数・平均
   const fok = list.map(s=>yieldOf(s)).filter(y=>y!=="anomaly"&&y!==null);
-  const favg = fok.length?fok.reduce((a,b)=>a+b,0)/fok.length:0;
+  const favg = fok.length?fok.reduce((a,b)=>a+b,0)/fok.length:null;
   $("fcount").textContent = TAB==="gakucho"
     ? `表示 ${list.length}件 ／ 学長紹介リスト ${countGakuchoTotal()}件中（未登録 ${countGakuchoUnavailable()}件）`
-    : `表示 ${list.length}件 ／ 平均利回り ${fmt(favg)}%`;
+    : `表示 ${list.length}件 ／ 平均会社予想利回り ${yieldText(favg)}（確認済み ${fok.length}件のみ）`;
   // 保有状況の正本は管理シート。ここでは配当ベースの偏り確認と購入前シミュレーションに絞る
   $("holdArea").innerHTML = TAB==="holding" ? `<div class="hold-note"><span><b>保有管理は管理シートが正本です。</b><br>この画面では保有銘柄のカード確認と、購入前後のバランス試算ができます。</span><button class="btn" onclick="openSimulator()">🧮 購入後を試算する</button></div>${holdingDividendRotation()}` : "";
   // カード
@@ -1271,8 +1293,7 @@ function render(){
 }
 function card(s){
   const e=eff(s), y=yieldOf(s), sc=qualityScore(s), t=tagOf(s.code), p=pos52(s);
-  const yieldLabel=e.dividend_forecast!==null?"予想利回り":"実績利回り";
-  const ydisp = s.error?'<span class="err">取得エラー</span>' : y==="anomaly"?'<span class="err">利回り - (異常値)</span>' : `${yieldLabel} <b>${fmt(y)}%</b>`;
+  const ydisp = dividendYieldPanel(s);
   const chg=e.change_pct, chgHtml = chg===null||chg===undefined?"":`<span class="chg ${chg>=0?'c-green':'c-red'}">前日比 ${chg>=0?"+":""}${fmt(chg)}%</span>`;
   const tagB = (t?`<span class="badge badge-${t}">${t==="holding"?"保有":t==="watch"?"👀":"候補"}</span>`:"")+
     (crashBuyTagged(s.code)?`<span class="badge badge-crashbuy" title="暴落時の購入候補として登録">暴落時買い</span>`:"")+ 
@@ -1290,7 +1311,7 @@ function card(s){
     <div class="market-price"><span class="price-label">現在値</span><span class="price">${yen(e.price)}</span>${chgHtml}</div>
     <div class="yield">${ydisp}</div>${holdingShare}${buffettB}
     <div class="card-valuation" title="青=買い時候補、緑=中間、赤=割高注意。業種差があるため簡易目安です"><span>PER <b class="${valuationTone(e.per,"per")}">${e.per===null?"—":fmt(e.per)+"倍"}</b></span><span>PBR <b class="${valuationTone(e.pbr,"pbr")}">${e.pbr===null?"—":fmt(e.pbr)+"倍"}</b></span></div>
-    <div class="sub">${authoritativeSector(s)}｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</div>
+    <div class="sub">${authoritativeSector(s)}</div>
     ${dividendHistoryCard(s)}</div>
     ${SUPPORT_OPEN?`<div class="card-support" onclick="event.stopPropagation()">${scoreHtml}${cardPriceGuide(s)}</div>`:""}
   </div>`;
@@ -1390,7 +1411,7 @@ function holdTable(list){
     `<div style="width:${v/secTotal*100}%;background:${colors[i%colors.length]}" title="${k}">${k} ${fmt(v/secTotal*100,0)}%</div>`).join("");
 
   // ② 配当集中3%上限チェック（投資額×利回りで配当額を概算）
-  const divRows = rows.map(({s,inv})=>{ const y=yieldOf(s); return {s, div: (useAmt&&y!=="anomaly"&&y!==null)? inv*y/100 : 0}; });
+  const divRows = rows.map(({s,inv})=>{ const y=adoptedYieldOf(s); return {s, div: (useAmt&&y!=="anomaly"&&y!==null)? inv*y/100 : 0}; });
   const totalDiv = divRows.reduce((a,r)=>a+r.div,0);
   const divOver = totalDiv>0 ? divRows.filter(r=>r.div/totalDiv*100>3).map(r=>`${r.s.name}(${fmt(r.div/totalDiv*100,0)}%)`) : [];
 
@@ -1456,7 +1477,7 @@ function openModal(code){
     <span class="close" onclick="closeModal()">✕</span>
     <h2>${s.name} <span style="color:var(--muted);font-size:13px">${code}｜${authoritativeSector(s)}</span> <a class="badge buffett-badge" href="https://www.buffett-code.com/company/${code}/stockprice" target="_blank" rel="noopener" title="バフェット・コードの株価・指標ページを開く">BC株価 ↗</a></h2>
     <div style="margin-top:4px"><span class="price" style="font-size:22px">${yen(e.price)}</span>
-      <span style="margin-left:10px">${e.dividend_forecast!==null?"予想利回り":"実績利回り"} <b>${y==="anomaly"?"-（異常値）":fmt(y)+"%"}</b>｜${e.dividend_forecast!==null?`次期予想 ${fmt(e.dividend_forecast)}円（直近実績 ${fmt(e.dividend_actual)}円）`:`直近実績 ${e.dividend_actual===null?"-":fmt(e.dividend_actual)}円`}</span></div>${dataDateHtml(s)}
+</div>${dividendYieldPanel(s,true)}${dataDateHtml(s)}
     <div class="tagbtns">
       ${["holding|保有中","watch|ウォッチ","candidate|候補","crashbuy|暴落時買い"].map(x=>{const[k,l]=x.split("|");
         return `<button class="tagbtn ${LS.get(k+"_"+code)?"on":""}" onclick="toggleTag('${code}','${k}',this)">${l}</button>`;}).join("")}
@@ -1485,7 +1506,7 @@ function openModal(code){
     </div>
     <p class="kome" style="margin-top:6px">ROE・配当余力は「確かめたい4つのこと」記事（まつばちさん・2026-08-09）の追加指標。財務スコア8点には含めず参考表示。</p>
     <h3>買い増し判断</h3>
-    <div style="display:flex;gap:8px;align-items:center">購入時利回り
+    <div style="display:flex;gap:8px;align-items:center">購入時利回り（参考値）
       <input id="buyY" type="number" step="0.01" value="${buyY}" style="width:90px" onchange="LS.set('buy_yield_${code}',this.value);openModal('${code}')">%
     </div>
     <div class="buyjudge">${buyJudge(buyY,y)}</div>
@@ -1494,7 +1515,7 @@ function openModal(code){
       <label>配当性向% <input id="m_payout" type="number" step="0.1" value="${m.payout??""}"></label>
       <label>ROE% <input id="m_roe" type="number" step="0.1" value="${m.roe??""}"></label>
       <label>自己資本比率% <input id="m_equity_ratio" type="number" step="0.1" value="${m.equity_ratio??""}"></label>
-      <label>年間配当(円) <input id="m_dividend" type="number" step="0.1" value="${m.dividend??""}"></label>
+      <label>年間配当・試算用入力値(円) <input id="m_dividend" type="number" step="0.1" value="${m.dividend??""}"></label>
     </div>
     <label style="display:block;margin-top:8px">メモ<textarea id="memoBox" rows="3">${LS.get("memo_"+code,"")}</textarea></label>
     <button class="btn" onclick="saveManual('${code}')">保存</button>
@@ -1555,7 +1576,7 @@ function timingPanel(s){
   const dataWarn = e.div_warning
     ? `<div class="box danger" style="margin-top:8px"><b class="ttl">⚠️ 配当データ要確認</b>${e.div_warning}</div>` : "";
   return `<div class="kv">
-    ${timingRow("配当利回り%", yieldOf(s)==="anomaly"?null:yieldOf(s), e.avg_yield_10y, false)}
+    ${timingRow("実績配当利回り%", actualYieldOf(s)==="anomaly"?null:actualYieldOf(s), e.avg_yield_10y, false)}
     ${timingRow("PER", e.per, e.avg_per_10y, true)}
     ${timingRow("PBR", e.pbr, e.avg_pbr_10y, true)}
   </div>
@@ -1563,11 +1584,8 @@ function timingPanel(s){
   <p class="kome">絶対水準ではなく、この銘柄自身の過去${e.hist_years_used}年平均との比較です（学長マガジンより）。株価は年平均で近似、PBRは発行済株式数が過去も一定と仮定した概算値です。株式分割があった銘柄では過去の数値がずれる場合があります。</p>`;
 }
 function buyJudge(buyY,y){
-  if (!buyY) return "購入時の利回りを入力すると、現在との比較を表示します";
-  if (y==="anomaly"||y===null) return "現在の利回りが取得できていません";
-  const b=+buyY;
-  if (y>=b) return `<span class="c-green">現在 ${fmt(y)}% ≧ 購入時 ${fmt(b)}%：購入時より利回りが高く、買い増し検討圏です</span>`;
-  return `<span class="c-orange">現在 ${fmt(y)}% ＜ 購入時 ${fmt(b)}%：購入時より株価が上昇（利回り低下）しています</span>`;
+  if(!buyY) return "購入時の利回りは参考値として記録できます";
+  return `現在の会社予想：${yieldText(y)} ／ 購入時の記録：${fmt(+buyY)}%。購入時の配当基準が未記録のため、割安・割高は判定しません。`;
 }
 function toggleTag(code,key,btn){
   const k=key+"_"+code;
@@ -1631,7 +1649,7 @@ function holdingDividendShare(s){
   if(!LS.get("holding_"+s.code)) return "";
   const rows=portfolioRows(), total=rows.reduce((n,r)=>n+r.dividend,0), row=rows.find(r=>r.s.code===s.code);
   if(!row||row.dividend<=0||total<=0) return "";
-  return `<span class="holding-div-share" title="保有銘柄全体の年間配当に占める割合">年間配当の構成比 <b>${pct1(row.dividend/total*100)}%</b></span>`;
+  return `<span class="holding-div-share" title="保有銘柄全体の年間配当に占める割合">年間配当の構成比（試算） <b>${pct1(row.dividend/total*100)}%</b></span>`;
 }
 function simBasket(){ try{ const a=JSON.parse(LS.get("sim_basket","[]")); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
 function simOwnershipLabel(s){ return LS.get("holding_"+s.code)?"":"（未保有）"; }
@@ -1773,8 +1791,8 @@ function openSimulator(){
     const s=DATA.stocks.find(v=>v.code===x.code); if(!s) return "";
     const e=eff(s), shares=simSharesForBudget(+x.amount||0,e.price), cost=shares*(e.price||0), div=shares*(e.dividend||0), diff=cost-(+x.amount||0), diffLabel=diff>0?` <span class="kome c-orange">（予算+${yen(diff)}）</span>`:"";
     const owned=Boolean(LS.get("holding_"+s.code)), ownerLabel=owned?`<span class="sim-owner held">保有</span>`:`<span class="sim-owner unheld">未保有</span>`;
-    const individualYield=e.yield_pct===null||e.yield_pct===undefined?"-":pct1(e.yield_pct)+"%";
-    return `<tr><td><a href="#" class="sim-stock-link" onclick="openModal('${s.code}');return false">${s.name}</a>${ownerLabel}<br><span class="kome">${s.code}</span></td><td>${simSectorLabel(s)}<br><span class="kome">${simSectorTypeLabel(s)}</span></td><td><input type="number" min="0" step="1000" value="${+x.amount||0}" onchange="updateSimAmount(${i},this.value)" style="width:110px"> 円</td><td>${shares}株</td><td>${yen(cost)}${diffLabel}</td><td>${individualYield}<br><span class="kome">年間配当 ${yen(e.dividend)}</span></td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
+    const individualYield=yieldText(adoptedYieldOf(s));
+    return `<tr><td><a href="#" class="sim-stock-link" onclick="openModal('${s.code}');return false">${s.name}</a>${ownerLabel}<br><span class="kome">${s.code}</span></td><td>${simSectorLabel(s)}<br><span class="kome">${simSectorTypeLabel(s)}</span></td><td><input type="number" min="0" step="1000" value="${+x.amount||0}" onchange="updateSimAmount(${i},this.value)" style="width:110px"> 円</td><td>${shares}株</td><td>${yen(cost)}${diffLabel}</td><td>${individualYield}<br><span class="kome">${adoptedDividendLabel(s)}<br>年間配当 ${yen(e.dividend)}</span></td><td>+${yen(div)}</td><td><button class="tagbtn" onclick="removeSimItem(${i})">削除</button></td></tr>`;
   }).join("");
   const inputBudgetTotal=basket.reduce((n,x)=>n+(+x.amount||0),0);
   const estimatedCostTotal=basket.reduce((n,x)=>{const s=DATA.stocks.find(v=>v.code===x.code);if(!s)return n;const e=eff(s);return n+simSharesForBudget(+x.amount||0,e.price)*(e.price||0);},0);
@@ -1801,7 +1819,7 @@ function openSimulator(){
   $("modal").innerHTML=`
     <span class="close" onclick="closeModal()">✕</span><h2>🧮 購入シミュレーター</h2>
     <p class="kome">実際の注文は行いません。表示時点の株価・年間配当で、購入後の偏りを試算します。保有数などはこのブラウザ内だけに保存されます。</p>
-    <div class="sim-data-note"><b>計算データの基準</b><br>${marketCount?`保有${marketCount}銘柄：管理シート取込の株価・配当を優先　｜　未取込分：株価更新日 ${DATA.updated||"未確認"}・配当確認日 ${latestDividendCheckedAt()}`:`株価更新日：${DATA.updated||"未確認"}　｜　配当確認日：${latestDividendCheckedAt()}`}<br><span>個別利回り＝年間配当÷株価。ポートフォリオの利回りは、保有銘柄の年間配当合計÷時価評価額です。</span></div>
+    <div class="sim-data-note"><b>計算データの基準</b><br>${marketCount?`保有${marketCount}銘柄：管理シート取込の株価・配当を優先　｜　未取込分：株価更新日 ${DATA.updated||"未確認"}・配当確認日 ${latestDividendCheckedAt()}`:`株価更新日：${DATA.updated||"未確認"}　｜　配当確認日：${latestDividendCheckedAt()}`}<br><span>個別利回り＝年間配当÷株価。試算は入力値を優先し、ない場合は会社予想、予想未確認なら実績を仮置きします（一覧の会社予想利回りとは別）。ポートフォリオの利回りは、保有銘柄の年間配当合計÷時価評価額です。</span></div>
     <div class="box ${crash?'danger':'info'}"><b class="ttl">${crash?'暴落時モード':'平常時モード'}</b>${crash?'銘柄3%・セクター10%目標／20%警戒の超過は事実として表示しますが、暴落中の一時的な偏りは許容し、平常時の新規買付で戻します。':'銘柄2〜3%・セクター10%以下を目標、20%超を強い警戒・ディフェンシブ50%以上を目安に、新しい買付で偏りを整えます。厳密な上限ではなく確認の目安です。'}</div>
     <div class="sim-grid">
       <div class="sim-panel"><h3>① 現在のポートフォリオ</h3><p><b>${base.length}銘柄</b>${imported?` ／ 取込 ${new Date(imported).toLocaleString('ja-JP')}`:" ／ 未取込"}${marketCount?`<br><span class="kome">株価・配当基準：管理シート ${marketCount}銘柄</span>`:""}</p><button class="btn sub" onclick="openPortfolioImport()">管理シートのデータを取り込む</button></div>
@@ -1811,7 +1829,7 @@ function openSimulator(){
     <h3>③ 購入前 → 購入後</h3><div class="sim-metrics">
       ${metricHtml("時価評価額",yen(b.value),yen(a.value))}
       ${metricHtml("年間配当（採用値）",yen(b.dividend),yen(a.dividend))}
-      ${metricHtml("ポートフォリオ配当利回り",pct1(b.yield),pct1(a.yield),"%")}
+      ${metricHtml("ポートフォリオ配当利回り（試算）",pct1(b.yield),pct1(a.yield),"%")}
       ${metricHtml("ディフェンシブ比率（年間配当・管理シート区分）",fmt(b.defensive,1)+"%",fmt(a.defensive,1),"%")}
       ${metricHtml("安定枠比率（年間配当・青＋水色）",fmt(b.stable,1)+"%",fmt(a.stable,1),"%")}
     </div>
@@ -2282,3 +2300,4 @@ function enhanceModal(code){
 </script>
 </body>
 </html>
+
