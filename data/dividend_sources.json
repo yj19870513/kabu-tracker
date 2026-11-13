@@ -6407,5 +6407,177 @@
         "period": "株式分割・配当方針の確認"
       }
     ]
+  },
+  "1930": {
+    "history": {
+      "2008": 5,
+      "2009": 4.58333333,
+      "2010": 4.16666667,
+      "2011": 4.16666667,
+      "2012": 5,
+      "2013": 6.66666667,
+      "2014": 8.33333333,
+      "2015": 10,
+      "2016": 11.66666667,
+      "2017": 13.33333333,
+      "2018": 15,
+      "2019": 17.5,
+      "2020": 20.83333333,
+      "2021": 25,
+      "2022": 28.33333333,
+      "2023": 36,
+      "2024": 40,
+      "2025": 44,
+      "2026": 48
+    },
+    "actual_latest": {
+      "year": "2026",
+      "value": 48
+    },
+    "confirmed_real_cuts": 2,
+    "method": "company_filings_ordinary_dividends",
+    "confidence": "high",
+    "status": "reviewed",
+    "checked_at": "2026-11-13",
+    "exclude_special_dividends": true,
+    "forecast": {
+      "year": "2027",
+      "value": 48
+    },
+    "note": "分割前の普通配当は2008〜2010年に6→5.5→5円。単年8.3%と9.1%の減配。2022年の中間10円は1.2で割り、分割後の期末20円を加えた。2016年基準の直近10回に減配なし。2026年実績と2027年予想は各48円。",
+    "sources": [
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "http://www.kabupro.jp/edp/20080627/S0000MGB.pdf",
+        "period": "2008年3月期"
+      },
+      {
+        "kind": "split",
+        "label": "株式分割の確認資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S100OLWP.pdf",
+        "period": "2008年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S0003CES.pdf",
+        "period": "2009年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S000633B.pdf",
+        "period": "2010年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S0008SZL.pdf",
+        "period": "2011年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S000B8I5.pdf",
+        "period": "2012年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S000DVTZ.pdf",
+        "period": "2013年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S1002CGI.pdf",
+        "period": "2014年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S10059KX.pdf",
+        "period": "2015年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S10080ZB.pdf",
+        "period": "2016年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S100ANI2.pdf",
+        "period": "2017年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S100DGDD.pdf",
+        "period": "2018年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S100G96K.pdf",
+        "period": "2019年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S100J3JM.pdf",
+        "period": "2020年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S100LUNQ.pdf",
+        "period": "2021年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S100RA0C.pdf",
+        "period": "2023年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S100TWJM.pdf",
+        "period": "2024年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S100W966.pdf",
+        "period": "2025年3月期"
+      },
+      {
+        "kind": "dividend",
+        "label": "会社配当資料",
+        "url": "https://f.irbank.net/pdf/E00207/ir/S100YI00.pdf",
+        "period": "2026年3月期"
+      },
+      {
+        "kind": "ir",
+        "label": "財務・配当を確認した会社資料",
+        "url": "https://finance-frontend-pc-dist.west.edge.storage-yahoo.jp/disclosure/20260428/20260423509614.pdf",
+        "period": "連結決算"
+      },
+      {
+        "kind": "ir",
+        "label": "財務・配当を確認した会社資料",
+        "url": "https://www.rikudenko.co.jp/ir/report_file/0206/2027032Qtanshin.pdf",
+        "period": "連結決算"
+      },
+      {
+        "kind": "dividend",
+        "label": "最新中間決算短信",
+        "period": "2027年3月期中間",
+        "url": "https://www.rikudenko.co.jp/ir/report_file/0206/2027032Qtanshin.pdf"
+      }
+    ]
   }
 }
