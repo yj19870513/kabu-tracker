@@ -1,7 +1,7 @@
 {
- "updated": "2026-11-23 20:08",
- "vix": 29.8,
- "vix_updated": "2026-11-23 20:08",
+ "updated": "2026-11-24 03:47",
+ "vix": 26.28,
+ "vix_updated": "2026-11-24 03:47",
  "stocks": [
   {
    "code": "1343",
@@ -1607,7 +1607,7 @@
    "sector_yahoo_reference": "Industrials",
    "market_cap": 170406100992.0,
    "per": 15.08,
-   "pbr": 1.45,
+   "pbr": 1.46,
    "op_margin": 14.03,
    "payout": 59.0,
    "roe": 9.91,
@@ -20694,7 +20694,7 @@
    "name_en": "ITFOR INC",
    "sector": "情報・通信業",
    "sector_yahoo_reference": "Technology",
-   "market_cap": 41150205952.0,
+   "market_cap": 41244241920.0,
    "per": 14.52,
    "pbr": 1.96,
    "op_margin": 17.21,
@@ -20798,8 +20798,8 @@
      "value": 3091147000.0
     }
    ],
-   "shares_outstanding": 26463156.0,
-   "div_capacity_years": 5.72,
+   "shares_outstanding": 26523628.0,
+   "div_capacity_years": 5.71,
    "high52": 1778.0,
    "low52": 1521.0,
    "ma25": 1608.36,
